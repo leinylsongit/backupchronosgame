@@ -590,6 +590,7 @@ interface.addControl(activateBtn);
         set.start(new BABYLON.Vector3(0, 0, 0)); 
     });
     
+    
     // Adiciona planeta Lava
     BABYLON.SceneLoader.ImportMesh("", "./assets/ambiente/planetas/", "planeta_lava.glb", job_2ET, function (mesh_planeta_Lava){
         // mesh_planeta_Lava[0].scaling = new BABYLON.Vector3(20, 20, 20);
@@ -638,14 +639,14 @@ interface.addControl(activateBtn);
 
 
 //------------------------------- Eventos de efeitos especiais --------------------------
-    // Ativa evento de fumaça
+    // Evento de fumaça
     document.addEventListener('keydown', fumaceia);
     // Remove listeners when scene disposed
     job_2ET.onDisposeObservable.add(function(){
         document.removeEventListener('keydown', fumaceia);
     });
   
-    // Ativa evento de chuva
+    // Evento de chuva
     document.addEventListener('keydown', chove);
     // Remove listeners when scene disposed
     job_2ET.onDisposeObservable.add(function(){
@@ -674,7 +675,16 @@ interface.addControl(activateBtn);
     //     document.removeEventListener('keydown', sumindo);
     // });
 
-//---------------------------------- Sintese de fala -------------------------------------
+//------------------------------- Eventos variados --------------------------
+    // Ativa evento de Gravação da tela
+    document.addEventListener('keydown', gravaTela);
+    // Remove listeners when scene disposed
+    job_2ET.onDisposeObservable.add(function(){
+        document.removeEventListener('keydown', gravaTela);
+    });
+
+
+//---------------------------------- Síntese de fala -------------------------------------
     var box = BABYLON.MeshBuilder.CreateBox("box", {size: 1}, job_2ET);
     box.position.x = -2;
     box.metadata = {speech: "Oi, sou uma caixa!"}
@@ -690,25 +700,7 @@ interface.addControl(activateBtn);
     // Leitura de texto por meio de sintese
     // leituraTexto(box, bola);
 
-//Gravação da tela (renderiza a cena para )
-// Verifique o suporte para gravação
-if (BABYLON.VideoRecorder.IsSupported(engine)) {
-    
-    var recorder = new BABYLON.VideoRecorder(engine);
-    
-    // Gravará 15 segundos de vídeo
-    // recorder.startRecording("tarefa_01_ET.mpeg, 15");
-    // recorder.startRecording("tarefa_01_ET.mp4", 15);
-    
-    // Grava e quanto termina emite um aviso
-    // recorder.startRecording("tarefa_01_ET.webm").then(() => {
-    //     alert("Gravação concluída!");
-    // });
-}
-
-
-
-
+   
 //------------------------------- Animação dos elementos- --------------------------------
 
     zoomIn(camera, bola);
@@ -1138,6 +1130,25 @@ if (BABYLON.VideoRecorder.IsSupported(engine)) {
         };
     }
 
+    // Grava em vídeo ao pressionar G, na duração passada como parâmetro
+    function gravaTela(event) {
+        if(event.keyCode == 71){ 
+            // Verifique o suporte para gravação
+            if (BABYLON.VideoRecorder.IsSupported(engine)) {
+                var recorder = new BABYLON.VideoRecorder(engine);
+                // recorder.startRecording("tarefa_01_ET.mpeg, tempo");
+                // recorder.startRecording("tarefa_01_ET.mp4", tempo);
+                // recorder.startRecording("tarefa_01_ET.webm", tempo);
+                // Grava e quanto termina emite um aviso
+                recorder.startRecording("tarefa_01_ET.webm", 10).then(() => {
+                    alert("Gravação concluída!");
+                });
+            }  
+        }
+    }
+        
+        
+
 };//Fim da tarefa <-----------------------------------------------------------------------<<<
 
 //-----------------Início do MediaPipe---------------------------------
@@ -1215,4 +1226,6 @@ initFunction().then(() => { sceneToRender = scene });
 window.addEventListener("resize", function () {
     engine.resize();
 });
+
+
 
