@@ -1,0 +1,50 @@
+body{
+    background: rgb(229, 254, 0);
+    background-image: url("background/background_03.png");
+    padding: 25px;
+    margin: 0;
+}
+
+#Painel_Tarefas{
+    width: 62%;
+    height: 590px;
+    touch-action: none;
+}
+
+#Tarefa{
+    width: 80%;
+    height: 90%;
+    touch-action: none;  
+}
+
+
+#Camera_Player {
+    width: 20%;
+    height: 26%;
+    touch-action: none;
+}
+
+#Video_ajuda {
+    width: 20%;
+    height: 26%;
+    touch-action: none;
+}
+
+.flex-container{
+    max-width: 800px;
+    padding: 2px;
+    border: 1px solid red;
+    display: flex;
+}
+
+.row{
+    flex-direction: row;
+}
+
+.row-reverse{
+    flex-direction: row-reverse;
+}
+
+.column{
+    flex-direction: column;
+}
