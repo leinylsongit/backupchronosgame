@@ -17,22 +17,64 @@ var createDefaultEngine = function () {
     return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
 };
 
-// Elementos 3d
+// Elementos 3d-------------------------------------------------------------------
 // Player
 const player = 'assets/personagens/players/ybot.babylon';
 
-// Cidade
-const towerURL = "assets/ambiente/tower/TowerHouse.obj";
+// Abelha
+const abelha = './assets/animais/Bee.glb';
 
-// Ruas
-const streetURL = 'assets/ambiente/street/Street.obj';
+// Elementos de construções
+// const towerURL = "assets/ambiente/tower/TowerHouse.obj";
+const labirinto = './assets/ambiente/labirinto_01.glb';
+
+// SIG
+// const sig = './assets/personagens/npc/sig.glb';
+
+// Mentor
+const mentor = './assets/personagens/npc/Old_Man_separado/Old_Man_convertido_separado.gltf';
+
+// Outlier
+// const outlier = './assets/personagens/npc/outlier.glb';
+
+// NPC's
+const emogi = './assets/itens/Carinha_Olhos.glb';
+
+// Elementos da natureza
+const cacto_1 = './assets/plantas/Cacto_1.glb';
+const cacto_2 = './assets/plantas/Cacto_2.glb';
+const macieira = './assets/plantas/Macieira.glb';
+const pinheiro_nevado = './assets/plantas/Pinheiro Nevado.glb';
+const bordo = './assets/plantas/Bordo.glb';
+const folhas_caindo = './assets/plantas/Folhas_caindo.glb';
+const pilha_folhas = './assets/plantas/Pilha de folhas.glb';
+
+// Skyboxes 
+const atmosfera = 'assets/skybox/TropicalSunnyDay';
+// const atmosfera = 'assets/skybox/TropicalSunnyDay';
+
+
+
+// Elementos sonoros--------------------------------------------------------------
+var narrador = true; // checkbox
+var som_Ambiente = false; // checkbox
+var som_Efeitos = false; // checkbox
+
+const Ambiente_Calmo = 'assets/sounds/soundtracks/Ambiente_Calmo_01.mp3';
+// const Ambiente_Suspense = 'assets/sounds/soundtracks/Ambiente_Suspense.mp3';
+
+var explosao = 'assets/sounds/effects/explosao.mp3';
+var chuva = 'assets/sounds/effects/chuva.mp3';
+var fogo = 'assets/sounds/effects/fogo.mp3';
+
+
+
 
 // 1ª ou 3ª pessoa
 var firstPerson = false;
 
 // Animações
 var skeleton_Heroi = null;
-var ak47 = null;
 
 var idleAnim = null;
 var walkAnim = null;
@@ -58,8 +100,7 @@ var jumped = false;
 var mouseX = 0, mouseY = 0;
 var mouseMin = -35, mouseMax = 45;
 
-// Trilha sonora e efeitos de áudio
-var sound = false;
+
 
 // Cenário do Mundo Exploratório
 var create_Mundo = function () {
@@ -89,41 +130,74 @@ var create_Mundo = function () {
 
     // Adiciona a CÂMERA
     var camera = new BABYLON.UniversalCamera("camera", new BABYLON.Vector3.Zero(0, 0, 0), scene_Mundo);
-    camera.inputs.clear();
     
+    // var camera = new BABYLON.VirtualJoysticksCamera("VJ_camera", new BABYLON.Vector3(0, 1, -15), scene_Mundo);
+    
+    camera.inputs.clear();
+
     camera.ellipsoid = new BABYLON.Vector3(0.5,1, 0.5);
     drawEllipsoid(camera);
     // camera.minZ = 0.1;
 
 
     // Adiciona as fontes de LUZ 
-    var hemLight = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene_Mundo);
-	hemLight.intensity = 0.7;
-	hemLight.specular = BABYLON.Color3.Black();
-    hemLight.groundColor = scene_Mundo.clearColor.scale(0.75);
+    // var hemLight = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene_Mundo);
+	// hemLight.intensity = 0.7;
+	// hemLight.specular = BABYLON.Color3.Black();
+    // hemLight.groundColor = scene_Mundo.clearColor.scale(0.75);
 
-    var dirLight = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(0, -0.5, -1.0), scene_Mundo);
-    dirLight.position = new BABYLON.Vector3(0, 130, 130);
+    // var dirLight = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(0, -0.5, -1.0), scene_Mundo);
+    // dirLight.position = new BABYLON.Vector3(0, 130, 130);
+
+
+
+// Ponto de luz
+var lightPoint = new BABYLON.PointLight("PointLight", new BABYLON.Vector3(20, 20, 10), scene_Mundo);
+// lightPoint.intensity = 0.7;
+
 
     // Adiciona as SOMBRAS
-    var shadowGenerator = new BABYLON.ShadowGenerator(3072, dirLight);
+    // var shadowGenerator = new BABYLON.ShadowGenerator(3072, dirLight);
+    var shadowGenerator = new BABYLON.ShadowGenerator(3072, lightPoint);
     shadowGenerator.usePercentageCloserFiltering = true;
     
-    if (sound)
-        var music = new BABYLON.Sound("Ambiente", "assets/sounds/soundtracks/Ambiente_Calmo_01.mp3", scene_Mundo, null, { loop: true, autoplay: true });
+    
+    
+    
+    
+    if (som_Ambiente)
+        var music = new BABYLON.Sound("Ambiente_Calmo", Ambiente_Calmo, scene_Mundo, null, { loop: true, autoplay: true });
 
-    // Chão, a princípio desnecessário!!
-    var helper = scene_Mundo.createDefaultEnvironment({
-        enableGroundShadow: true,
-        enableGroundMirror: true,
-        groundMirrorFallOffDistance: 0,
-        groundSize: 150,
-        skyboxSize: 150,
-    });
-    helper.setMainColor(scene_Mundo.clearColor);
-    helper.groundMaterial.diffuseTexture = null;
-    helper.groundMaterial.alpha = 1;
-    helper.groundMaterial.fogEnabled = true;
+
+
+
+
+
+
+    //------------------------------- Cria o plano do chão ----------------------------------
+    var groundSize = 150;
+    var ground = BABYLON.Mesh.CreateGround("ground", groundSize, groundSize, 5, scene_Mundo);
+    // ground.position.y = -7;
+
+    // Cria a textura do chão
+    var grade = new BABYLON.GridMaterial("grade", scene_Mundo);
+    grade.gridRatio = 1;
+    // grade.lineColor = new BABYLON.Color3.White();
+    // grade.mainColor = new BABYLON.Color3.Black();
+    // grade.alpha = 0.3;
+    // grade.majorUnitFrequency = 10;    
+    // ground.fogEnabled = true;
+    ground.material = grade;
+    
+    // ground.visibility = false; //Oculta o elemento
+
+    // Cria uma repetição do material 
+    // var texturaNitLab = new BABYLON.StandardMaterial("nitlab", scene_Mundo);
+    // texturaNitLabw.diffuseTexture = new BABYLON.Texture("assets/textures/flare.png", scene_Mundo);
+    // // texturaNitLab.diffuseTexture.uScale = 2.0;//Repeat 2 times on the Vertical Axes
+    // texturaNitLab.diffuseTexture.vScale = 5.0;//Repeat 5 times on the Horizontal Axes
+    // texturaNitLab.backFaceCulling = false;//Always show the front and the back of an element
+    // ground.material = texturaNitLab;
 
 
     var addShadows = function(mesh){
@@ -131,9 +205,9 @@ var create_Mundo = function () {
         shadowGenerator.addShadowCaster(mesh);
     }
 
-    var addToMirror = function(mesh){
-        helper.groundMirrorRenderList.push(mesh);
-    }
+    // var addToMirror = function(mesh){
+    //     helper.groundMirrorRenderList.push(mesh);
+    // }
 
     //tps ???
     const dsm = new BABYLON.DeviceSourceManager(engine);
@@ -196,20 +270,11 @@ var create_Mundo = function () {
         mouseMax = type.mouseMax
     }
 
-    var smallLight = new BABYLON.PointLight("boxLight", new BABYLON.Vector3.Zero(), scene_Mundo);
-    smallLight.diffuse = new BABYLON.Color3(0.3, 0.5, 0.8);
-    smallLight.specular = smallLight.specular;
-    smallLight.intensity = 1;
-    smallLight.range = 5;
 
 
     // Animação de Carregando
     engine.displayLoadingUI();
 
-    //var player = null; 1ª tentatica
-
-    // Import gltf  // 2ª tentativa
-    //var mesh_Heroi = (await BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/TrevorDev/gltfModels/master/weirdShape.glb", "", scene)).meshes;
 
     BABYLON.SceneLoader.ImportMesh("", "", player, scene_Mundo, function (mesh_Heroi, particleSystems, skeletons_Heroi){
         skeleton_Heroi = skeletons_Heroi[0];
@@ -220,13 +285,26 @@ var create_Mundo = function () {
         joints.parent = body;
         body.parent = character;    
 
-        // Textura do Player
+        // Textura do corpo do Player
         body.material = new BABYLON.StandardMaterial("character", scene_Mundo);
-        joints.material = new BABYLON.StandardMaterial("joints", scene_Mundo);
-        body.material.diffuseColor = new BABYLON.Color3(0, 10, 10);
-        joints.material.emissiveColor = new BABYLON.Color3(10, 100, 10);
+        body.material.diffuseColor = new BABYLON.Color3.Blue();// Cor
+        // body.material.specularColor = BABYLON.Color3.White(); // Reflexo
+        // body.material.emissiveColor = new BABYLON.Color3.Red();
 
-        addToMirror(character);
+        // body.material.ambientColor = new BABYLON.Color3.Blue();
+
+        // body.material.alpha = 0.8;
+        // body.material.wireframe = true;
+
+        // Textura das juntas do Player
+        joints.material = new BABYLON.StandardMaterial("joints", scene_Mundo);
+        joints.material.emissiveColor = BABYLON.Color3.Green();
+        joints.material.specularColor = BABYLON.Color3.Blue();
+        // joints.material.alpha = 0.5;
+
+        
+
+        // addToMirror(character);
         // addShadows(character);
 
         var idleRange = skeleton_Heroi.getAnimationRange("None_Idle");
@@ -251,21 +329,20 @@ var create_Mundo = function () {
         drawEllipsoid(main);
 
 
-        smallLight.parent = main;
         character.parent = main;
         target.parent = main;
 
         // Alterna a camera de acordo com a opção escolhida
         if (firstPerson == true){
             camera.parent = character;
-            // switchCamera(firstPersonCamera.middle);
-            switchCamera(firstPersonCamera.far);
+            switchCamera(firstPersonCamera.middle); // Centralizado
+            // switchCamera(firstPersonCamera.far); // Distante
         }else{
             camera.parent = target;
             // switchCamera(thirdPersonCamera.leftRun); // Lado esquerdo
             // switchCamera(thirdPersonCamera.rightRun);// Lado direito
-            // switchCamera(thirdPersonCamera.middle);     // Centralizado
-            switchCamera(thirdPersonCamera.far);     // Distante
+            switchCamera(thirdPersonCamera.middle);     // Centralizado
+            // switchCamera(thirdPersonCamera.far);     // Distante
         }
 
         // Posição da câmera
@@ -369,11 +446,11 @@ var create_Mundo = function () {
 
 
         
-        // Devo add aqui todos os elementos com que for haver interação 
+        // Devo add aqui todos os elementos com que for haver interação ou tirar?!
         
         // Adiciona a ABELHA
         // var abelha = null;
-        BABYLON.SceneLoader.ImportMesh("", "./assets/animais/", "Bee.glb", scene_Mundo, function (mesh_Bee, particleSystems, skeletons_Bee) {
+        BABYLON.SceneLoader.ImportMesh("", "", abelha, scene_Mundo, function (mesh_Bee, particleSystems, skeletons_Bee) {
             mesh_Bee[0].scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
             mesh_Bee[0].position = new BABYLON.Vector3(0, 0, 25);
 
@@ -674,8 +751,7 @@ var create_Mundo = function () {
 
 
     // Movimentação do mouse
-    var mouseMove = function(e)
-    {
+    var mouseMove = function(e){
         var movementX = e.movementX ||
                 e.mozMovementX ||
                 e.webkitMovementX ||
@@ -729,8 +805,7 @@ var create_Mundo = function () {
 
 
     // Movimentação em 3ª pessoa
-    function thirdPersonMovement(up, down, left, right, jump, run)
-    {
+    function thirdPersonMovement(up, down, left, right, jump, run){
         var directionZ = up-down;
         var directionX = right-left;
 
@@ -741,10 +816,8 @@ var create_Mundo = function () {
         
 
         //move
-        if (directionX != 0 || directionZ != 0)
-        {
-            if (run != 1)
-            {
+        if (directionX != 0 || directionZ != 0){
+            if (run != 1){
                 currentState = runAnim;
                 speed = lerp(speed, runSpeed, runAnim.weight);
             }else{
@@ -767,22 +840,20 @@ var create_Mundo = function () {
 
 
         //jump # Bug, não volta ao normal
-        // if (jump == 1 && jumped == false)
-        // {
+        // if (jump == 1 && jumped == false){
         //     jumped = true;
         // }
-        // if (jumped == true)
-        // {
-        //     // if (vsp < jumpHeight){
-        //     //     vsp += jumpHeight/10;
-        //     // }else{
-        //     //     vsp += gravity.y/10;
-        //     //     vsp = Math.min(vsp, gravity.y);
-        //     //     if (vsp == gravity.y){
-        //     //         vsp = gravity.y;
-        //     //         jumped = false;
-        //     //     }
-        //     // }
+        // if (jumped == true){
+        //     if (vsp < jumpHeight){
+        //         vsp += jumpHeight/10;
+        //     }else{
+        //         vsp += gravity.y/10;
+        //         vsp = Math.min(vsp, gravity.y);
+        //         if (vsp == gravity.y){
+        //             vsp = gravity.y;
+        //             jumped = false;
+        //         }
+        //     }
         //     var rr = skeleton_Heroi.getAnimationRange("None_Jump");
         //     var a = scene_Mundo.beginAnimation(skeleton_Heroi, rr.from+1, rr.to, false, 1, function(){
         //         jumped = false;console.log("stopped "+rr.from+1+" "+rr.to);
@@ -926,14 +997,14 @@ var create_Mundo = function () {
     // Constrói elementos do cenário
     var box = BABYLON.MeshBuilder.CreateBox("box", {size: 2}, scene_Mundo);
     box.position = new BABYLON.Vector3(20, 1, 8);
-    addToMirror(box);
+    // addToMirror(box);
     addShadows(box);
     // box.material = new BABYLON.StandardMaterial("lightBox", scene_Mundo);
     box.material = new BABYLON.StandardMaterial("materialGround", scene_Mundo);
-    box.material.emissiveColor = smallLight.diffuse;
+    // box.material.emissiveColor = new BABYLON.Color3.Blue();
+    box.material.diffuseColor = new BABYLON.Color3.Red();
+    
 
-    var boxLight = smallLight.clone();
-    boxLight.parent = box;
 
     // Adiciona a TORRE
     // var tower = null;
@@ -948,22 +1019,7 @@ var create_Mundo = function () {
     //     tower.checkCollisions = true;
     // });
 
-    // Adiciona a RUA
-    // var street = null;
-    // BABYLON.SceneLoader.ImportMesh("", "", streetURL, scene_Mundo, function (newMeshes)
-    // {
-    //     street = BABYLON.Mesh.MergeMeshes(newMeshes, true, true, false, false, false);
-    //     street.scaling = new BABYLON.Vector3(1.2, 1.2, 1.2);
-    //     street.position = new BABYLON.Vector3(0, -0.1, 0);
-    //     addToMirror(street);
-    //     addShadows(street);
-
-    //     street.checkCollisions = true;
-    // });
-
-
-    helper.ground.checkCollisions = true;
-    helper.skybox.checkCollisions = true;
+    
 
      // Elipse para verificar as colisões
      box.ellipsoid = new BABYLON.Vector3(2.5, 0.2, 2.5);
@@ -975,10 +1031,11 @@ var create_Mundo = function () {
      box2.checkCollisions = true;
 
      box2.material = new BABYLON.StandardMaterial("materialGround", scene_Mundo);
-     box2.material.emissiveColor = smallLight.diffuse;
+    //  box2.material.emissiveColor = new BABYLON.Color3.Green();
+     box2.material.diffuseColor = new BABYLON.Color3.Green();
+     
      // Exibe a elipse que envolve a caixa
      drawEllipsoid(box);
-
      drawEllipsoid(box2);
 
     
@@ -1244,8 +1301,7 @@ var create_Mundo = function () {
     // });
 
      //# Adiciona o LABIRINTO!!
-    var labirinto = null;
-    BABYLON.SceneLoader.ImportMesh("", "./assets/ambiente/", "labirinto_01.glb", scene_Mundo, function (mesh_Labirinto)
+    BABYLON.SceneLoader.ImportMesh("", "", labirinto, scene_Mundo, function (mesh_Labirinto)
     // BABYLON.SceneLoader.ImportMesh("", "./assets/ambiente/", "ambiente_01/scene.glb", scene_Mundo, function (mesh_Labirinto)
     {
         // labirinto = BABYLON.Mesh.MergeMeshes([mesh_Labirinto, box]);
@@ -1253,8 +1309,8 @@ var create_Mundo = function () {
         // mesh_Labirinto[0].position = new BABYLON.Vector3(0, 5.1, 0);
         // // addToMirror(mesh_Labirinto);
         // // addShadows(mesh_Labirinto);
-        // mesh_Labirinto[0].collisionsEnabled = true;
-        // mesh_Labirinto[0].checkCollisions = true;
+        // mesh_Labirinto.collisionsEnabled = true;
+        // mesh_Labirinto.checkCollisions = true;
     });
 
     // });
@@ -1282,9 +1338,8 @@ var create_Mundo = function () {
 
 
     // Adiciona o personagem personalizado GLTF OK!!
-    var mentor = null;
-    BABYLON.SceneLoader.ImportMesh("", "./assets/personagens/npc/Old_Man_separado/", "Old_Man_convertido_separado.gltf", scene_Mundo, function (mesh_Old_Man_Separado) {
-        mentor.scaling = new BABYLON.Vector3(5.5, 5.5, 5.5);
+    BABYLON.SceneLoader.ImportMesh("", "", mentor, scene_Mundo, function (mesh_Old_Man_Separado) {
+        // mentor.scaling = new BABYLON.Vector3(5, 5, 5);
         mentor.position = new BABYLON.Vector3(-15, 0, 5);
 
         // Elipse para verificar as colisões
@@ -1318,67 +1373,9 @@ var create_Mundo = function () {
 
     });
 
-    // // Adiciona o personagem Merlin
-    // BABYLON.SceneLoader.ImportMesh("", "./assets/personagens/npc/", "Merlin.glb", scene_Mundo, function (mesh_Merlin) {
-    //     mesh_Merlin[0].scaling = new BABYLON.Vector3(0.2, 0.2, 0.2);
-    //     mesh_Merlin[0].position = new BABYLON.Vector3(21, 0, 5);
-
-    //     // mesh_Merlin.checkCollisions = true;
-
-    //     // Elipse para verificar as colisões
-    //     mesh_Merlin[0].ellipsoid = new BABYLON.Vector3(9, 8, 8);
-    //     mesh_Merlin[0].ellipsoidOffset = new BABYLON.Vector3(0, 0, 0);
-    //     mesh_Merlin[0].checkCollisions = true;
-
-    //     // Exibe a elipse que envolve o mesh_Merlin
-    //     drawEllipsoid(mesh_Merlin[0]);
-
-    //     if (mesh_Heroi.intersectsMesh(mesh_Merlin, true)) {
-    //         console.log("Heroi colidiu no mesh_Merlin!")
-    //      box.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-    //         // box.dispose();
-    //     }
-    //     else{
-    //         console.log("Heroi não colidiu no mesh_Merlin!")
-    //         box.material.emissiveColor = new BABYLON.Color3(0, 0, 0); 
-    //     }
-
-    // });
-
-    // Adiciona o EMOGI FELIZ
-    BABYLON.SceneLoader.ImportMesh("", "./assets/itens/", "Carinha_Feliz.glb", scene_Mundo, function (mesh_Carinha_Feliz, particleSystems, skeletons_Carinha_Feliz) {
-        mesh_Carinha_Feliz[0].scaling = new BABYLON.Vector3(150, 150, 150);
-        mesh_Carinha_Feliz[0].position = new BABYLON.Vector3(0, 2, 40);
-
-        // mesh_Carinha_Feliz.checkCollisions = true;
-       
-       
-        mesh_Carinha_Feliz.collisionsEnabled = true;
-
-
-
-         // Elipse para verificar as colisões
-         mesh_Carinha_Feliz[0].ellipsoid = new BABYLON.Vector3(9, 8, 8);
-         mesh_Carinha_Feliz[0].ellipsoidOffset = new BABYLON.Vector3(0, 0, 0);
-         mesh_Carinha_Feliz[0].checkCollisions = true;
- 
-         // Exibe a elipse que envolve o mesh_Carinha_Feliz
-         drawEllipsoid(mesh_Carinha_Feliz[0]);
- 
-         if (mesh_Heroi.intersectsMesh(mesh_Carinha_Feliz, true)) {
-             console.log("Heroi colidiu no mesh_Carinha_Feliz!")
-          box.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-             // box.dispose();
-         }
-         else{
-             console.log("Heroi não colidiu no mesh_Carinha_Feliz!")
-             box.material.emissiveColor = new BABYLON.Color3(0, 0, 0); 
-         }
-    });
-
-
+    
     // Adiciona o EMOGI OLHOS
-    BABYLON.SceneLoader.ImportMesh("", "./assets/itens/", "Carinha_Olhos.glb", scene_Mundo, function (mesh_Carinha_Olhos, particleSystems, skeletons_Carinha_cor) {
+    BABYLON.SceneLoader.ImportMesh("", "", emogi, scene_Mundo, function (mesh_Carinha_Olhos, particleSystems, skeletons_Carinha_cor) {
         mesh_Carinha_Olhos[0].scaling = new BABYLON.Vector3(150, 150, 150);
         mesh_Carinha_Olhos[0].position = new BABYLON.Vector3(10, 2, 20);
 
@@ -1387,7 +1384,7 @@ var create_Mundo = function () {
     });
 
     // Adiciona o Bordo Japonês
-    BABYLON.SceneLoader.ImportMesh("", "./assets/plantas/", "Bordo.glb", scene_Mundo, function (mesh_Bordo) {
+    BABYLON.SceneLoader.ImportMesh("", "", bordo, scene_Mundo, function (mesh_Bordo) {
         mesh_Bordo[0].scaling = new BABYLON.Vector3(30, 30, 30);
         mesh_Bordo[0].position = new BABYLON.Vector3(25, 0, 0);
 
@@ -1396,7 +1393,7 @@ var create_Mundo = function () {
     });
 
     // Adiciona o Cacto simples
-    BABYLON.SceneLoader.ImportMesh("", "./assets/plantas/", "Cacto_2.glb", scene_Mundo, function (mesh_Cacto_2) {
+    BABYLON.SceneLoader.ImportMesh("", "", cacto_1, scene_Mundo, function (mesh_Cacto_2) {
         mesh_Cacto_2[0].scaling = new BABYLON.Vector3(20, 20, 20);
         mesh_Cacto_2[0].position = new BABYLON.Vector3(45, 0, -3);
 
@@ -1404,27 +1401,27 @@ var create_Mundo = function () {
     });
 
     // Adiciona o Cacto realista
-    BABYLON.SceneLoader.ImportMesh("", "./assets/plantas/", "Cacto_1.glb", scene_Mundo, function (mesh_Cacto_1) {
+    BABYLON.SceneLoader.ImportMesh("", "", cacto_2, scene_Mundo, function (mesh_Cacto_1) {
         mesh_Cacto_1[0].scaling = new BABYLON.Vector3(30, 30, 30);
         mesh_Cacto_1[0].position = new BABYLON.Vector3(45, 0, -2);
 
     });
 
     // // Adiciona as Folhas caindo
-    // BABYLON.SceneLoader.ImportMesh("", "./assets/plantas/", "Folhas_caindo.glb", scene_Mundo, function (mesh_Folhas) {
+    // BABYLON.SceneLoader.ImportMesh("", "", folhas_caindo, scene_Mundo, function (mesh_Folhas) {
     //     mesh_Folhas[0].scaling = new BABYLON.Vector3(20, 20, 20);
     //     mesh_Folhas[0].position = new BABYLON.Vector3(25, 0, 0);
 
     // });
     
     // Adiciona a Pilha de folhas
-    BABYLON.SceneLoader.ImportMesh("", "./assets/plantas/", "Pilha de folhas.glb", scene_Mundo, function (mesh_Pilha_Folhas) {
+    BABYLON.SceneLoader.ImportMesh("", "", pilha_folhas, scene_Mundo, function (mesh_Pilha_Folhas) {
         mesh_Pilha_Folhas[0].scaling = new BABYLON.Vector3(50, 50, 50);
         mesh_Pilha_Folhas[0].position = new BABYLON.Vector3(23, 0, 0);
     });
 
     // Adiciona a Macieira
-    BABYLON.SceneLoader.ImportMesh("", "./assets/plantas/", "Macieira.glb", scene_Mundo, function (mesh_Macieira) {
+    BABYLON.SceneLoader.ImportMesh("", "", macieira, scene_Mundo, function (mesh_Macieira) {
         mesh_Macieira[0].scaling = new BABYLON.Vector3(8, 8, 8);
         mesh_Macieira[0].position = new BABYLON.Vector3(20, 0, -10);
 
@@ -1432,10 +1429,8 @@ var create_Mundo = function () {
 
     });
 
-    
-
     // Adiciona a Pinheiro Nevado
-    BABYLON.SceneLoader.ImportMesh("", "./assets/plantas/", "Pinheiro Nevado.glb", scene_Mundo, function (mesh_Pinheiro) {
+    BABYLON.SceneLoader.ImportMesh("", "", pinheiro_nevado, scene_Mundo, function (mesh_Pinheiro) {
         mesh_Pinheiro[0].scaling = new BABYLON.Vector3(5, 5, 5);
         mesh_Pinheiro[0].position = new BABYLON.Vector3(30, 0, -15);
 
@@ -1478,21 +1473,12 @@ var create_Mundo = function () {
     //     main.moveWithCollisions(m.add(meshmesh_NPC_Bee[0]));
 
 
-    // BABYLON.SceneLoader.ImportMesh("", "./assets//animais/", "Bee2.glb", scene_Mundo, function (mesh_Bee2) {
-    //     mesh_Bee2[0].scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
-    //     mesh_Bee2[0].position = new BABYLON.Vector3(10, 0, 25);
 
-    //     mesh_Bee.checkCollisions = true;
-    // });
-
-      // Adiciona elemento do ambiente
+      // Adiciona elemento o item informativo
     //   BABYLON.SceneLoader.ImportMesh("", "./ambiente/", "parabens.glb", scene_Mundo, function(mesh_elemento){
     //     // mesh_elemento[0].scaling = new BABYLON.Vector3(0.05, 0.05, 0.05);
     //     mesh_elemento[0].position = new BABYLON.Vector3(0, 2, -18);
     //  });  
-
-    
-
 
 
     // // Adiciona o AMBIENTE
@@ -1524,15 +1510,499 @@ var create_Mundo = function () {
     var portal_Azul = geraPortal("assets/textures/item/blue_Portal1.png", new BABYLON.Vector3(2, 1, -10));
     var portal_Vermelho = geraPortal("assets/textures/item/red_Portal1.png", new BABYLON.Vector3(-2, -2, 0));
 
-    // Cria a ATMOSFERA
-    var skybox = BABYLON.Mesh.CreateBox("BackgroundSkybox", 500, scene_Mundo, undefined, BABYLON.Mesh.BACKSIDE);
-    var backgroundMaterial = new BABYLON.BackgroundMaterial("backgroundMaterial", scene_Mundo);
-    backgroundMaterial.reflectionTexture = new BABYLON.CubeTexture("assets/skybox/TropicalSunnyDay", scene_Mundo);
-    backgroundMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-    skybox.material = backgroundMaterial;
     
+    // Atmosfera 1
+    // var skySize = 50.0;
+    var skybox = BABYLON.MeshBuilder.CreateBox("SkyBox", {size:100.0}, scene_Mundo);
+    var skyboxMaterial = new BABYLON.StandardMaterial("skyboxMaterial", scene_Mundo);
+    skyboxMaterial.backFaceCulling = false;
+    //  skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets/skybox/9.hdr", scene_Mundo, 512);     
+    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/bosque1.hdr", scene_Mundo, 512);     
+    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/bosque2.hdr", scene_Mundo, 512);     
+    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/bancoBosque.hdr", scene_Mundo, 512);     
+    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuRosa.hdr", scene_Mundo, 512);     
+    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuTropical.hdr", scene_Mundo, 512);     
+    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuCarregado.hdr", scene_Mundo, 512);     
+    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuAzul.hdr", scene_Mundo, 512);     
+    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/estacionamento.hdr", scene_Mundo, 512);     
+    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/escadarias.hdr", scene_Mundo, 512);     
+    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/predioNevoeiro.hdr", scene_Mundo, 512);     
+    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/montanhasNeve.hdr", scene_Mundo, 512);     
+    skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/montanhasRocha.hdr", scene_Mundo, 512);     
+    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    skybox.material = skyboxMaterial;
 
-    return scene_Mundo;
+
+    // Atmosfera 2
+    // var skybox = BABYLON.Mesh.CreateBox("Skybox", skySize, scene_Mundo, undefined, BABYLON.Mesh.BACKSIDE);
+    // var skyboxMaterial = new BABYLON.BackgroundMaterial("skyboxMaterial", scene_Mundo);
+    // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(atmosfera, scene_Mundo);
+    // skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    // skybox.material = skyboxMaterial;
+
+
+//------------------------------- Animação dos elementos- --------------------------------
+
+// Girar o cenário rapidamente e dá um zoomIN na tarefa 
+    // zoomIn(camera,ground);
+    // zoomIn(camera, bola);
+    
+//# Passear pelo cenário rapidamente e dá um zoomOUT no ambiente 
+    // zoomOut(camera,ground);
+    // zoomOut(camera, bola);
+
+    //# Animação de translação 
+    // var frameRate = 10;
+
+
+    //# Animação de rotação
+    var alpha = 0;
+    // asteroide.position.x = 1050;
+    // asteroide.position.z = 150;
+
+    job_2ET.registerBeforeRender(function (){
+        
+        // Rotação
+        // box.rotation.x += 0.001;
+        // box.rotation.y += 0.001;
+        // box.rotation.z += 0.001;
+
+        // zoomIn(camera,box); // Fica seguindo a caixa....
+        // zoomIn(camera,bola); // Trava na bola
+
+
+        // box.position = new BABYLON.Vector3(Math.cos(alpha)*30, 10, Math.sin(alpha)*30);
+        // alpha += 0.01;
+
+        // mesh_planeta_Lava.position = new BABYLON.Vector3(Math.cos(alpha)*30, 10, Math.sin(alpha)*30);
+
+        // Localização
+        // asteroide.position.x = 10*Math.cos(alpha);
+        // asteroide.position.y = 1.0;
+        // asteroide.position.z = 10*Math.sin(alpha);
+
+        // Tamanho
+        asteroide.scaling.x = 10*Math.cos(alpha);
+        // asteroide.scaling.y = 1.0;
+        // asteroide.scaling.z = 10*Math.sin(alpha);
+
+        alpha += 0.01 * job_2ET.getAnimationRatio();
+
+    });
+
+return scene_Mundo;
+
+    //#  Executa vídeo automaticamente
+function executaVideo(video) {
+    var tela_Opts = {
+        height: 80,
+        width: 100,
+        sideOrientation: BABYLON.Mesh.DOUBLESIDE
+    };
+
+    var Video = BABYLON.MeshBuilder.CreatePlane("tela", tela_Opts, job_2ET);
+    Video.position = new BABYLON.Vector3(0, 0, 0.1);
+
+    var Video_Material = new BABYLON.StandardMaterial("m", job_2ET);
+    var Video_Textura = new BABYLON.VideoTexture("vidtex", video, job_2ET);
+    // var abertura_VideoTex = new BABYLON.VideoTexture("vidtex",video",
+    //  job_2ET, false, false, {autoplay: false, loop: false, playsinline: false, poster: "https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217"}
+    // );
+    Video_Material.diffuseTexture = Video_Textura;
+    Video_Material.roughness = 1;
+    Video_Material.emissiveColor = new BABYLON.Color3.White();
+    Video.material = Video_Material;
+
+
+    // Executa vídeo ao clicar na tela do vídeo
+    job_2ET.onPointerObservable.add(function (evt) {
+        if (evt.pickInfo.pickedMesh === Video) {
+            console.log("Clicou no vídeo.");
+            if (Video_Textura.video.paused)
+                Video_Textura.video.play();
+
+            else
+                Video_Textura.video.pause();
+            console.log(Video_Textura.video.paused ? "paused" : "playing");
+        }
+    }, BABYLON.PointerEventTypes.POINTERPICK);
+    console.log(Video);
+}
+
+// Efeito de fumaça ao pressionar a tecla S
+    function fumaceia(event, lava){
+        if(event.keyCode == 83){ 
+            BABYLON.ParticleHelper.CreateAsync("smoke", job_2ET).then((set) => {
+                set.systems.forEach(s => {
+                    s.disposeOnStop = true;
+                });
+                set.start();
+            });
+            // lava[0].dispose();
+        }
+    }
+
+// Efeito de chuva ao pressionar a tecla c
+    function chove(event){
+        if(event.keyCode == 67){ 
+            BABYLON.ParticleHelper.CreateAsync("rain", job_2ET).then((set) => {
+                set.systems.forEach(s => {
+                    s.disposeOnStop = true;
+                });
+                set.start();
+                if (som_Efeitos)//
+                    var chove = new BABYLON.Sound("chuva", chuva, job_2ET, null, { loop: false, autoplay: true });
+                });
+        }
+    }
+
+// Efeito de explosão ao pressionar a tecla E
+    function explode(event){
+        if(event.keyCode == 69){ 
+            BABYLON.ParticleHelper.CreateAsync("explosion", job_2ET).then((set) => {
+                set.systems.forEach(s => {
+                    s.disposeOnStop = true;
+                });
+                set.start();
+                if (som_Efeitos)
+                    var explode = new BABYLON.Sound("explosao", explosao, job_2ET, null, { loop: false, autoplay: true });
+            });
+        }
+    }
+
+// Efeito de chamas ao pressionar a tecla F
+    function queima(event){
+        if(event.keyCode == 70){ 
+            BABYLON.ParticleHelper.CreateAsync("fire", job_2ET).then((set) => {
+                set.systems.forEach(s => {
+                    s.disposeOnStop = true;
+                });
+                set.start();
+                if (som_Efeitos)
+                    var queima = new BABYLON.Sound("fogo", fogo, job_2ET, null, { loop: false, autoplay: true });
+            });
+        }
+    }
+
+// Efeito de desaparecimento ao pressionar a tecla D
+// function fumaceia(event){
+//     if(event.keyCode == 68){ 
+//         s.disposeOnStop = true;
+//     }
+// }
+
+    // Efeito de partículas nas esferas
+    function geraParticulas(texture, position) {
+        // Cria um sistema de partículas
+        const origem_ParticleSystem = new BABYLON.ParticleSystem("particles", 25);
+
+        // Textura de cada partícula
+        origem_ParticleSystem.particleTexture = new BABYLON.Texture(texture);
+
+        // Posição de onde as partículas são emitidas
+        origem_ParticleSystem.emitter = position;
+
+        // Gera e emite as partículas
+        origem_ParticleSystem.start();
+    }
+
+    // Permite adicionar partículas de efeito
+    function adicionaParticulas() {
+
+        // Emissor das partículas
+        var emissor = BABYLON.Mesh.CreateBox("emissor", 0.1, job_2ET);
+        emissor.isVisible = false;
+
+        // Custom shader for particles
+        BABYLON.Effect.ShadersStore["myParticleFragmentShader"] =
+            "#ifdef GL_ES\n" +
+            "precision highp float;\n" +
+            "#endif\n" +
+
+            "varying vec2 vUV;\n" + // Provided by babylon.js
+            "varying vec4 vColor;\n" + // Provided by babylon.js
+
+            "uniform sampler2D diffuseSampler;\n" + // Provided by babylon.js
+            "uniform float time;\n" + // This one is custom so we need to declare it to the effect
+
+            "void main(void) {\n" +
+            "vec2 position = vUV;\n" +
+
+            "float color = 0.0;\n" +
+            "vec2 center = vec2(0.5, 0.5);\n" +
+
+            "color = sin(distance(position, center) * 10.0+ time * vColor.g);\n" +
+
+            "vec4 baseColor = texture2D(diffuseSampler, vUV);\n" +
+
+            "gl_FragColor = baseColor * vColor * vec4( vec3(color, color, color), 1.0 );\n" + "}\n" + "";
+
+        // Effect
+        var effect = engine.createEffectForParticles("myParticle", ["time"]);
+
+        // Particles
+        var particleSystem = new BABYLON.ParticleSystem("particles", 40, job_2ET, effect);
+        particleSystem.particleTexture = new BABYLON.Texture("assets/textures/flare.png", job_2ET);
+        particleSystem.minSize = 0.1;
+        particleSystem.maxSize = 0.5;
+        particleSystem.minLifeTime = 0.5;
+        particleSystem.maxLifeTime = 5.0;
+        particleSystem.minEmitPower = 0.5;
+        particleSystem.maxEmitPower = 3.0;
+        particleSystem.emitter = emissor;
+        particleSystem.emitRate = 50;
+        particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+        particleSystem.direction1 = new BABYLON.Vector3(-1, 1, -1);
+        particleSystem.direction2 = new BABYLON.Vector3(1, 1, 1);
+        particleSystem.color1 = new BABYLON.Color4(1, 1, 0, 1);
+        particleSystem.color2 = new BABYLON.Color4(1, 0.5, 0, 1);
+        particleSystem.gravity = new BABYLON.Vector3(0, -2, 0);
+        particleSystem.start();
+
+        var time = 0;
+        var order = 0.1;
+
+        effect.onBind = function () {
+            effect.setFloat("time", time);
+
+            time += order;
+
+            if (time > 100 || time < 0) {
+                order *= -1;
+            }
+        };
+    }
+
+    // Permite dar zoom no cenário
+    function zoomIn(cam, tar) {
+        var targetEndPos = tar.getAbsolutePosition();
+        var speed = 25;
+        var ease = new BABYLON.CubicEase();
+        tar.computeWorldMatrix();
+        var matrix = tar.getWorldMatrix(true);
+        var local_position = new BABYLON.Vector3(0,-10,-15);
+        local_position.addInPlace(new BABYLON.Vector3(0, -2, -10));
+        var global_position = BABYLON.Vector3.TransformCoordinates(local_position, matrix);
+        console.log(global_position);
+        
+        BABYLON.Animation.CreateAndStartAnimation('at4', cam, 'position', speed, 120, cam.position, global_position, 0, ease);
+        BABYLON.Animation.CreateAndStartAnimation('at5', cam, 'target', speed, 120, cam.target, targetEndPos, 0, ease);
+    };
+
+    function zoomOut(cam, tar) {
+        var targetEndPos = tar.getAbsolutePosition();
+        var speed = 25;
+        var ease = new BABYLON.CubicEase();
+        tar.computeWorldMatrix();
+        var matrix = tar.getWorldMatrix(true);
+        var local_position = new BABYLON.Vector3(0,0,0);
+        local_position.addInPlace(new BABYLON.Vector3(0, 0, -80));
+        var global_position = BABYLON.Vector3.TransformCoordinates(local_position, matrix);
+        console.log(global_position);
+        
+        BABYLON.Animation.CreateAndStartAnimation('at4', cam, 'position', speed, 120, cam.position, global_position, 0, ease);
+        BABYLON.Animation.CreateAndStartAnimation('at5', cam, 'target', speed, 120, cam.target, targetEndPos, 0, ease);
+    };
+
+    // # Cria a luz e a atmosfera
+    function createSkyboxAndLight() {
+        // Define a general environment texture
+        hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("assets/textures/environment.dds", job_2ET);
+        job_2ET.environmentTexture = hdrTexture;
+
+        // Let's create a color curve to play with background color
+        var curve = new BABYLON.ColorCurves();
+        curve.globalHue = 10;
+        curve.globalDensity = 10;
+
+        var box = job_2ET.createDefaultSkybox(hdrTexture, true, 200, 0.7);
+        box.infiniteDistance = false;
+        box.material.imageProcessingConfiguration = new BABYLON.ImageProcessingConfiguration();
+        box.material.cameraColorCurvesEnabled = true;
+        box.material.cameraColorCurves = curve;
+        box.name = "MYMESHFORSKYBOX";
+        box.isPickable = false;
+
+        directionalLight = new BABYLON.DirectionalLight('light', new BABYLON.Vector3(-0.2, -1, 0), job_2ET)
+        directionalLight.position = new BABYLON.Vector3(100 * 0.2, 100 * 2, 0)
+        directionalLight.intensity = 4.5;
+
+    // Cria a ATMOSFERA # TROCAR POR UM CÉU NOTURNO
+    var skybox = BABYLON.Mesh.CreateBox("BackgroundSkybox", 500, job_2ET, undefined, BABYLON.Mesh.BACKSIDE);
+    var skyboxMaterial = new BABYLON.BackgroundMaterial("backgroundMaterial", job_2ET);
+    // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("assets/skybox/TropicalSunnyDay", job_2ET);
+    // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("assets/skybox/Cerebro", job_2ET);
+    skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets/skybox/1.hdr", job_2ET, 512);
+    //textures/forest.hdr
+
+    
+    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    skybox.material = skyboxMaterial;
+    }
+   
+    // Permite interagir enquanto pausado
+    function sleep1(milliseconds) {
+        setTimeout(() => { console.log("World!"); }, milliseconds);
+    }
+
+    // Não permite interagir enquanto pausado
+    function sleep2(milliseconds) {
+        const date = Date.now();
+        let currentDate = null;
+        do {
+            currentDate = Date.now();
+        } while (currentDate - date < milliseconds);
+    }
+
+    function reconheceFala() {
+        // var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+        // var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+        // var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+        // var elementos = ['um', 'UM', 'Um', 'green', 'purple', 'red', 'teal', 'white', 'yellow', 'magenta'];
+        // var grammar = 'Elementos da gramática: ' + elementos.join(' | ') + ' ;';
+        // console.log(grammar);
+    
+        // var speechRecognitionList = new SpeechGrammarList();
+        // speechRecognitionList.addFromString(grammar, 1);
+
+        // Object for matching colors
+        //    const elementoArray = [];
+        //    const elementoMatchList = {
+        //        white: BABYLON.Color3.White(),
+        //        magenta: BABYLON.Color3.Magenta(),
+        //        teal: BABYLON.Color3.Teal(),
+        //        red: BABYLON.Color3.Red(),
+        //        gray: BABYLON.Color3.Gray(),
+        //        green: BABYLON.Color3.Green(),
+        //        blue: BABYLON.Color3.Blue(),
+        //        black: BABYLON.Color3.Black(),
+        //        yellow: BABYLON.Color3.Yellow(),
+        //        purple: BABYLON.Color3.Purple()
+        //    }
+     
+          
+        // Inicia o reconhecimento
+        recognition.start();
+        
+        // recognition.grammars = speechRecognitionList;
+        recognition.continuous = false;
+        recognition.lang = 'pt-BR'; // Funciona para qualquer língua, independente deste parametro
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+    
+        // Exibe o resultado reconhecido
+        recognition.onresult = function (event) {
+            console.log(event.results[0]);
+            var elemento = event.results[0][0].transcript;
+            
+            // quebrar (strip) a string elemento em varias (de acordo com a qtd de elementos sorteados), usando '.' OU ',' OU ' ' como separador
+
+            console.log('Elemento: ' + elemento);
+            // console.log('Elemento: ' + elemento[0]);
+            // console.log('Elemento: ' + elemento[1]);
+            // console.log('Elemento: ' + elemento[0][0]);
+            //  Change Confidence textblock content
+            textblock_Resposta.text = elemento.toUpperCase();       
+        };
+    
+        // Finaliza o reconhecimento
+        recognition.onspeechend = function () {
+            recognition.stop();
+            console.log("Reconhecimento finalizado.");
+            Button_Falar.isEnabled = true;
+            Button_Falar.children[0].text = ">> COMEÇAR <<";
+            textblock_Resposta.text = ">> SUA RESPOSTA <<";
+        };
+    
+        // Caso o que reconheça bata com os elementos sorteados
+        recognition.onmatch = function () {
+            // # incrementar a pontuação
+
+            
+            textblock_Resposta.text = "Parabéns!";     
+            // # add síntese de voz
+            // # add alerta sonoro 
+            console.log("Muito bem! Você conseguiu!!");
+            Button_Falar.children[0].text = elemento.toUpperCase();
+        };
+
+
+        // Caso não reconheça o que foi pronunciado
+        recognition.onnomatch = function () {
+            textblock_Resposta.text = "Palavra desconhecida!";     
+            // # add síntese de voz
+            // # add alerta sonoro 
+            console.log("Não reconheci essa palavra.");
+            Button_Falar.children[0].text = "Tentar novamente!";
+        };
+    
+        recognition.onerror = function (event) {
+            console.log("Ocorreu um erro no reconhecimento: " + event.error);
+            Button_Falar.isEnabled = true;
+            Button_Falar.children[0].text = "Tentar novamente!";
+            textblock_Resposta.text = ">> SUA RESPOSTA <<";
+        };
+        return recognition;
+    }
+
+    // Realiza a leitura de textos associados a elementos presentes na cena por meio de sintese
+    function leituraTexto(box, bola) {
+        let synth = window.speechSynthesis;
+        let rate = 1;
+        let pitch = 1;
+
+        job_2ET.onPointerUp = function (evt, pickResult) {
+            if (evt.button === 0) {
+                if (pickResult.hit) {
+                    var meshName = pickResult.pickedMesh.name;
+                    console.log(pickResult.pickedMesh.name);
+                    if (meshName == "box") {
+                        meshName = box.metadata.speech;
+                    }
+                    else if (meshName == "bola") {
+                        meshName = bola.metadata.speech;
+                    }
+
+                    let msg = new SpeechSynthesisUtterance(meshName);
+                    let voices = synth.getVoices();
+                    // console.log(voices); //1; 16; 21
+                    msg.voice = voices[21];
+                    msg.rate = rate;
+                    msg.pitch = pitch;
+
+                    // Iniciou a leitura
+                    msg.onstart = function (e) {
+                        pickResult.pickedMesh.renderOverlay = true;
+                        pickResult.pickedMesh.overlayColor = BABYLON.Color3.Blue();
+                        console.log(meshName);
+                    };
+
+                    // Finalizou a leitura
+                    msg.onend = function (e) {
+                        pickResult.pickedMesh.renderOverlay = false;
+                    };
+                    window.speechSynthesis.speak(msg);
+                }
+            }
+        };
+    }
+
+    // Grava em vídeo ao pressionar G, na duração passada como parâmetro
+    function gravaTela(event) {
+        if(event.keyCode == 71){ 
+            // Verifique o suporte para gravação
+            if (BABYLON.VideoRecorder.IsSupported(engine)) {
+                var recorder = new BABYLON.VideoRecorder(engine);
+                // recorder.startRecording("tarefa_01_ET.mpeg, tempo");
+                // recorder.startRecording("tarefa_01_ET.mp4", tempo);
+                // recorder.startRecording("tarefa_01_ET.webm", tempo);
+                // Grava e quanto termina emite um aviso
+                recorder.startRecording("tarefa_01_ET.webm", 10).then(() => {
+                    alert("Gravação concluída!");
+                });
+            }  
+        }
+    }
 
     // Contrói a Elipse em torno do objeto 
     function drawEllipsoid(mesh) {
@@ -1564,6 +2034,7 @@ var create_Mundo = function () {
         var random = Math.random();
         return ((random * (max - min)) + min);
     };
+
 };
 
 // Constrói portais de teletransporte entre dimenssões
@@ -1663,8 +2134,8 @@ function painelButtons() {
 //Refatorar para passar o objeto como parâmetro
 function control_Player(skeleton_Heroi, scene_Mundo){
     
-    // var mesh_Heroi = mesh_Heroi[0];
-    var mesh_Heroi = mesh_Heroi[1];
+    // var mesh_Heroi = mesh_Heroi[0];// Juntas
+    var mesh_Heroi = mesh_Heroi[1]; // Corpo
 
     // skeleton_Heroi.position = new BABYLON.Vector3(2, 4, -8);
     mesh_Heroi.position = new BABYLON.Vector3(0, 0, 0);

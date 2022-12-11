@@ -1,429 +1,217 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-
+<html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" type="text/css" href="css/botao1.css"/>  -->
-    <!-- <link rel="stylesheet" type="text/css" href="css/botao2.css"/>  -->
-
-    <title>The Jumper</title>
-
-    <!-- Babylon.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
-    <script src="https://assets.babylonjs.com/generated/Assets.js"></script>
-    <script src="https://preview.babylonjs.com/ammo.js"></script>
-    <script src="https://preview.babylonjs.com/cannon.js"></script>
-    <script src="https://preview.babylonjs.com/Oimo.js"></script>
-    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
-    <script src="https://preview.babylonjs.com/babylon.js"></script>
-    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
-    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
-    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
-    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
-    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
-    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
-    <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
-
-    <!-- MediaPipe.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-
-    <style>
-        html, body{
-            overflow: hidden;
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        #canvasPrimario{
-            width: 100%;
-            height: 100%;
-            touch-action: none; /*# testar habilitando e ver se dá para controlar pelo celular*/
-            /* color:rgb(255, 0, 255); 
-            background-color:rgb(255, 0, 255); */
-        }
-
-        .divs{
-            width: 100%;
-            height: 100%;
-        }
-        .divAbsolute{
-            background-color: rgb(0, 0, 0);
-            color: rgb(0, 0, 0);
-            position:absolute;
-            top:80px;
-            left:30px;
-        }
-        .divRelative {
-            background-color: rgb(255, 0, 255);
-            color: rgb(255, 0, 255);
-            position:relative;
-            top:120px;
-            left:300px;
-        }
-        .divFixed {
-            background-color: transparent;
-            /* color: transparent; */ 
-            position: fixed;
-            top: 0px;
-            left: 5px;
-            width: 15%;
-            height: 15%;
-        }
-        .divStatic{
-            background-color:rgb(0, 255, 0);
-            color: rgb(0, 255, 0);
-            position: static;
-            top: 50px;
-            left: 100px;
-        }
-        .divSticky{
-            background-color: transparent;
-            position:sticky;
-            top: 0px;
-            left: 0;
-            width: 15%;
-            height: 5%;
-        }
-        .divEsquerda{
-            background-color: rgb(255, 0, 0);
-            color: rgb(255, 0, 0);
-            float: left;
-        }
-        .divDireita{
-            background-color: rgb(0, 0, 255);
-            color: rgb(0, 0, 255);
-            float: right;
-        }
-        .divAlignCenter{ 
-            background-color: rgb(85, 107, 47);
-            color: rgb(85, 107, 47);
-            margin: 15% 25%;
-            width: 50%;
-            height: 50%;
-         }
-         .clear{
-             clear:both;
-         }
-    </style>
+  <meta http-equiv="content-type" charset="utf-8"/>
+  <title>MENU</title>
+  <style>
+	body {
+	  font-family: Alegreya Sans;
+	  background: #ced8f6;
+	}
+	.menu {
+	  position: relative;
+	  background: #0404b4;
+	  width: 3em;
+	  height: 3em;
+	  border-radius: 5em;
+	  margin: auto;
+	  margin-top: 5em;
+	  margin-bottom: 5em;
+	  cursor: pointer;
+	  border: 2em solid #2e64fe;
+	}
+	.menu:after {
+	  content: "";
+	  position: absolute;
+	  top: 1em;
+	  left: 1em;
+	  width: 1em;
+	  height: 0.2em;
+	  border-top: 0.6em double #fff;
+	  border-bottom: 0.2em solid #fff;
+	}
+	.menu ul {
+	  list-style: none;
+	  padding: 0;
+	}
+	.menu li {
+	  width: 9em;
+	  height: 1.4em;
+	  padding: 0.2em;
+	  margin-top: 0.2em;
+	  text-align: center;
+	  border-top-right-radius: 0.5em;
+	  border-bottom-right-radius: 0.5em;
+	  transition: all 1s;
+	  background: #2e64fe;
+	  opacity: 0;
+	  z-index: -1;
+	}
+	.menu:hover li {
+	  opacity: 1;
+	}
+	.menu:hover ul::before {
+	  position: absolute;
+	  content: "";
+	  width: 0;
+	  height: 0;
+	  display: block;
+	  left: 50%;
+	  top: -5.0em;
+	  border-width: 6.5em;
+	  border-radius: 0 7.5em 7.5em 0;
+	  border-left: 0;
+	  border-style: solid;
+	  border-color: rgba(0,0,0,0.01);
+	  z-index: -1;
+	  cursor: default;
+	}
+	.menu a {
+	  color: white;
+	  text-decoration: none;
+	  line-height: 1.5em;
+	}
+	.menu ul {
+	  transform: rotate(180deg) translateY(-2em);
+	  transition: 1s all;
+	}
+	.menu:hover ul {
+	  transform: rotate(0deg) translateY(-1em);
+	}
+	.menu li:hover {
+	  background: #0404b4;
+	  z-index: 10;
+	}
+	.menu li:nth-of-type(1) {
+	  transform: rotate(-90deg);
+	  position: absolute;
+	  left: -3.2em;
+	  top: -7.2em;
+	}
+	.menu li:nth-of-type(2) {
+	  transform: rotate(-67.5deg);
+	  position: absolute;
+	  left: -0.3em;
+	  top: -6.5em;
+	}
+	.menu li:nth-of-type(3) {
+	  transform: rotate(-45deg);
+	  position: absolute;
+	  left: 2.3em;
+	  top: -5.0em;
+	}
+	.menu li:nth-of-type(4) {
+	  transform: rotate(-22.5deg);
+	  position: absolute;
+	  left: 4.0em;
+	  top: -2.5em;
+	}
+	.menu li:nth-of-type(5) {
+	  position: absolute;
+	  left: 4.4em;
+	  top: 0.4em;
+	}
+	.menu li:nth-of-type(6) {
+	  transform: rotate(22.5deg);
+	  position: absolute;
+	  left: 4.0em;
+	  top: 3.3em;
+	}
+	.menu li:nth-of-type(7) {
+	  transform: rotate(45deg);
+	  position: absolute;
+	  left: 2.3em;
+	  top: 5.8em;
+	}
+	.menu li:nth-of-type(8) {
+	  transform: rotate(67.5deg);
+	  position: absolute;
+	  left: -0.3em;
+	  top: 7.3em;
+	}
+	.menu li:nth-of-type(9) {
+	  transform: rotate(90deg);
+	  position: absolute;
+	  left: -3.2em;
+	  top: 8.0em;
+	}
+	.menu li:nth-of-type(10) {
+	  transform: rotate(112.5deg);
+	  position: absolute;
+	  left: -6.1em;
+	  top: 7.3em;
+	}
+	/* .menu li:nth-of-type(11) {
+	  transform: rotate(135deg);
+	  position: absolute;
+	  left: -8.6em;
+	  top: 5.8em;
+	}
+	.menu li:nth-of-type(12) {
+	  transform: rotate(157.5deg);
+	  position: absolute;
+	  left: -10.3em;
+	  top: 3.3em;
+	}
+	.menu li:nth-of-type(13) {
+	  transform: rotate(180deg);
+	  position: absolute;
+	  left: -10.8em;
+	  top: 0.4em;
+	}
+	.menu li:nth-of-type(14) {
+	  transform: rotate(202.5deg);
+	  position: absolute;
+	  left: -10.3em;
+	  top: -2.5em;
+	}
+	.menu li:nth-of-type(15) {
+	  transform: rotate(225deg);
+	  position: absolute;
+	  left: -8.6em;
+	  top: -5.0em;
+	}
+	.menu li:nth-of-type(16) {
+	  transform: rotate(247.5deg);
+	  position: absolute;
+	  left: -6.1em;
+	  top: -6.5em;
+	} */
+	.hint {
+	  text-align: center;
+	}
+	.right {
+	  text-align: right;
+	}
+  </style>
 </head>
-<body> 
-    <!-- Executa vídeo de abertura -->
-    <!-- <video src='assets/videos/abertura.mp4' autoplay='true' width="100%" height="100%">; -->
-	
 
-    <!-- Moldura da câmera -->
-    <!-- <div class="divs divFixed" style="z-index: 999;">
-        <img src="textures/hud/molduraCamera.png">
-    </div>  -->
-
-    <!-- Contexto do canvas # Testar se consigo exibir os conectores!!!!!!!!!--> 
-    <!-- const canvasCtx = canvasOutput.getContext('3d'); -->
-
-    <!-- Camera do Player -->
-    <div style="position: fixed; top: 29px; left: 11px; z-index: 100;" top="50px" left="350px">
-        <video class="input_video"></video>
-        <canvas class="output_canvas" width="18%" height="20%"></canvas>
-    </div>
-
-    <canvas id="canvasPrimario"></canvas>
-    <!----------------------------------------------------------------------
-                                (MUNDO EXPLORATÓRIO)
-    ------------------------------------------------------------------------
-    O Mundo de Exploração (labirinto) possibilitará ao jogador uma imersão e
-    engajamento no jogo, este ambiente será constituído de elementos que 
-    remetem a paisagens naturais ou artificiais, que caracterizam cada região
-    do território brasileiro. Este ambiente contará com uma trilha sonora que
-    estimule o senso de aventura do jogador, bem como a presença de alguns 
-    itens coletáveis denominados de recompensa (moeda), que no jogo tem a
-    função de guiar o jogador pelo labirinto.
-    -->
-    <!-- <div class="divs divEsquerda" style="z-index: 10;"> -->
-        <!-- <canvas id="canvasPrimario"</canvas> -->
-        <!-- <script src="js/mundoExploratorio2.js"></script> -->
-    <!-- </div>  -->
-
-    <!-- Próximos passos:
-        1. Mover o avatar no mundo;
-        2. Chamar a tarefa a partir de um chekpoint;
-        3. Salvar progresso a partir de um chekpoint;
-        4. Executar vídeo a partir de um chekpoint;
-        5. Mover o avatar com a mão aberta;
-        6. Exibir mapa de fases ao pausar o jogo.
-        7. Testar colisão no labirinto em 1ª pessoa
-        8. Carregar mãos em 1ª pessoa (usar exemplo dos canhões de duas cenas)
-        9. Alternar entre duas visões de camera, quando está parado fica em 3ª pessoa
-        quando começar a andar fica em 1ª pessoa.
-    -->    
-    <!----------------------------------------------------------------------
-                                (MUNDO DAS TAREFAS)
-    ------------------------------------------------------------------------
-    Se passa dentro da temática de cada região do Brasil, para isto, contará
-    com uma trilha específica da referida região além de elementos que criem
-    no jogador a sensação de ter sido transportado para a região.
-    -->
-    
-    <!--
-    [MEMÓRIA DE TRABALHO]: No aspecto relacionado à capacidade de memorização
-    de curto prazo, teremos 3 desafios: 
-    -->
-    
-    <!---------------------------------------------------------------------- 
-    1ª Tarefa: Uma sequência de elementos tridimensionais surgem e desaparecem
-    de forma serializada (um após o outro), em seguida,é solicitado ao jogador
-    que fale qual era o enésimo elemento. O jogador deverá responder pronunciando
-    o nome do elemento que recordar que estava na posição sorteada pelo sistema. 
-
-    obs.: Uma variação desta tarefa é a possibilidade de utilizar esferas de
-    cores diferentes e, após o estímulo visual, perguntar qual era a cor da
-    enésima esfera.
-    -->
-    <!-- <script src="js/job_1_MT.js"></script> -->
-
-    <!-- Próximos passos:
-        1. Add um ground na tarefa ok
-        2. 
-        3. 
-    -->
-
-    <!----------------------------------------------------------------------
-    2ª Tarefa: Elementos em posições fixas na tela são destacados simultaneamente
-    e, assim, permanecem por um tempo de ordem aleatória com duração pré-definida
-    no intervalo de 1 a 10 segundos. Depois, todos voltam ao estado original,
-    em seguida, é solicitado ao jogador que aponte para os locais onde os 
-    elementos surgiram anteriormente.
-
-    Obs.: Nesta tarefa, além do estímulo visual, será aplicado um estímulo 
-    sonoro similar ao som de um sino com frequências diferentes para cada um 
-    dos elementos que surgirem
-    -->
-    <!-- <script src="js/job_2_MT.js"></script> -->
-
-    <!-- Próximos passos:
-        1. Add um ground na tarefa OK
-        2. 
-        3. 
-    -->
-
-    <!----------------------------------------------------------------------
-    3ª Tarefa: Elementos surgem em posições aleatórias na tela, um por vez. 
-    Após surgir, o elemento inicia uma transição de cor, partindo do amarelo 
-    até ficar vermelho. Quando todos os elementos ficarem vermelho, o jogador
-    deve apontar os elementos na ordem em que surgiram.
-    -->
-    <!-- <script src="js/job_3_MT.js"></script> -->
-
-    <!-- Próximos passos:
-        1. Add um ground na tarefa OK
-        2. 
-        3. 
-    -->
-
-    <!-- [ESTIMATIVA TEMPORAL]: No aspecto relacionado à capacidade de analisar
-    se o jogador superestima ou subestima o tempo de duração de um evento, 
-    teremos 3 desafios:
-    -->
-   
-    <!----------------------------------------------------------------------
-    1ª Tarefa: O jogador observa elementos sendo sugados em tempos de ordem
-    aleatória com durações pré-definidas no intervalo de 1 a 10 segundos, 
-    para o centro de uma espiral (buraco negro), um por vez. Após o desaparecimento
-    de cada elemento, o jogador deve informar qual foi o tempo necessário para
-    o elemento completar a trajetória e desaparecer.
-    -->
-     <!-- <script src="js/job_1_ET.js"></script> -->
-         <!-- Próximos passos:
-        1. Add um ground na tarefa OK
-        2. 
-        3. 
-    -->
-
-    <!----------------------------------------------------------------------
-    2ª Tarefa: O jogador observa um elemento passando por uma transição de cor,
-    partindo do amarelo até o vermelho, em tempos de ordem aleatória com 
-    durações pré-definidas no intervalo de 1 a 10 segundos. 
-    Após o elemento completar a transição de cor, o jogador deve informar qual
-    foi o tempo necessário para o elemento mudar de cor.
-    -->
-     <script src="js/job_2_ET.js"></script> 
-         <!-- Próximos passos:
-        1. Add um Ground (?) e Background (preto) na tarefa
-
-        2. Painel com botões para entrada das respostas limitada a 2 dígitos
-        [7]  [8]  [9]
-        [4]  [5]  [6] 
-        [1]  [2]  [3] 
-        [0] [ok] [<<]
-
-        3. Entrada de resposta por voz acionada automaticamente após o comando
-
-        4. Vídeo de instrução do SIG sobre como realizar a tarefa
-
-        5. Painel com botões de controle da tarefa no lado direito superior
-            [INICIAR]:   Inicia a tarefa
-            [FINALIZAR]: Finaliza a tarefa
-            [LABIRINTO]: Retorna ao labirinto
-
-        6. Fazer o HUD da tarefa
-
-        7. Add trilha sonora [ok]
-
-        8. Aumentar o tamanho da esfera e centralizar [ok]
-
-        9. Add emissores de partículas do centro da esfera [ok]
-
-        10. Fixar a camera no objeto [ok]
-
-    -->
-
-    <!----------------------------------------------------------------------
-    3ª Tarefa: O jogador observa outro personagem atravessando uma ponte sobre
-    um rio, de uma extremidade à outra, em tempos de ordem aleatória com durações
-    pré-definidas no intervalo de 1 a 10 segundos. Após o personagem completar
-    o percurso, o jogador deve informar qual foi o tempo necessário para o 
-    personagem atravessar a ponte.
-    -->
-     <!-- <script src="js/job_3_ET.js"></script>  -->
-
-        <!-- Próximos passos:
-        1. Add um ground na tarefa OK
-        2. 
-        3. 
-    -->
-
-    <!-- [PRODUÇÃO TEMPORAL]: No aspecto relacionado à capacidade de analisar
-    se o jogador super-produz ou sub-produz um evento em função do tempo 
-    solicitado, teremos 2 desafios:  
-    -->
-
-    <!----------------------------------------------------------------------
-    1ª Tarefa: O SIG solicita ao jogador que suba pela escada até o topo da 
-    torre, de acordo com um tempo de ordem aleatória com duração pré-definida
-    no intervalo de 1 a 10 segundos. O jogador realiza o comando solicitado.
-    -->
-    <!-- <script src="js/job_1_PT.js"></script> -->
-        <!-- Próximos passos:
-        1. Add um ground na tarefa OK
-        2. 
-        3. 
-    -->
-
-    <!----------------------------------------------------------------------
-    2ª Tarefa: O jogador deverá fazer com que 4 esferas (representando elementos
-    das regiões) orbitem no espaço, por um intervalo de tempo solicitado 
-    aleatoriamente pelo SIG, com durações pré-definidas no intervalo 
-    de 1 a 10 segundos.
-    -->
-    <!-- <script src="js/job_2_PT.js"></script> -->
-        <!-- Próximos passos:
-        1. Add um ground na tarefa OK
-        2. 
-        3. 
-    -->
-
-    <!-- [REPRODUÇÃO TEMPORAL]: No aspecto relacionado à capacidade de 
-    analisar se o jogador super-reproduz ou sub-reproduz uma ação em função 
-    de um evento observado, no intuito de aproximar-se de sua duração 
-    original, teremos 2 desafios:  
-    -->
-
-    <!----------------------------------------------------------------------
-    1ª Tarefa: Na sala de treinamento, o mentor realiza um salto por um 
-    obstáculo, utilizando tempos de ordem aleatória com durações pré-definidas
-    no intervalo de 1 a 10 segundos. O jogador observa o mentor saltar e, após
-    um comando do SIG, deve realizar o mesmo movimento, de forma a reproduzir
-    desempenho similar ao do mentor, para isto, será necessário tomar o impulso
-    baseando-se no tempo que o mentor utilizou para realizar a ação de saltar.   
-    -->
-    <!-- <script src="js/job_1_RT.js"></script> -->
-        <!-- Próximos passos:
-        1. Add um ground na tarefa OK
-        2. 
-        3. 
-    -->
-
-    <!----------------------------------------------------------------------
-    2ª Tarefa: O outlier arremessa um elemento terra (cristal marrom) na direção
-    da Lagoa do Portinho, Ao tocar a superfície da lagoa, a água alterna para
-    uma cor barrenta. O jogador observa o elemento terra caindo na lagoa com
-    um tempo de ordem aleatória com duração pré-definida no intervalo de 
-    1 a 10 segundos. Após o comando do SIG, o jogador deve arremessar um 
-    elemento água (cristal azul) para dentro da lagoa, esse cristal irá 
-    purificar a água e devolver vida para a lagoa. Para acertar a lagoa 
-    (alvo em questão) será necessário tomar o impulso baseando-se no tempo 
-    que o outlier utilizou para arremessar na lagoa o elemento terra.
-    -->
-     <!-- <script src="js/job_2_RT.js"></script> -->
-        <!-- Próximos passos:
-        1. Add um ground na tarefa OK
-        2. 
-        3. 
-    -->
-
-    <!----------------------------------------------------------------------
-                      (AMBIENTE DE PRÁTICAS DE EXEMPLOS E TESTES)
-    -->
-    <!-- Translações -->
-    <!-- <script src="js/ex_01.js"></script> -->
-        
-    
-    <!-- <div class="divs divDireita">Posicionamento float right - direita</div>  -->
-    <!-- <div class="divs divRelative">Posicionamento relative</div>
-    <div class="divs divStatic">Posicionamento static</div>
-    <div class="divs divAbsolute">Posicionamento absolute</div>
-    <div class="divAlignCenter">Posicionamento central</div> 
-    
-   
-    <p class="clear">Parágrafo com a limpeza da propriedade float</p> -->
-
-    <!-- <div class="container">
-        <div class="esquerda">
-            <canvas id="canvasPrimario"</canvas>
-            <script src="js/mundoExploratorio.js"></script>
-        </div>
-        <div class="direita">
-            <video class="input_video"></video>
-            <canvas class="output_canvas"></canvas>
-        </div>
-        <div style="clear: both;"></div>
-    </div> -->
-
-
-    <!-- <script>
-    const videoInput = document.getElementsByClassName('input_video')[0];
-    const canvasOutput = document.getElementsByClassName('output_canvas')[0];
-    const canvasCtx = canvasOutput.getContext('3d');
-</script> -->
-
-    <!--MENU PRINCIPAL OK-->
-    <!-- <canvas id="canvasPrimario"></canvas>
-    <script src="js/menuPrincipal.js"></script> -->
-    <!--Próximos passos:
-    1. Criar os botões básicos;
-    2. Invocar o mundo a partir do botão; OK
-    3. Interagir com botões usando o dedo indicador.
-    -->
-
-    
-
-    <!--MAPA DE TAREFAS Não usar-->
-    <!-- <canvas id="canvasPrimario"></canvas>
-    <script src="js/fases.js"></script> -->
-    <!--Próximos passos:
-    1. Carregar texturas características de cada estado do Brasil;
-    2. Retornar para o mundo ao tirar do pause;
-    3. Interagir com a mão.
--->
-
-
- 
+<body>
+<br>
+<h1 class="hint">Chronos: o guardião do tempo</h1>
+<h3 class="right">Versão 0.1 - 09/12/22</h3>
+<br>
+<nav class="menu">
+  <ul>
+    <li><a href="./Mundo.html" title="1. Explorar o mundo">1. O Labirinto</a></li>
+    <li><a href="./Babylon_102_sphere_with_BG.html" title="2. Tarefa de Estimativa de Tempo">2. Estimativa I</a></li>
+    <li><a href="./Babylon_103_color_sphere.html" title="3. Tarefa de Reprodução de Tempo">3. Reprodução I</a></li>
+    <li><a href="./Babylon_104_earth.html" title="4. Tarefa de Produção de Tempo">4. Produção I</a></li>
+    <!-- <li><a href="./Babylon_105_animated_earth.html" title="5. Animated earth">5. Animated</a></li> -->
+    <!-- <li><a href="./Babylon_201_skybox.html" title="6. Background by skybox">6. Background</a></li> -->
+    <!-- <li><a href="./Babylon_202_skybox+ground.html" title="7. Skybox with ground">7. BG & Ground</a></li> -->
+    <!-- <li><a href="./Babylon_203_dds.html" title="8. Background by dds files">8. BG by DDS</a></li> -->
+    <!-- <li><a href="./Babylon_301_Sel_babylon.html" title="9. Babylon Demo">9. Demo</a></li> -->
+    <!-- <li><a href="./Babylon_302_Sel_BG&babylon.html" title="10. Babylon files with background">10. Babylon</a></li> -->
+    <!-- <li><a href="./Babylon_303_gltf.html" title="11. GLTF files with background">11. GLTF Files</a></li> -->
+    <!-- <li><a href="./Babylon_304_obj.html" title="12. OBJ files with background">12. OBJ Files</a></li> -->
+    <!-- <li><a href="./Babylon_305_stl.html" title="13. STL files with background">13. STL Files</a></li> -->
+    <!-- <li><a href="./Babylon_401_cameras.html" title="14. Camera Works">14. Camera</a></li> -->
+    <!-- <li><a href="./Babylon_501_walk.html" title="15. Walking Animation">15. Walking</a></li> -->
+    <!-- <li><a href="./Babylon_502_maze.html" title="16. 3D Maze with Walking Animation">16. 3D Maze</a></li> -->
+  </ul>
+</nav>
+<br><br><br>
+<p class="hint">Clique no botão para exibir as opções!</p>
 </body>
 </html>

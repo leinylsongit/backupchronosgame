@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Babylon.js - 360 degree video/VR changeable - 2021/03/28 by T. Fujita</title>
+
+        <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+        <script src="https://preview.babylonjs.com/babylon.js"></script>
+
+        <style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+        </style>
+    </head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        var engine = null;
+        var scene = null;
+        var sceneToRender = null;
+        var canvas = document.getElementById("renderCanvas");
+        var video_urls = new Array();
+        var count = 0;
+
+// 360 Video URLs
+        video_urls[0] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/videoSScGOMwcgizu1231h/videoblocks-360vr-videowall-with-many-images-on-screen_B_tnuA-xZ__72b7c6f4d5a5d9db4a063ffb0dbb9e5d__P1080.mp4";
+        video_urls[1] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/video/NIHmZbghlilb1qj7b/videoblocks-vr-360-firefly-flying-in-the-forest_rFW7FNLN1w__cf1b4b84f1f7e82c91ec46a82e1dc026__P1080.mp4";
+        video_urls[2] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/videoNIHmZbghlilb1qj7b/videoblocks-vr-360-rays-of-sunset-on-the-tops-of-the-mountains_S4zwOe7_EV__eb709863a699fde1cd03d45e3e9fb290__P1080.mp4";
+        video_urls[3] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/videoGTYSdDW/videoblocks-gili-meno-turtles-underwater-360-vr-underwater-360-vr-underwater-360-vr_H5tBLnQaW__25198781bb64ff033995b16494232071__P1080.mp4";
+        video_urls[4] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/videoNIHmZbghlilb1qj7b/videoblocks-clouds-timelapse-at-sunset-in-virtual-reality-360-degree-video_H_ktSMVjg__ea02260e9e36490663ad9ef39b4e55d4__P1080.mp4";
+        video_urls[5] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/videoNIHmZbghlilb1qj7b/milky-way-360-rotate-2_HCAri8Q_l__d6d9eca2a467e099f04951c514fdb0f4__P1080.mp4";
+        video_urls[6] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/videoSScGOMwcgizu1231h/videoblocks-360vr-video-of-futuristic-city-with-spaceships_SsG1yJ-kZ__c0448a966b9aab6658a460c15b78ab50__P1080.mp4";
+        video_urls[7] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/video/NIHmZbghlilb1qj7b/videoblocks-timelapse-iss-in-virtual-reality-360-degree-video-international-space-station_BFutoU4yv__e44e73d0fa60d5bb4c27ba4302fea177__P1080.mp4";
+        video_urls[8] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/videoNIHmZbghlilb1qj7b/videoblocks-iss-invirtual-reality-360-degree-video-astronaut-working-at-international-space-station-orbiting-earth-elements-of-this-image-furnished-by-nasa_rjZc-vK-b__2e01d0920ecf8ca626f028302e6f3917__P1080.mp4";
+        video_urls[9] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/videoNIHmZbghlilb1qj7b/videoblocks-6-k-vr-360-camera-moving-inside-a-spaceship-tunnel-ready-for-use-in-vr360-virtual-reality_SSW_L57sM__7472da750954acdcf4d17f6c3bdd6bb0__P1080.mp4";
+        video_urls[10] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/videoNIHmZbghlilb1qj7b/videoblocks-vr-360-camera-moving-inside-a-spaceship-tunnel-ready-for-use-in-vr360_SzulkVeRm__abb15076ad7c71327846e22a46cccfc1__P1080.mp4";
+        video_urls[11] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/videoNIHmZbghlilb1qj7b/videoblocks-iss-in-virtual-reality-360-degree-video-international-space-station-orbiting_HIWQ3LSmW__b49e292bf4f5eb45f51562abc29f1958__P1080.mp4";
+        video_urls[12] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/videoNIHmZbghlilb1qj7b/videoblocks-big-alien-mothership-vr-360-virtual-reality_H86-ccilU__76cfab632b8801ca97ba46336a570208__P1080.mp4";
+        video_urls[13] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/videoNIHmZbghlilb1qj7b/videoblocks-big-alien-mothership-vr-360-virtual-reality_HzWzbQ-Pr__c189016728be593bea56f3dc219f9e52__P1080.mp4";
+        video_urls[14] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/videoYWAdzU2/videoblocks-360-vr-space-3030-virtual-reality-video-flying-through-nebula-and-star-fields-in-space-loop-designed-to-be-used-in-oculus-rift-samsung-gear-vr-and-other-virtual-reality-displays_Hd6myNUo7__ec3f81f3ebb63877404857268443187d__P1080.mp4";
+        video_urls[15] = "https://dm0qx8t0i9gc9.cloudfront.net/watermarks/videoNIHmZbghlilb1qj7b/videoblocks-vr-360-wormhole-straight-through-time-and-space-clouds-and-millions-of-stars-warp-straight-ahead-through-this-science-fiction-wormhole-virtual-reality-elements-of-this-image-furnished-by-__39aa3fff95c92a4cc8ef7ffcabbbce02__P1080.mp4";
+
+        var selected_video_url = video_urls[0];
+        video_360();
+
+        canvas.onclick = function(e) {
+            count = count + 1;
+            if(count >= video_urls.length) {
+                count = 0;
+            }
+            engine.stopRenderLoop();
+            sceneToRender.dispose();
+            scene.dispose();
+            selected_video_url = video_urls[count];  
+            video_360();
+        }
+
+    function video_360() {
+        var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
+ 
+        var createScene = function () {
+            var scene = new BABYLON.Scene(engine);
+            var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2,  Math.PI / 2, 5, BABYLON.Vector3.Zero(), scene);
+ 	        camera.attachControl(canvas, true);
+
+// for VR
+	        var vrHelper = scene.createDefaultVRExperience();
+		    vrHelper.currentVRCamera.position.y = 1000;
+
+// for 360 degrees Video
+            var videoDome = new BABYLON.VideoDome(
+                "videoDome",
+                [selected_video_url],
+                {
+                    resolution: 32,
+                    clickToPlay: true
+                },
+                scene
+            );
+
+            return scene;
+        };
+
+	    engine = null;
+	    try {
+	        engine = createDefaultEngine();
+	    } catch(e) {
+	        console.log("the available createEngine function failed. Creating the default engine instead");
+	        engine = createDefaultEngine();
+	    }
+        if (!engine) throw 'engine should not be null.';
+        scene = createScene();
+        sceneToRender = scene;
+
+        engine.runRenderLoop(function () {
+            if (sceneToRender) {
+                sceneToRender.render();
+            }
+        });
+
+// Resize
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    }
+    </script>
+</body>
+</html>

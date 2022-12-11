@@ -35,7 +35,7 @@ var createScene = function () {
     b.material = new BABYLON.StandardMaterial("materialGround", scene);
 
     b.position.x = 0;
-    b.position.y = 0.5;
+    b.position.y = 5.5;
     // b.position.z = 30;
     
     b.ellipsoid = new BABYLON.Vector3(0.7, 0.7, 0.7);
@@ -44,6 +44,7 @@ var createScene = function () {
 
     drawEllipsoid(b);
 
+    
     // Adiciona a esfera
     var s = BABYLON.MeshBuilder.CreateSphere("sph", { size: 1  }, scene);
     s.material = new BABYLON.StandardMaterial("materialGround", scene);

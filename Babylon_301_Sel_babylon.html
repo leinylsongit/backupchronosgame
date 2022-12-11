@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Babylon.js - Demo - 2019/10/19 by T. Fujita</title>
+    <link rel = "stylesheet" type="text/css" href = "./css/babylon_menu.css" />
+    <script src="https://code.jquery.com/pep/0.4.0/pep.min.js"></script>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <style>
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+  <nav id="menu-wrap">  
+	<ul id="menu">
+		<li><a href="#">Menu</a>
+		<ul id="scroll">
+			<li><a>Move by "Q,W,E,A,S,D,Z" keys.</a></li>
+		</ul>
+		</li>
+
+		<li><a href="#">Babylon Demo</a>
+		<ul id="scroll">
+			<li><a><input type = "radio" name = "Demo_Layer" value = "0" checked onclick = "javascript: Sel_Demo_Layer();">ActionBuilder</a></li>
+			<li><a><input type = "radio" name = "Demo_Layer" value = "1" onclick = "javascript: Sel_Demo_Layer();">SpaceDek</a></li>
+			<li><a><input type = "radio" name = "Demo_Layer" value = "2" onclick = "javascript: Sel_Demo_Layer();">V8</a></li>
+			<li><a><input type = "radio" name = "Demo_Layer" value = "3" onclick = "javascript: Sel_Demo_Layer();">WCafe</a></li>
+		</ul>
+		</li>
+	</ul>
+  </nav>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("renderCanvas");
+        var engine = new BABYLON.Engine(canvas, true);
+	var temp_dir = "./scenes/babylon/ActionBuilder/";
+	var temp_file = "ActionBuilder.babylon";
+
+    var createScene  = function() {
+        BABYLON.SceneLoader.ForceFullSceneLoadingForIncremental = true;
+        BABYLON.SceneLoader.Load(temp_dir, temp_file, engine, function (scene) {
+
+            scene.activeCamera.attachControl(canvas);
+
+            if (scene.activeCamera.keysUp) {
+                scene.activeCamera.keysUp.push(90);	 // Z
+                scene.activeCamera.keysUp.push(87);	 // W
+                scene.activeCamera.keysDown.push(83);	 // S
+                scene.activeCamera.keysLeft.push(65);	 // A
+                scene.activeCamera.keysLeft.push(81);	 // Q
+                scene.activeCamera.keysRight.push(69);	 // E
+                scene.activeCamera.keysRight.push(68);	 // D
+            }
+            scene.executeWhenReady(function() {
+                engine.runRenderLoop(function() {
+                    scene.render();
+                });
+            });
+        });
+    };
+
+	var scene = createScene();
+
+// Select the Babylon's Demo
+    function Sel_Demo_Layer() {
+	temp_G = document.getElementsByName("Demo_Layer");
+	temp_dir = "./scenes/babylon/ActionBuilder/";
+	temp_file = "ActionBuilder.babylon";
+	if(temp_G[1].checked) { temp_dir = "./scenes/babylon/SpaceDek/"; temp_file = "SpaceDek.babylon"; }
+	if(temp_G[2].checked) { temp_dir = "./scenes/babylon/V8/"; temp_file = "v8.babylon"; }
+	if(temp_G[3].checked) { temp_dir = "./scenes/babylon/WCafe/"; temp_file = "WCafe.babylon"; }
+
+        var scene = createScene();
+    }
+
+    </script>
+</body>
+</html>
