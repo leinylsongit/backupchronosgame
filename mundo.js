@@ -28,8 +28,9 @@ const abelha = './assets/animais/Bee.glb';
 
 // Elementos de construções
 // const towerURL = "assets/ambiente/tower/TowerHouse.obj";
-// const labirinto = './assets/ambiente/labirinto_01.glb';
-const labirinto = './assets/ambiente/labirinto__.babylon';
+const labirinto = './assets/ambiente/labirinto_01.glb';
+// const labirinto = './assets/ambiente/labirinto/maze1.glb';
+// const labirinto = './assets/ambiente/labirinto/maze2/recursive-backtracking-maze-example.obj';
 
 // SIG
 // const sig = './assets/personagens/npc/sig.glb';
@@ -142,7 +143,7 @@ var create_Mundo = function () {
     camera.inputs.clear();
 
     camera.ellipsoid = new BABYLON.Vector3(0.5,1, 0.5);
-    drawEllipsoid(camera);
+    // drawEllipsoid(camera);
     // camera.minZ = 0.1;
 
 
@@ -221,8 +222,15 @@ var create_Mundo = function () {
 
     //character nodes ???
     var main = new BABYLON.Mesh("parent", scene_Mundo);
+    // Posição do player
+    main.position = new BABYLON.Vector3(15, 0, 0);
+    
     var target = new BABYLON.TransformNode();
+
+    // Posição do personagem
     var character = new BABYLON.Mesh("character", scene_Mundo);
+    character.position = new BABYLON.Vector3(0, 0, 0);    
+
 
 
     // Configurações da camera
@@ -297,8 +305,8 @@ var create_Mundo = function () {
 
         body.parent = character;    
 
-        // character.checkCollisions = true;
-        character.collisionsEnabled = true;
+        character.checkCollisions = true; // NAO FAZ DIFERENÇA
+        character.collisionsEnabled = true; // NAO FAZ DIFERENÇA
 
         // Textura do corpo do Player
         body.material = new BABYLON.StandardMaterial("character", scene_Mundo);
@@ -335,20 +343,20 @@ var create_Mundo = function () {
         //jumpAnim = scene_Mundo.beginWeightedAnimation(skeleton_Heroi, jumpRange.from+1, jumpRange.to, 0, true);
 		
     
-        // Elipse para verificar as colisões
-        main.ellipsoid = new BABYLON.Vector3(0.5, 0.9, 0.5);
-        main.ellipsoidOffset = new BABYLON.Vector3(0, main.ellipsoid.y, 0);
-        main.checkCollisions = true;
+        // #TIRAR!!!!// Elipse para verificar as colisões 
+        main.ellipsoid = new BABYLON.Vector3(0.5, 1, 0.5);
+        main.ellipsoidOffset = new BABYLON.Vector3(0, 0.9, 0);
+        // drawEllipsoid(main);
 
-        // Exibe a elipse que envolve o player
-        drawEllipsoid(main);
-
-
+        main.checkCollisions = false;  
+        
+        character.ellipsoidOffset = new BABYLON.Vector3(0, 0.9, 0);
+        // drawEllipsoid(character);
+        
+        
         character.parent = main;
         target.parent = main;
-
-        // drawEllipsoid(character);
-        // drawEllipsoid(target);
+        
 
         // Alterna a camera de acordo com a opção escolhida
         if (firstPerson == true){
@@ -363,8 +371,7 @@ var create_Mundo = function () {
             // switchCamera(thirdPersonCamera.far);     // Distante
         }
 
-        // Posição da câmera
-        main.position = new BABYLON.Vector3(15,0,0);
+
 
 
         // Oculta a animação de carregando
@@ -482,7 +489,7 @@ var create_Mundo = function () {
             mesh_Bee[0].checkCollisions = true;
 
             // Exibe a elipse que envolve a abelha
-            // drawEllipsoid(mesh_Bee[0]);
+            drawEllipsoid(mesh_Bee[0]);
 
 
             //mesh_Bee[0].parent = main;
@@ -578,53 +585,7 @@ var create_Mundo = function () {
 
             // flyBee_Anim;
 
-
-            // if ((mesh_Bee[0].position.z - character.position.z) <= 20)
-            //     console.log("character colidiu abelha!");
-        
-            // console.log("Abelha: ", mesh_Bee[0].position);
-            // console.log("character: ", character.position);
-            // console.log("character e abelha: ", mesh_Bee[0].position.z - character.position.z);
-
-
-
-            // if ((mesh_Bee[0].position.z - target.position.z) <= 20)
-            //     console.log("target colidiu abelha!");
-            
-            // console.log("Abelha: ", mesh_Bee[0].position);
-            // console.log("target: ", target.position);
-            // console.log("target e abelha: ", mesh_Bee[0].position.z - target.position.z);
-
-
-            //# verificar o valor absoluto!!!
-            // if ((mesh_Bee[0].position - main.position) <= 5){
-            //     console.log("main colidiu abelha!");
-            // }
-            
-            // console.log("Abelha: ", mesh_Bee[0].position);
-            // console.log("main: ", main.position);
-            // console.log("main e abelha: ", mesh_Bee[0].position - main.position);
-
-
-
-            // if ((mesh_Bee[0].position.z - mesh_Heroi.position.z) <= 20)
-            //     console.log("mesh_Bee colidiu abelha!");
-            
-            // console.log("Abelha: ", mesh_Bee[0].position);
-            // console.log("mesh_heroi: ", mesh_Heroi.position);
-            // console.log("mesh_heroi e abelha: ", mesh_Bee[0].position.z - mesh_Heroi.position.z);
-    
-            
-            // if ((mesh_Bee[0].position.z - camera.position.z) <= 20)
-            //     console.log("camera colidiu abelha!");
-                
-            // console.log("Abelha: ", mesh_Bee[0].position);
-            // console.log("camera: ", camera.position);
-            // console.log("camera e abelha: ", mesh_Bee[0].position.z - camera.position.z);
-
-
-
-          // HUD (Heads-Up Display)>>>------------------------------------------------------------------------->
+// HUD (Heads-Up Display)>>>------------------------------------------------------------------------->
 
     var gui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("GUI");
     
@@ -981,8 +942,7 @@ var create_Mundo = function () {
 
     // called when the pointer lock has changed. Here we check whether the
     // pointerlock was initiated on the element we want.
-    function changeCallback(e)
-    {
+    function changeCallback(e) {
         if (document.pointerLockElement === canvas ||
             document.mozPointerLockElement === canvas ||
             document.webkitPointerLockElement === canvas
@@ -1003,109 +963,44 @@ var create_Mundo = function () {
     // Constrói elementos do cenário
     var box = BABYLON.MeshBuilder.CreateBox("box", {size: 2}, scene_Mundo);
     box.position = new BABYLON.Vector3(20, 1, 8);
-    // addToMirror(box);
     addShadows(box);
-    // box.material = new BABYLON.StandardMaterial("lightBox", scene_Mundo);
     box.material = new BABYLON.StandardMaterial("materialGround", scene_Mundo);
     // box.material.emissiveColor = new BABYLON.Color3.Blue();
     box.material.diffuseColor = new BABYLON.Color3.Red();
-    
-
-
-    // Adiciona a TORRE
-    // var tower = null;
-    // BABYLON.SceneLoader.ImportMesh("", "", towerURL, scene_Mundo, function (newMeshes)
-    // {
-    //     tower = BABYLON.Mesh.MergeMeshes(newMeshes, true, true, false, false, false);
-    //     tower.scaling = new BABYLON.Vector3(1.1, 1.1, 1.1);
-    //     tower.position = new BABYLON.Vector3(0, -0.1, 2);
-    //     addToMirror(tower);
-    //     addShadows(tower);
-
-    //     tower.checkCollisions = true;
-    // });
-
-    
+    box.material.alpha = 0.5;
 
      // Elipse para verificar as colisões
-     box.ellipsoid = new BABYLON.Vector3(2.5, 0.2, 2.5);
-     box.ellipsoidOffset = new BABYLON.Vector3(0, 0, 0);
-     box.checkCollisions = true;
+    //  box.ellipsoid = new BABYLON.Vector3(2.5, 0.2, 2.5);
+    //  box.ellipsoidOffset = new BABYLON.Vector3(0, 0, 0);
+    //  drawEllipsoid(box);
+
+     box.checkCollisions = false; // VERMELHA
+
 
      var box2 = BABYLON.MeshBuilder.CreateBox("box", {size: 2}, scene_Mundo);
      box2.position = new BABYLON.Vector3(18, 1, 8);
-     box2.checkCollisions = true;
-
-     box2.material = new BABYLON.StandardMaterial("materialGround", scene_Mundo);
-    //  box2.material.emissiveColor = new BABYLON.Color3.Green();
-     box2.material.diffuseColor = new BABYLON.Color3.Green();
      
-     // Exibe a elipse que envolve a caixa
-     drawEllipsoid(box);
-     drawEllipsoid(box2);
+     box2.material = new BABYLON.StandardMaterial("materialGround", scene_Mundo);
+     //  box2.material.emissiveColor = new BABYLON.Color3.Green();
+     box2.material.diffuseColor = new BABYLON.Color3.Green();
+     box2.material.alpha = 0.5;
 
-    
+    //  box2.ellipsoid = new BABYLON.Vector3(2.5, 0.2, 2.5);
+    //  box2.ellipsoidOffset = new BABYLON.Vector3(0, 0, 0);
+    //  drawEllipsoid(box2);
+
+     box2.checkCollisions = false; // VERDE
+
 
      scene_Mundo.registerBeforeRender(function (){
         if (scene_Mundo.isReady()) {
 
-            // Verifica se as caixas colidiram
-            // if (box.intersectsMesh(box2, true) && box2.isVisible)  {
-            //     explode_();
-            //     box2.dispose()
-            //     box2.isVisible = false;
-            //     console.log("box Verde colidiu no box Vermelho!")            
-            // }
+            // # Optimizar para funcionar com todos os elementos  em um loop
+            evento_Colidir(character, box, explode_);
+            // evento_Colidir(character, box2, explode_);
 
-            // Verifica se o player colidiu na caixa
-            if (main.intersectsMesh(box, true) && box.isVisible)  {
-                explode_();
-                box.dispose()
-                box.isVisible = false;
-                console.log("Main colidiu no box Verde!")            
-            }
-            
-            if (character.intersectsMesh(box, true) && box.isVisible)  {
-                explode_();
-                box.dispose()
-                box.isVisible = false;
-                console.log("Character colidiu no box Verde!")            
-            }
+            evento_Colidir(character, box2, queima_);
 
-            
-            // if (mesh_Heroi[0].intersectsMesh(box, true) && box.isVisible)  {
-            //     explode_();
-            //     box.dispose()
-            //     box.isVisible = false;
-            //     console.log("body colidiu no box Verde!")            
-            // }
-            // if (body.intersectsMesh(box, true) && box.isVisible)  {
-            //     explode_();
-            //     box.dispose()
-            //     box.isVisible = false;
-            //     console.log("body colidiu no box Verde!")            
-            // }
-
-            // if (character.intersectsMesh(box, true) && box.isVisible)  {
-            //     explode_();
-            //     box.dispose()
-            //     box.isVisible = false;
-            //     console.log("Character colidiu no box Verde!")            
-            // }
-           
-            // if (mesh_Heroi[0].intersectsMesh(box, true) && box.isVisible)  {
-            //     explode_();
-            //     box.dispose()
-            //     box.isVisible = false;
-            //     console.log("mesh_Heroi_0 colidiu no box Verde!")            
-            // }
-
-            // if (mesh_Heroi[1].intersectsMesh(box, true) && box.isVisible)  {
-            //     explode_();
-            //     box.dispose()
-            //     box.isVisible = false;
-            //     console.log("mesh_Heroi_1 colidiu no box Verde!")            
-            // }
         }
      });
 
@@ -1369,6 +1264,9 @@ var create_Mundo = function () {
     // });
 
      //# Adiciona o LABIRINTO!!
+    // BABYLON.SceneLoader.ImportMesh("", "", labirinto, scene_Mundo, function (mesh_Labirinto)
+    // BABYLON.SceneLoader.ImportMesh("", "", labirinto, scene_Mundo, function (mesh_Labirinto)
+    // BABYLON.SceneLoader.ImportMesh("", "", labirinto, scene_Mundo, function (mesh_Labirinto)
     BABYLON.SceneLoader.ImportMesh("", "", labirinto, scene_Mundo, function (mesh_Labirinto)
     // BABYLON.SceneLoader.ImportMesh("", "./assets/ambiente/", "ambiente_01/scene.glb", scene_Mundo, function (mesh_Labirinto)
     {
@@ -1377,8 +1275,8 @@ var create_Mundo = function () {
         // mesh_Labirinto[0].position = new BABYLON.Vector3(0, 5.1, 0);
         // // addToMirror(mesh_Labirinto);
         // // addShadows(mesh_Labirinto);
-        // mesh_Labirinto.collisionsEnabled = true;
-        // mesh_Labirinto.checkCollisions = true;
+        mesh_Labirinto.collisionsEnabled = true;
+        mesh_Labirinto.checkCollisions = true;
     });
 
     // });
@@ -1406,42 +1304,49 @@ var create_Mundo = function () {
 
 
     // Adiciona o personagem personalizado GLTF OK!!
-    BABYLON.SceneLoader.ImportMesh("", "", mentor, scene_Mundo, function (mesh_Old_Man_Separado) {
-        // mentor.scaling = new BABYLON.Vector3(5, 5, 5);
-        mentor.position = new BABYLON.Vector3(-15, 0, 5);
+    // BABYLON.SceneLoader.ImportMesh("", "", mentor, scene_Mundo, function (mesh_Old_Man_Separado) {
+    //     // mentor.scaling = new BABYLON.Vector3(5, 5, 5);
+    //     // mentor.position = new BABYLON.Vector3(0, 3, 5); 
 
-        // Elipse para verificar as colisões
-        mentor.ellipsoid = new BABYLON.Vector3(9, 8, 8);
-        mentor.ellipsoidOffset = new BABYLON.Vector3(0, 0, 0);
-        mentor.checkCollisions = true;
+    //     // Elipse para verificar as colisões
+    //     mentor.ellipsoid = new BABYLON.Vector3(9, 8, 8);
+    //     mentor.ellipsoidOffset = new BABYLON.Vector3(0, 0, 0);
+    //     // mentor.checkCollisions = true;
 
-        // Exibe a elipse que envolve o OldMan
-        // drawEllipsoid(mentor);
+    //     // Exibe a elipse que envolve o OldMan
+    //     drawEllipsoid(mentor);
 
         
 
 
-        // if (mesh_Heroi.intersectsMesh(mentor, true)) {
-        //     console.log("Heroi colidiu no mentor!")
-        //  box.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-        //     // box.dispose();
-        // }
-        // else{
-        //     console.log("Heroi não colidiu no mentor!")
-        //     box.material.emissiveColor = new BABYLON.Color3(0, 0, 0); 
-        // }
+    //     // if (mesh_Heroi.intersectsMesh(mentor, true)) {
+    //     //     console.log("Heroi colidiu no mentor!")
+    //     //  box.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
+    //     //     // box.dispose();
+    //     // }
+    //     // else{
+    //     //     console.log("Heroi não colidiu no mentor!")
+    //     //     box.material.emissiveColor = new BABYLON.Color3(0, 0, 0); 
+    //     // }
 
-    });
+    // });
 
     
     // Adiciona o EMOGI OLHOS
-    BABYLON.SceneLoader.ImportMesh("", "", emogi, scene_Mundo, function (mesh_Carinha_Olhos, particleSystems, skeletons_Carinha_cor) {
-        mesh_Carinha_Olhos[0].scaling = new BABYLON.Vector3(150, 150, 150);
-        mesh_Carinha_Olhos[0].position = new BABYLON.Vector3(10, 2, 20);
+    // BABYLON.SceneLoader.ImportMesh("", "", emogi, scene_Mundo, function (mesh_Carinha_Olhos, particleSystems, skeletons_Carinha_cor) {
+    //     mesh_Carinha_Olhos[0].scaling = new BABYLON.Vector3(150, 150, 150);
+    //     mesh_Carinha_Olhos[0].position = new BABYLON.Vector3(10, 2, 20);
 
-        mesh_Carinha_Olhos.checkCollisions = true;
+    //     mesh_Carinha_Olhos.checkCollisions = true;
 
-    });
+    //     // Elipse para verificar as colisões
+    //     mesh_Carinha_Olhos.ellipsoid = new BABYLON.Vector3(2.5, 0.2, 2.5);
+    //     mesh_Carinha_Olhos.ellipsoidOffset = new BABYLON.Vector3(0, 0, 0);
+    //     mesh_Carinha_Olhos.checkCollisions = false; 
+    //     drawEllipsoid(mesh_Carinha_Olhos);
+
+    //     mesh_Carinha_Olhos.alpha = 0.5;
+    // });
 
     // Adiciona o Bordo Japonês
     BABYLON.SceneLoader.ImportMesh("", "", bordo, scene_Mundo, function (mesh_Bordo) {
@@ -1779,6 +1684,22 @@ function explode_(){
                     var queima = new BABYLON.Sound("fogo", fogo, scene_Mundo, null, { loop: false, autoplay: true });
             });
         }
+    }
+
+    // Efeito de chamas automático
+    function queima_(){
+            BABYLON.ParticleHelper.CreateAsync("fire", scene_Mundo).then((set) => {
+                set.systems.forEach(s => {
+                    s.disposeOnStop = true;
+                   // s.position = new BABYLON.Vector3(15, 2, 0);
+                //    s.maxLifeTime = 2;
+                   s.isVisible = false;
+                });
+                set.start();
+                // s.dispose(); // Tem que colocar um time antes de desaparecer
+                if (som_Efeitos)
+                    var queima = new BABYLON.Sound("fogo", fogo, scene_Mundo, null, { loop: false, autoplay: true });
+            });
     }
 
 // Efeito de desaparecimento ao pressionar a tecla D
@@ -2133,6 +2054,15 @@ function explode_(){
     };
 
 };
+
+function evento_Colidir(elemento_1, elemento_2, efeito) {
+    if (elemento_1.intersectsMesh(elemento_2, true) && elemento_2.isVisible) {
+        efeito();
+        elemento_2.dispose();
+        elemento_2.isVisible = false;
+        console.log(elemento_1.name + ' colidiu no ' + elemento_2.name);
+    }
+}
 
 // Constrói portais de teletransporte entre dimenssões
 function geraPortal(texture, position) {
