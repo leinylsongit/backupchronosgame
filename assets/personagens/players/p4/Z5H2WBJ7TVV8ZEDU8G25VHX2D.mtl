@@ -1,0 +1,178 @@
+newmtl _4__backpack_part1_0_1_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Backpack_D.png
+map_Ks Joel_Backpack_S.png
+map_Kn Joel_Backpack_N.png
+
+newmtl _5__backpack_skein_02_0_1_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Hoodie-Skein_D-cut.png
+
+newmtl _4_pants_0_45_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Pants_D.png
+map_Ks Joel_Pants_S.png
+map_Kn Joel_Pants_N.png
+
+newmtl _4_jacket_part1_0_45_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Jacket_D.png
+map_Ks Joel_Jacket_S.png
+map_Kn Joel_Jacket_N.png
+
+newmtl _4_boots_0_45_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Boots_D.png
+map_Ks Joel_Boots_S.png
+map_Kn Joel_Boots_N.png
+
+newmtl _4_hands_L_0_2_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Arms_D.png
+map_Ks Joel_Arms_S.png
+map_Kn Joel_Arms_N.png
+
+newmtl _4_shirt_0_45_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Shirt_D.png
+map_Ks Joel_Shirt_S.png
+map_Kn Joel_Shirt_N.png
+
+newmtl __hair_thin_01_0_2_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Hair-Thin_D-cut.png
+
+newmtl __hair_main_0_2_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Hair-Main_D-cut.png
+
+newmtl _5__beard_part1_0_2_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Beard_D-cut.png
+
+newmtl _5_hair_flyway_01_0_2_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Hair-Flyway_D-cut.png
+
+newmtl _4_head_part1_0_2_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Head_D.png
+map_Ks Joel_Head_S.png
+
+newmtl _1__ewet_1_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Tear_M.dds
+
+newmtl __caruncles_0_45_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Caruncle_D.png
+map_Kn Joel_Caruncle_N.png
+
+newmtl _5_eyelashes_upper_0_2_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Lashes_D-cut.png
+
+newmtl _0_eyes_0_8_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Eye_D-re.png
+
+newmtl _4_mouth_0_45_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Teeth_D.png
+map_Ks Joel_Teeth_S.png
+map_Kn Joel_Teeth_N.png
+
+newmtl _1_eyebrows_0_2_0_0
+Ka 0.000000 0.000000 0.000000
+Kd 0.698039 0.698039 0.698039
+Ks 0.000000 0.000000 0.000000
+d 1.000000
+illum 2
+Ns 9.84916
+map_Kd Joel_Brows_D-cut.png
+

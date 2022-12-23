@@ -99,10 +99,12 @@ var create_Tarefa = function () {
 
     // createSkyboxAndLight(); // # Atualizar esta função e ativar
 
-    // var camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.8, 5, new BABYLON.Vector3(0, 0, 0), job_2ET);
+    var camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.8, 5, new BABYLON.Vector3(0, 0, 0), job_2ET);
+    
     // var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 4, Math.PI / 2.5, 200, BABYLON.Vector3.Zero(), job_2ET);
 
-    var camera = new BABYLON.VirtualJoysticksCamera("VJ_camera", new BABYLON.Vector3(0, 1, -15), job_2ET);
+    // Controle para touchscreen
+    // var camera = new BABYLON.VirtualJoysticksCamera("VJ_camera", new BABYLON.Vector3(0, 1, -15), job_2ET);
 
     camera.lowerRadiusLimit = 10; // Limite de zoom in
     camera.upperRadiusLimit = 250; // Limite de zoom out
@@ -519,19 +521,19 @@ activateBtn.onPointerClickObservable.add(() => {
 interface.addControl(activateBtn);   
 
 //------------------------------- Cria o plano do chão ----------------------------------
-var groundSize = 150;
-var ground = BABYLON.Mesh.CreateGround("ground", groundSize, groundSize, 5, job_2ET);
-// ground.position.y = -7;
+// var groundSize = 150;
+// var ground = BABYLON.Mesh.CreateGround("ground", groundSize, groundSize, 5, job_2ET);
+// // ground.position.y = -7;
 
-// Cria a textura do chão
-var grade = new BABYLON.GridMaterial("grade", job_2ET);
-grade.gridRatio = 1;
-// grade.lineColor = new BABYLON.Color3.White();
-// grade.mainColor = new BABYLON.Color3.Black();
-// grade.alpha = 0.3;
-// grade.majorUnitFrequency = 10;    
-// ground.fogEnabled = true;
-ground.material = grade;
+// // Cria a textura do chão
+// var grade = new BABYLON.GridMaterial("grade", job_2ET);
+// grade.gridRatio = 1;
+// // grade.lineColor = new BABYLON.Color3.White();
+// // grade.mainColor = new BABYLON.Color3.Black();
+// // grade.alpha = 0.3;
+// // grade.majorUnitFrequency = 10;    
+// // ground.fogEnabled = true;
+// ground.material = grade;
 
 // ground.visibility = false; //Oculta o elemento
     
@@ -696,7 +698,7 @@ ground.material = grade;
 
     // Particles
     var particleSystem = new BABYLON.ParticleSystem("particles", 4000, job_2ET);
-    particleSystem.particleTexture = new BABYLON.Texture("assets/textures/flare.png", job_2ET);
+    particleSystem.particleTexture = new BABYLON.Texture("assets/textures/flare/flare.png", job_2ET);
     
     particleSystem.minSize = 0.1;
     particleSystem.maxSize = 0.3;
@@ -722,6 +724,69 @@ ground.material = grade;
 
     particleSystem.gravity = new BABYLON.Vector3(0, -0.5, 0);
     particleSystem.start();
+
+
+
+//# -------- Gerar vários asteróides rotacionando ---------------------------------
+    // Meterial do asteróide
+    var url = "http://jerome.bousquie.fr/BJS/images/rock.jpg";
+	var mat = new BABYLON.StandardMaterial("mat1", job_2ET);
+	var texture = new BABYLON.Texture(url, job_2ET);
+	mat.diffuseTexture = texture;
+	mat.backFaceCulling = false;
+	
+    //
+	var fact = 1000;   // density
+    var scaleX = 0.0;
+    var scaleY = 0.0;
+    var scaleZ = 0.0;
+    var grey = 0.0;
+
+    // custom vertex function
+    var myVertexFunction = function(particle, vertex, i) {
+      vertex.x *= (Math.random() + 1);
+      vertex.y *= (Math.random() + 1);
+      vertex.z *= (Math.random() + 1);
+    };
+
+    // Posição do asteróide
+    var myPositionFunction = function(particle, i, s) {
+      scaleX = Math.random() * 2 + 0.8;
+      scaleY = Math.random() + 0.8;
+      scaleZ = Math.random() * 2 + 0.8;
+      particle.scale.x = scaleX;
+      particle.scale.y = scaleY;
+      particle.scale.z = scaleZ;
+      particle.position.x = (Math.random() - 0.5) * fact;
+      particle.position.y = (Math.random() - 0.5) * fact;
+      particle.position.z = (Math.random() - 0.5) * fact;
+      particle.rotation.x = Math.random() * 3.5;
+      particle.rotation.y = Math.random() * 3.5;
+      particle.rotation.z = Math.random() * 3.5;
+      grey = 1.0 - Math.random() * 0.3;
+      particle.color = new BABYLON.Color4(grey, grey, grey, 1);
+    };
+ 
+    // Cria o sistema de particulas: Immutável
+    var SPS = new BABYLON.SolidParticleSystem('SPS', job_2ET, {updatable: false});
+    var sphere = BABYLON.MeshBuilder.CreateSphere("s", {diameter: 6, segments: 8}, job_2ET);
+    SPS.addShape(sphere, 200, {positionFunction: myPositionFunction, vertexFunction: myVertexFunction});
+    var mesh = SPS.buildMesh();
+    mesh.material = mat;
+    // destrói o modelo
+    sphere.dispose();
+
+    // Animação dos asteróides
+    var k = Date.now();
+    job_2ET.registerBeforeRender(function() {
+        SPS.mesh.rotation.y += 0.01;
+        SPS.mesh.position.y = Math.sin((k - Date.now())/1000) * 2;
+        k += 0.07;
+    });
+// -------------------------------------------------------------------------------
+
+
+
 
 //------------------------------- Animação dos elementos- --------------------------------
 
@@ -933,7 +998,7 @@ function executaVideo(video) {
 
         // Particles
         var particleSystem = new BABYLON.ParticleSystem("particles", 40, job_2ET, effect);
-        particleSystem.particleTexture = new BABYLON.Texture("assets/textures/flare.png", job_2ET);
+        particleSystem.particleTexture = new BABYLON.Texture("assets/textures/flare/flare.png", job_2ET);
         particleSystem.minSize = 0.1;
         particleSystem.maxSize = 0.5;
         particleSystem.minLifeTime = 0.5;

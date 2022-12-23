@@ -153,6 +153,8 @@ var create_Mundo = function () {
 	// hemLight.specular = BABYLON.Color3.Black();
     // hemLight.groundColor = scene_Mundo.clearColor.scale(0.75);
 
+    // scene_Mundo.createDefaultCameraOrLight(false, false, false);// FUNCIONA BLZ
+
     var dirLight = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(0, -0.5, -1.0), scene_Mundo);
     dirLight.position = new BABYLON.Vector3(0, 130, 130);
 
@@ -585,9 +587,26 @@ var create_Mundo = function () {
 
             // flyBee_Anim;
 
-// HUD (Heads-Up Display)>>>------------------------------------------------------------------------->
 
+
+
+// IDENTIFICADORES DE ELEMENTOS NO AMBIENTE ------------------------------------------
+var identificadores = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+identificadores.idealWidth = 600;
+
+criaEtiqueta(identificadores, box, "Me siga!");
+// var target_1 = criaEtiqueta(identificadores, box, "Me siga!");  
+// var target_2 = criaEtiqueta(identificadores, box2, "Mentor");  
+
+//---------------------------------------------------------------------------------------
+
+
+
+
+
+// HUD (Heads-Up Display)>>>------------------------------------------------------------------------->
     var gui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("GUI");
+    // gui.idealWidth = 600; // # testar alterar o tamanho
     
     // 2. Pontuação e tentativas
     var textblockStatus = new BABYLON.GUI.TextBlock();
@@ -680,7 +699,7 @@ var create_Mundo = function () {
     });
 
 
-    }, function(evt){} );
+    }, function(evt){} ); // ??
 
 
     // Determina as teclas das ações
@@ -2055,6 +2074,43 @@ function explode_(){
 
 };
 
+function criaEtiqueta(identificadores, elemento, texto) {
+    var etiqueta = new BABYLON.GUI.Rectangle();
+    etiqueta.width = 0.2;
+    etiqueta.height = "40px";
+    etiqueta.cornerRadius = 20;
+    etiqueta.color = "Yellow";
+    etiqueta.thickness = 4;
+    etiqueta.background = "green";
+    identificadores.addControl(etiqueta);
+    etiqueta.linkWithMesh(elemento);
+    etiqueta.linkOffsetY = -150;
+
+    var label = new BABYLON.GUI.TextBlock();
+    label.text = texto;
+    etiqueta.addControl(label);
+
+    var target = new BABYLON.GUI.Ellipse();
+    target.width = "40px";
+    target.height = "40px";
+    target.color = "Yellow";
+    target.thickness = 4;
+    target.background = "green";
+    identificadores.addControl(target);
+    target.linkWithMesh(elemento);
+
+    var line = new BABYLON.GUI.Line();
+    line.lineWidth = 4;
+    line.color = "Yellow";
+    line.y2 = 20;
+    line.linkOffsetY = -20;
+    identificadores.addControl(line);
+    line.linkWithMesh(elemento);
+    line.connectedControl = etiqueta;
+    return target;
+}
+
+
 function evento_Colidir(elemento_1, elemento_2, efeito) {
     if (elemento_1.intersectsMesh(elemento_2, true) && elemento_2.isVisible) {
         efeito();
@@ -2078,6 +2134,7 @@ function geraPortal(texture, position) {
     // Gera e emite as partículas
     origem_ParticleSystem.start();
 }
+
 
 // Painel com botões para testes
 function painelButtons() {
