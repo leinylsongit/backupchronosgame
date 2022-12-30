@@ -6,19 +6,20 @@
   <style>
 	body {
 	  font-family: Alegreya Sans;
-	  background: #ced8f6;
+	  background: #048701f0;
 	}
 	.menu {
 	  position: relative;
-	  background: #0404b4;
+	  background: #007bff;
 	  width: 3em;
 	  height: 3em;
 	  border-radius: 5em;
 	  margin: auto;
-	  margin-top: 5em;
+	  margin-top: 21em;
+	  margin-right: 34em;
 	  margin-bottom: 5em;
-	  cursor: pointer;
-	  border: 2em solid #2e64fe;
+	  cursor: crosshair;
+	  border: 2em solid #fff201;
 	}
 	.menu:after {
 	  content: "";
@@ -43,7 +44,7 @@
 	  border-top-right-radius: 0.5em;
 	  border-bottom-right-radius: 0.5em;
 	  transition: all 1s;
-	  background: #2e64fe;
+	  background: #fff201;
 	  opacity: 0;
 	  z-index: -1;
 	}
@@ -67,7 +68,7 @@
 	  cursor: default;
 	}
 	.menu a {
-	  color: white;
+	  color: #000000f0;
 	  text-decoration: none;
 	  line-height: 1.5em;
 	}
@@ -79,7 +80,7 @@
 	  transform: rotate(0deg) translateY(-1em);
 	}
 	.menu li:hover {
-	  background: #0404b4;
+	  background: #007bff;
 	  z-index: 10;
 	}
 	.menu li:nth-of-type(1) {
@@ -141,7 +142,7 @@
 	  left: -6.1em;
 	  top: 7.3em;
 	}
-	/* .menu li:nth-of-type(11) {
+	.menu li:nth-of-type(11) {
 	  transform: rotate(135deg);
 	  position: absolute;
 	  left: -8.6em;
@@ -153,7 +154,7 @@
 	  left: -10.3em;
 	  top: 3.3em;
 	}
-	.menu li:nth-of-type(13) {
+	/*.menu li:nth-of-type(13) {
 	  transform: rotate(180deg);
 	  position: absolute;
 	  left: -10.8em;
@@ -187,10 +188,9 @@
 </head>
 
 <body>
-<br>
-<h1 class="hint">Chronos: o guardião do tempo</h1>
-<h3 class="right">Versão 0.1 - 16/12/22</h3>
-<br>
+
+<h3 class="right">Versão 0.1 - 30/12/22</h3>
+
 <nav class="menu">
   <ul>
     <li><a href="./Mundo.html" title="Explorar o mundo">Mundo</a></li>
@@ -207,7 +207,7 @@
 	<li><a href="./job_2_RT.html" title="2ª Tarefa de Reprodução de Tempo">2ª Reprodução</a></li>
 	<li><a href="./job_3_RT.html" title="3ª Tarefa de Reprodução de Tempo">3ª Reprodução</a></li> -->
 
-	<li><a href="./job_test_MT.html" title="1ª Tarefa de Memória de Trabalho">1ª Memória</a></li>
+	<!-- <li><a href="./job_test_MT.html" title="1ª Tarefa de Memória de Trabalho">1ª Memória</a></li> -->
 	<!-- <li><a href="./job_1_MT.html" title="1ª Tarefa de Memória de Trabalho">1ª Memória</a></li>
 	<li><a href="./job_2_MT.html" title="2ª Tarefa de Memória de Trabalho">2ª Memória</a></li>
 	<li><a href="./job_3_MT.html" title="3ª Tarefa de Memória de Trabalho">3ª Memória</a></li>  -->
@@ -219,11 +219,16 @@
 	<!-- <li><a href="./Babylon_301_Sel_babylon.html" title="Babylon Demo">Demo</a></li> -->
     <!-- <li><a href="./Babylon_302_Sel_BG&babylon.html" title="Babylon files with background">Babylon</a></li> -->  
     <!-- <li><a href="./Babylon_401_cameras.html" title="Cameras">Cameras</a></li> -->
-    <li><a href="./Babylon_501_walk.html" title="NPC andando pela cena">NPC andando</a></li>
+    <!-- <li><a href="./Babylon_501_walk.html" title="NPC andando pela cena">NPC andando</a></li> -->
     <!-- <li><a href="./Babylon_502_maze.html" title="16. 3D Maze with Walking Animation">16. 3D Maze</a></li> -->
   </ul>
 </nav>
-<br><br><br>
-<p class="hint">Clique no botão para exibir as opções!</p>
+
+<!-- Moldura dos HUDs -->
+<div style="position: fixed; top: 0px; left: 0px; z-index: -2;">
+	<!-- <video src="assets/videos/Abertura.mp4" autoplay="true";  width="160%"; height="100%"> -->
+	<video src="assets/videos/Menu.mp4" autoplay="true";  width="160%"; height="100%"></video>
+</div> 
+
 </body>
 </html>
