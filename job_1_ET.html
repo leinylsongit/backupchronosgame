@@ -5,11 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" type="text/css" href="css/botao1.css"/>  -->
-    <!-- <link rel="stylesheet" type="text/css" href="css/botao2.css"/>  -->
 
     <title>1ª ESTIMATIVA</title>
 
+    <!-- scripts JavaScript que são utilizados para carregar bibliotecas e frameworks de criação de cenas 3D no navegador. -->
     <!-- Babylon.js # Depois verificar quais destes links são desnecessários--> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
     <script src="https://assets.babylonjs.com/generated/Assets.js"></script>
@@ -55,20 +54,7 @@
             width: 100%;
             height: 100%;
         }
-        .divAbsolute{
-            background-color: rgb(0, 0, 0);
-            color: rgb(0, 0, 0);
-            position:absolute;
-            top:80px;
-            left:30px;
-        }
-        .divRelative {
-            background-color: rgb(255, 0, 255);
-            color: rgb(255, 0, 255);
-            position:relative;
-            top:120px;
-            left:300px;
-        }
+
         .divFixed {
             background-color: transparent;
             /* color: transparent; */ 
@@ -78,38 +64,6 @@
             width: 15%;
             height: 15%;
         }
-        .divStatic{
-            background-color:rgb(0, 255, 0);
-            color: rgb(0, 255, 0);
-            position: static;
-            top: 50px;
-            left: 100px;
-        }
-        .divSticky{
-            background-color: transparent;
-            position:sticky;
-            top: 0px;
-            left: 0;
-            width: 15%;
-            height: 5%;
-        }
-        .divEsquerda{
-            background-color: rgb(255, 0, 0);
-            color: rgb(255, 0, 0);
-            float: left;
-        }
-        .divDireita{
-            background-color: rgb(0, 0, 255);
-            color: rgb(0, 0, 255);
-            float: right;
-        }
-        .divAlignCenter{ 
-            background-color: rgb(85, 107, 47);
-            color: rgb(85, 107, 47);
-            margin: 15% 25%;
-            width: 50%;
-            height: 50%;
-         }
          .clear{
              clear:both;
          }
@@ -119,22 +73,20 @@
     <!-- Executa vídeo de abertura -->
     <!-- <video src='assets/videos/abertura.mp4' autoplay='true' width="100%" height="100%">; -->
 	
-
     <!-- Moldura da câmera -->
-    <!-- <div class="divs divFixed" style="z-index: 999;">
-        <img src="textures/hud/molduraCamera.png">
+    <!-- <div class="divs divFixed" style="z-index: 2;">
+        <img src="assets/gui/molduraCamera.png">
     </div>  -->
 
     <!-- Contexto do canvas # Testar se consigo exibir os conectores!!!!!!!!!--> 
     <!-- const canvasCtx = canvasOutput.getContext('3d'); -->
 
     <!-- Camera do Player -->
-    <div style="position: fixed; top: 29px; left: 11px; z-index: 100;" top="50px" left="350px">
+    <!-- <div style="position: fixed; top: 10px; left: 13px; z-index: 1;">
         <video class="input_video"></video>
         <canvas class="output_canvas" width="18%" height="20%"></canvas>
-    </div>
+    </div> -->
 
-    <canvas id="canvasPrimario"></canvas>
     
     <!-- [ESTIMATIVA TEMPORAL]: No aspecto relacionado à capacidade de analisar
     se o jogador superestima ou subestima o tempo de duração de um evento
@@ -148,7 +100,7 @@
     -->
         
     <!-- <div class="divs divEsquerda" style="z-index: 10;"> -->
-        <!-- <canvas id="canvasPrimario"</canvas> -->
+        <canvas id="canvasPrimario"</canvas>
         <script src="./js/job_1_ET.js"></script>
         <!-- <script src="./js/ex_01.js"></script> -->
     <!-- </div>  -->

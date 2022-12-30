@@ -615,7 +615,7 @@ var create_Tarefa = function () {
 
 const videoInput = document.getElementsByClassName('input_video')[0];
 const canvasOutput = document.getElementsByClassName('output_canvas')[0];
-const canvasCtx = canvasOutput.getContext('3d');
+// const canvasCtx = canvasOutput.getContext('3d');
 
 // function onResults(results) {
 //     // canvasCtx.save();

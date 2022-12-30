@@ -1,6 +1,18 @@
+// Mundo: 167 MB (29/12/2022)
+
+// chronos.gui
+// chronos.colide
+// chronos.efeito
+// chronos.movePlayer
+
 // Adicionar elementos no mundo que testem a percepção do tempo, além das tarefas
 
+// Obtém um elemento canvas do DOM (Modelo de Objeto de Documento) com o id "canvasPrimario".
+//  Este elemento canvas será utilizado para desenhar a cena 3D.
 var canvas = document.getElementById("canvasPrimario");
+
+// Antes de renderizar a cena, verifica se existe uma cena a ser renderizada (sceneToRender)
+//  e se essa cena possui uma câmera ativa.
 var startRenderLoop = function (engine, canvas) {
     engine.runRenderLoop(function () {
         if (sceneToRender && sceneToRender.activeCamera) {
@@ -74,14 +86,11 @@ var explosao = 'assets/sounds/effects/explosao.mp3';
 var chuva = 'assets/sounds/effects/chuva.mp3';
 var fogo = 'assets/sounds/effects/fogo.mp3';
 
-
-
-
-// 1ª ou 3ª pessoa
+//#checkbox 1ª ou 3ª pessoa
 var firstPerson = false;
 
 // Animações
-var skeleton_Heroi = null;
+var skeleton_Heroi = null; // utilizada para acessar e controlar o esqueleto do personagem.
 
 var idleAnim = null;
 var walkAnim = null;
@@ -89,29 +98,36 @@ var runAnim = null;
 var sprintAnim = null;
 var jumpAnim = null;
 
-//variables
-var animationBlend = 0.005;
-var mouseSensitivity = 0.0005;
-var cameraSpeed = 0.0075;
-var walkSpeed = 0.001;
-var runSpeed = 0.005;
-var sprintSpeed = 0.008;
-var jumpSpeed = 0.1;
-var jumpHeight = 0.5;
+var animationBlend = 0.005; // controla a velocidade com que as animações são misturadas entre si.
+var mouseSensitivity = 0.0005; // controla a sensibilidade do mouse ao mover a câmera.
+var cameraSpeed = 0.0075; // controla a velocidade da câmera ao se mover pelo cenário.
+
+var walkSpeed = 0.001; // controla a velocidade do personagem ao andar pelo cenário.
+var runSpeed = 0.005; // controla a velocidade do personagem ao correr pelo cenário.
+var sprintSpeed = 0.008; // controla a velocidade do personagem ao sprintar pelo cenário.
+var jumpSpeed = 0.1; // controla a velocidade do personagem ao pular.
+var jumpHeight = 0.5; //  controla a altura do salto do personagem.
+
+// o que significa que a gravidade é de 0 na direção X, -0.5 na direção Y e 0 na direção Z.
+//  Isso significa que o personagem cairá para baixo (na direção Y negativa) 
+// com uma força de gravidade de 0.5.
 var gravity = new BABYLON.Vector3(0, -0.5, 0);
 
 // Variáveis alteradas no jogo
-var speed = 0;
-var vsp = 0;
-var jumped = false;
-var mouseX = 0, mouseY = 0;
-var mouseMin = -35, mouseMax = 45;
-
-
+var speed = 0; // velocidade atual do personagem. O personagem está parado no início do jogo.
+var vsp = 0; // velocidade vertical do personagem. O personagem não está subindo ou descendo no início do jogo.
+var jumped = false; // indica se o personagem está saltando ou não.
+var mouseX = 0, mouseY = 0; // coordenadas atuais do mouse.
+var mouseMin = -35, mouseMax = 45; // limites mínimo e máximo de rotação da câmera em torno do eixo X.
 
 // Cenário do Mundo Exploratório
 var create_Mundo = function () {
+    
+    // Faz com que o motor de renderização baixe todos os recursos necessários 
+    // para a cena 3D e os armazene localmente, permitindo que a cena seja renderizada 
+    // mesmo quando o usuário estiver offline.
     // engine.enableOfflineSupport = false;
+    engine.enableOfflineSupport = true;
 
     // Utilizado para decomposeLerp e interpolação de matrizes
     // BABYLON.Animation.AllowMatricesInterpolation = true;
@@ -127,13 +143,13 @@ var create_Mundo = function () {
     scene_Mundo.gravity = new BABYLON.Vector3(0, -9.81, 0);
     // scene_Mundo.enablePhysics();
 
-    scene_Mundo.fogEnabled = true;
-    scene_Mundo.fogMode = BABYLON.Scene.FOGMODE_EXP2;
-	scene_Mundo.fogDensity = 0.01;
-    scene_Mundo.fogColor = new BABYLON.Color3(0.8, 0.9, 1.0);
-    scene_Mundo.clearColor = scene_Mundo.fogColor;
-
-
+    // Cria um efeito de neblina na cena, útil para esconder os limites do cenário
+    // e dar uma sensação de distância.
+    scene_Mundo.fogEnabled = true; // desabilitada
+    scene_Mundo.fogMode = BABYLON.Scene.FOGMODE_EXP2; // tipo de neblina
+	scene_Mundo.fogDensity = 0.01; // densidade da neblina
+    scene_Mundo.fogColor = new BABYLON.Color3(0.8, 10.9, 1.0); // cor da neblina
+    scene_Mundo.clearColor = scene_Mundo.fogColor; // A cor de limpeza da cena (a cor que é usada para limpar a tela a cada frame)
 
     // Adiciona a CÂMERA
     var camera = new BABYLON.UniversalCamera("camera", new BABYLON.Vector3.Zero(0, 0, 0), scene_Mundo);
@@ -594,10 +610,12 @@ var create_Mundo = function () {
 var identificadores = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 identificadores.idealWidth = 600;
 
-criaEtiqueta(identificadores, box, "Me siga!");
+// criaEtiqueta(identificadores, box, "Me siga!");
+var etiqueta_ = criaEtiqueta(identificadores, box, "Me siga!");
 // var target_1 = criaEtiqueta(identificadores, box, "Me siga!");  
 // var target_2 = criaEtiqueta(identificadores, box2, "Mentor");  
 
+identificadores.addControl(etiqueta_);
 //---------------------------------------------------------------------------------------
 
 
@@ -900,7 +918,18 @@ criaEtiqueta(identificadores, box, "Me siga!");
 
 
 
-
+    // Alterna entre diferentes animações em um personagem ou modelo 3D. 
+    // Ela recebe um parâmetro anim que é a animação para a qual deve mudar.
+    // A função cria um array de animações chamado anims que armazena as animações
+    //  idleAnim, runAnim, walkAnim e sprintAnim. 
+    // Em seguida, ela itera sobre cada animação no array e atualiza o peso 
+    // de cada animação de acordo com a animação passada como parâmetro. 
+    // Se a animação atual for igual a anim, o peso da animação é aumentado 
+    // usando a variável animationBlend e o delta time. Se não, o peso da animação 
+    // é diminuído usando a mesma variável e o delta time.
+    // Por fim, o peso de cada animação é limitado a um intervalo de 0 a 1 usando 
+    // a função clamp. Isso garante que o peso de cada animação não exceda o 
+    // intervalo permitido e evita erros.
     function switchAnimation(anim){
         var anims = [idleAnim, runAnim, walkAnim, sprintAnim];
         
@@ -918,15 +947,21 @@ criaEtiqueta(identificadores, box, "Me siga!");
     }
 
 
-    //tools #????
+    // Limita um valor a um intervalo específico, retornando o valor máximo 
+    //se o valor for maior do que o máximo, o valor mínimo se o valor for menor 
+    //do que o mínimo, e o próprio valor se estiver no intervalo. 
     function clamp(value, min, max){
         return (Math.max(Math.min(value, max), min));
     }
 
+    // Retorna um valor interpolado entre um início e um fim, 
+    // com base em uma velocidade específica
     function lerp(start, end, speed){
         return (start + ((end - start) * speed));
     }
 
+    // Faz uma interpolação linear entre dois vetores 3D 
+    // usando as funções lerp e BABYLON.Vector3.
     function lerp3(p1, p2, t){
         var x = lerp(p1.x, p2.x, t);
         var y = lerp(p1.y, p2.y, t);
@@ -993,7 +1028,7 @@ criaEtiqueta(identificadores, box, "Me siga!");
     //  box.ellipsoidOffset = new BABYLON.Vector3(0, 0, 0);
     //  drawEllipsoid(box);
 
-     box.checkCollisions = false; // VERMELHA
+     box.checkCollisions = true; // VERMELHA
 
 
      var box2 = BABYLON.MeshBuilder.CreateBox("box", {size: 2}, scene_Mundo);
@@ -1507,12 +1542,12 @@ criaEtiqueta(identificadores, box, "Me siga!");
     // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuRosa.hdr", scene_Mundo, 512);     
     // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuTropical.hdr", scene_Mundo, 512);     
     // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuCarregado.hdr", scene_Mundo, 512);     
-    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuAzul.hdr", scene_Mundo, 512);     
+    skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuAzul.hdr", scene_Mundo, 512);     
     // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/estacionamento.hdr", scene_Mundo, 512);     
     // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/escadarias.hdr", scene_Mundo, 512);     
     // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/predioNevoeiro.hdr", scene_Mundo, 512);     
     // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/montanhasNeve.hdr", scene_Mundo, 512);     
-    skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/montanhasRocha.hdr", scene_Mundo, 512);     
+    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/montanhasRocha.hdr", scene_Mundo, 512);     
     skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
     skybox.material = skyboxMaterial;
 
@@ -1868,8 +1903,10 @@ function explode_(){
     var skybox = BABYLON.Mesh.CreateBox("BackgroundSkybox", 500, scene_Mundo, undefined, BABYLON.Mesh.BACKSIDE);
     var skyboxMaterial = new BABYLON.BackgroundMaterial("backgroundMaterial", scene_Mundo);
     // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("assets/skybox/TropicalSunnyDay", scene_Mundo);
-    // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("assets/skybox/Cerebro", scene_Mundo);
-    skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets/skybox/1.hdr", scene_Mundo, 512);
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("assets/skybox/Cerebro", scene_Mundo);
+    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets/skybox/1.hdr", scene_Mundo, 512);
+    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets/skybox/nebulaSky", scene_Mundo, 512);
+    
     //textures/forest.hdr
 
     
@@ -2282,7 +2319,7 @@ const cameraPlayer = new Camera(videoInput, {
     onFrame: async () => {
         await hand.send({ image: videoInput });
     },
-    width: 350,
+    width: 310,
     height: 180
 });
 
