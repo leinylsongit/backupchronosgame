@@ -1,160 +1,184 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta http-equiv="content-type" charset="utf-8"/>
-  <title>MENU</title>
-  <style>
-	body {
-	  font-family: Alegreya Sans;
-	  background: #048701f0;
-	}
-	.menu {
-	  position: relative;
-	  background: #007bff;
-	  width: 3em;
-	  height: 3em;
-	  border-radius: 5em;
-	  margin: auto;
-	  margin-top: 21em;
-	  margin-right: 34em;
-	  margin-bottom: 5em;
-	  cursor: crosshair;
-	  border: 2em solid #fff201;
-	}
-	.menu:after {
-	  content: "";
-	  position: absolute;
-	  top: 1em;
-	  left: 1em;
-	  width: 1em;
-	  height: 0.2em;
-	  border-top: 0.6em double #fff;
-	  border-bottom: 0.2em solid #fff;
-	}
-	.menu ul {
-	  list-style: none;
-	  padding: 0;
-	}
-	.menu li {
-	  width: 9em;
-	  height: 1.4em;
-	  padding: 0.2em;
-	  margin-top: 0.2em;
-	  text-align: center;
-	  border-top-right-radius: 0.5em;
-	  border-bottom-right-radius: 0.5em;
-	  transition: all 1s;
-	  background: #fff201;
-	  opacity: 0;
-	  z-index: -1;
-	}
-	.menu:hover li {
-	  opacity: 1;
-	}
-	.menu:hover ul::before {
-	  position: absolute;
-	  content: "";
-	  width: 0;
-	  height: 0;
-	  display: block;
-	  left: 50%;
-	  top: -5.0em;
-	  border-width: 6.5em;
-	  border-radius: 0 7.5em 7.5em 0;
-	  border-left: 0;
-	  border-style: solid;
-	  border-color: rgba(0,0,0,0.01);
-	  z-index: -1;
-	  cursor: default;
-	}
-	.menu a {
-	  color: #000000f0;
-	  text-decoration: none;
-	  line-height: 1.5em;
-	}
-	.menu ul {
-	  transform: rotate(180deg) translateY(-2em);
-	  transition: 1s all;
-	}
-	.menu:hover ul {
-	  transform: rotate(0deg) translateY(-1em);
-	}
-	.menu li:hover {
-	  background: #007bff;
-	  z-index: 10;
-	}
-	.menu li:nth-of-type(1) {
-	  transform: rotate(-90deg);
-	  position: absolute;
-	  left: -3.2em;
-	  top: -7.2em;
-	}
-	.menu li:nth-of-type(2) {
-	  transform: rotate(-67.5deg);
-	  position: absolute;
-	  left: -0.3em;
-	  top: -6.5em;
-	}
-	.menu li:nth-of-type(3) {
-	  transform: rotate(-45deg);
-	  position: absolute;
-	  left: 2.3em;
-	  top: -5.0em;
-	}
-	.menu li:nth-of-type(4) {
-	  transform: rotate(-22.5deg);
-	  position: absolute;
-	  left: 4.0em;
-	  top: -2.5em;
-	}
-	.menu li:nth-of-type(5) {
-	  position: absolute;
-	  left: 4.4em;
-	  top: 0.4em;
-	}
-	.menu li:nth-of-type(6) {
-	  transform: rotate(22.5deg);
-	  position: absolute;
-	  left: 4.0em;
-	  top: 3.3em;
-	}
-	.menu li:nth-of-type(7) {
-	  transform: rotate(45deg);
-	  position: absolute;
-	  left: 2.3em;
-	  top: 5.8em;
-	}
-	.menu li:nth-of-type(8) {
-	  transform: rotate(67.5deg);
-	  position: absolute;
-	  left: -0.3em;
-	  top: 7.3em;
-	}
-	.menu li:nth-of-type(9) {
-	  transform: rotate(90deg);
-	  position: absolute;
-	  left: -3.2em;
-	  top: 8.0em;
-	}
-	.menu li:nth-of-type(10) {
-	  transform: rotate(112.5deg);
-	  position: absolute;
-	  left: -6.1em;
-	  top: 7.3em;
-	}
-	.menu li:nth-of-type(11) {
-	  transform: rotate(135deg);
-	  position: absolute;
-	  left: -8.6em;
-	  top: 5.8em;
-	}
-	.menu li:nth-of-type(12) {
-	  transform: rotate(157.5deg);
-	  position: absolute;
-	  left: -10.3em;
-	  top: 3.3em;
-	}
-	/*.menu li:nth-of-type(13) {
+	<meta http-equiv="content-type" charset="utf-8" />
+	<title>MENU</title>
+	<style>
+		body {
+			font-family: Alegreya Sans;
+			background: #048701f0;
+		}
+
+		.menu {
+			position: relative;
+			background: #007bff;
+			width: 3em;
+			height: 3em;
+			border-radius: 5em;
+			margin: auto;
+			margin-top: 21em;
+			margin-right: 34em;
+			margin-bottom: 5em;
+			cursor: crosshair;
+			border: 2em solid #fff201;
+		}
+
+		.menu:after {
+			content: "";
+			position: absolute;
+			top: 1em;
+			left: 1em;
+			width: 1em;
+			height: 0.2em;
+			border-top: 0.6em double #fff;
+			border-bottom: 0.2em solid #fff;
+		}
+
+		.menu ul {
+			list-style: none;
+			padding: 0;
+		}
+
+		.menu li {
+			width: 9em;
+			height: 1.4em;
+			padding: 0.2em;
+			margin-top: 0.2em;
+			text-align: center;
+			border-top-right-radius: 0.5em;
+			border-bottom-right-radius: 0.5em;
+			transition: all 1s;
+			background: #fff201;
+			opacity: 0;
+			z-index: -1;
+		}
+
+		.menu:hover li {
+			opacity: 1;
+		}
+
+		.menu:hover ul::before {
+			position: absolute;
+			content: "";
+			width: 0;
+			height: 0;
+			display: block;
+			left: 50%;
+			top: -5.0em;
+			border-width: 6.5em;
+			border-radius: 0 7.5em 7.5em 0;
+			border-left: 0;
+			border-style: solid;
+			border-color: rgba(0, 0, 0, 0.01);
+			z-index: -1;
+			cursor: default;
+		}
+
+		.menu a {
+			color: #000000f0;
+			text-decoration: none;
+			line-height: 1.5em;
+		}
+
+		.menu ul {
+			transform: rotate(180deg) translateY(-2em);
+			transition: 1s all;
+		}
+
+		.menu:hover ul {
+			transform: rotate(0deg) translateY(-1em);
+		}
+
+		.menu li:hover {
+			background: #007bff;
+			z-index: 10;
+		}
+
+		.menu li:nth-of-type(1) {
+			transform: rotate(-90deg);
+			position: absolute;
+			left: -3.2em;
+			top: -7.2em;
+		}
+
+		.menu li:nth-of-type(2) {
+			transform: rotate(-67.5deg);
+			position: absolute;
+			left: -0.3em;
+			top: -6.5em;
+		}
+
+		.menu li:nth-of-type(3) {
+			transform: rotate(-45deg);
+			position: absolute;
+			left: 2.3em;
+			top: -5.0em;
+		}
+
+		.menu li:nth-of-type(4) {
+			transform: rotate(-22.5deg);
+			position: absolute;
+			left: 4.0em;
+			top: -2.5em;
+		}
+
+		.menu li:nth-of-type(5) {
+			position: absolute;
+			left: 4.4em;
+			top: 0.4em;
+		}
+
+		.menu li:nth-of-type(6) {
+			transform: rotate(22.5deg);
+			position: absolute;
+			left: 4.0em;
+			top: 3.3em;
+		}
+
+		.menu li:nth-of-type(7) {
+			transform: rotate(45deg);
+			position: absolute;
+			left: 2.3em;
+			top: 5.8em;
+		}
+
+		.menu li:nth-of-type(8) {
+			transform: rotate(67.5deg);
+			position: absolute;
+			left: -0.3em;
+			top: 7.3em;
+		}
+
+		.menu li:nth-of-type(9) {
+			transform: rotate(90deg);
+			position: absolute;
+			left: -3.2em;
+			top: 8.0em;
+		}
+
+		.menu li:nth-of-type(10) {
+			transform: rotate(112.5deg);
+			position: absolute;
+			left: -6.1em;
+			top: 7.3em;
+		}
+
+		.menu li:nth-of-type(11) {
+			transform: rotate(135deg);
+			position: absolute;
+			left: -8.6em;
+			top: 5.8em;
+		}
+
+		.menu li:nth-of-type(12) {
+			transform: rotate(157.5deg);
+			position: absolute;
+			left: -10.3em;
+			top: 3.3em;
+		}
+
+		/*.menu li:nth-of-type(13) {
 	  transform: rotate(180deg);
 	  position: absolute;
 	  left: -10.8em;
@@ -178,57 +202,131 @@
 	  left: -6.1em;
 	  top: -6.5em;
 	} */
-	.hint {
-	  text-align: center;
-	}
-	.right {
-	  text-align: right;
-	}
-  </style>
+		.hint {
+			text-align: center;
+		}
+
+		.right {
+			text-align: right;
+		}
+	</style>
+
+<!-- Opção de menu 1 -->
+	<!-- <style>
+		.nav-menu {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		.nav-menu li {
+			display: inline-block;
+		}
+
+		.nav-menu li a {
+			text-decoration: none;
+			color: #000;
+			font-size: 18px;
+			padding: 10px 15px;
+		}
+
+		.nav-menu li a:hover {
+			background-color: #ddd;
+			color: #000;
+			-webkit-animation: pulse 1s ease infinite alternate;
+		}
+
+		@keyframes pulse {
+			from {
+				transform: scale(1);
+			}
+
+			to {
+				transform: scale(1.2);
+			}
+		}
+	</style>
+
+	<ul class="nav-menu">
+		<li><a href="#">Home</a></li>
+		<li><a href="#">About</a></li>
+		<li><a href="#">Contact</a></li>
+	</ul> -->
+
+<!-- Opção de menu 2 -->
+<!-- <div class="dropdown-menu">
+	<a href="#" class="dropdown-item">Home</a>
+	<a href="#" class="dropdown-item">Sobre</a>
+	<a href="#" class="dropdown-item">Serviços</a>
+	<div class="dropdown-divider"></div>
+	<a href="#" class="dropdown-item">Contato</a>
+  </div> -->
+
+<!-- Opção de menu 3 -->
+<!-- <ul class="icon-menu">
+	<li><i class="fas fa-home"></i><span>Home</span></li> 
+	<li><i class="fas fa-info"></i><span>Sobre</span></li>  
+	<li><i class="fas fa-cog"></i><span>Serviços</span></li>  
+	<li><i class="fas fa-envelope"></i><span>Contato</span></li>  
+  </ul> -->
+
+<!-- Opção de menu 4 -->
+<!-- <nav id="rightSideMenu">  											   
+    <ul id="menuList">  		   	   
+        <li data-animation='slideInRight' ><a href="#home">Home</a></li>  	   
+        <li data-animation='slideInRight' ><a href="#about">Sobre</a></li>  	   
+        <li data-animation='slideInRight' ><a href="#services">Serviços</a></li>  	   
+        <li data-animation ='slideInRight'><a href = "#contact">Contato</a></li>  	   
+
+    </ul>  	    
+
+ </nav> -->
 </head>
 
 <body>
 
-<h3 class="right">Versão 0.1 - 30/12/22</h3>
+	<h3 class="right">Versão 0.1 - 30/12/22</h3>
+	<nav class="menu">
+		<ul>
+			<!-- <li><a href="./Mundo.html" title="Explorar o mundo">Carrega Labirinto .glb</a></li> -->
+			<li><a href="./Mundo_Labirinto.html" title="Explorar o labirinto">Gera Labirintos box</a></li>
+			<!-- <li><a href="./Mundo_Labirinto.html" title="Explorar o labirinto">Gera Labirintos box</a></li> -->
 
-<nav class="menu">
-  <ul>
-    <li><a href="./Mundo.html" title="Explorar o mundo">Mundo</a></li>
-    
-	<li><a href="./job_1_ET.html" title="1ª Tarefa de Estimativa de Tempo">1ª Estimativa</a></li>
-	<li><a href="./job_2_ET.html" title="2ª Tarefa de Estimativa de Tempo">2ª Estimativa</a></li>
-	<li><a href="./job_3_ET.html" title="3ª Tarefa de Estimativa de Tempo">3ª Estimativa</a></li>
+			<!-- <li><a href="./job_1_ET.html" title="1ª Tarefa de Estimativa de Tempo">1ª Estimativa</a></li>
+			<li><a href="./job_2_ET.html" title="2ª Tarefa de Estimativa de Tempo">2ª Estimativa</a></li>
+			<li><a href="./job_3_ET.html" title="3ª Tarefa de Estimativa de Tempo">3ª Estimativa</a></li> -->
 
-	<!-- <li><a href="./job_1_PT.html" title="1ª Tarefa de Produção de Tempo">1ª Produção</a></li>
+			<!-- <li><a href="./job_1_PT.html" title="1ª Tarefa de Produção de Tempo">1ª Produção</a></li>
 	<li><a href="./job_2_PT.html" title="2ª Tarefa de Produção de Tempo">2ª Produção</a></li>
 	<li><a href="./job_3_PT.html" title="3ª Tarefa de Produção de Tempo">3ª Produção</a></li> -->
 
-	<!-- <li><a href="./job_1_RT.html" title="1ª Tarefa de Reprodução de Tempo">1ª Reprodução</a></li>
+			<!-- <li><a href="./job_1_RT.html" title="1ª Tarefa de Reprodução de Tempo">1ª Reprodução</a></li>
 	<li><a href="./job_2_RT.html" title="2ª Tarefa de Reprodução de Tempo">2ª Reprodução</a></li>
 	<li><a href="./job_3_RT.html" title="3ª Tarefa de Reprodução de Tempo">3ª Reprodução</a></li> -->
 
-	<!-- <li><a href="./job_test_MT.html" title="1ª Tarefa de Memória de Trabalho">1ª Memória</a></li> -->
-	<!-- <li><a href="./job_1_MT.html" title="1ª Tarefa de Memória de Trabalho">1ª Memória</a></li>
+			<!-- <li><a href="./job_test_MT.html" title="1ª Tarefa de Memória de Trabalho">1ª Memória</a></li> -->
+			<!-- <li><a href="./job_1_MT.html" title="1ª Tarefa de Memória de Trabalho">1ª Memória</a></li>
 	<li><a href="./job_2_MT.html" title="2ª Tarefa de Memória de Trabalho">2ª Memória</a></li>
 	<li><a href="./job_3_MT.html" title="3ª Tarefa de Memória de Trabalho">3ª Memória</a></li>  -->
+<!-- 
+			<li><a href="./Babylon_105_animated_earth.html" title="Terra animada">Animação da Terra</a></li>
+			<li><a href="./Babylon_202_skybox+ground.html" title="Skybox com ground">BG & Ground</a></li>
+			<li><a href="./Babylon_203_dds.html" title="Background com dds files">BG by DDS</a></li> -->
 
-    <li><a href="./Babylon_105_animated_earth.html" title="Terra animada">Animação da Terra</a></li>
-    <li><a href="./Babylon_202_skybox+ground.html" title="Skybox com ground">BG & Ground</a></li>
-    <li><a href="./Babylon_203_dds.html" title="Background com dds files">BG by DDS</a></li>
+			<!-- <li><a href="./Babylon_301_Sel_babylon.html" title="Babylon Demo">Demo</a></li> -->
+			<!-- <li><a href="./Babylon_302_Sel_BG&babylon.html" title="Babylon files with background">Babylon</a></li> -->
+			<!-- <li><a href="./Babylon_401_cameras.html" title="Cameras">Cameras</a></li> -->
+			<!-- <li><a href="./Babylon_501_walk.html" title="NPC andando pela cena">NPC andando</a></li> -->
+			<!-- <li><a href="./Babylon_502_maze.html" title="16. 3D Maze with Walking Animation">16. 3D Maze</a></li> -->
+		</ul>
+	</nav>
 
-	<!-- <li><a href="./Babylon_301_Sel_babylon.html" title="Babylon Demo">Demo</a></li> -->
-    <!-- <li><a href="./Babylon_302_Sel_BG&babylon.html" title="Babylon files with background">Babylon</a></li> -->  
-    <!-- <li><a href="./Babylon_401_cameras.html" title="Cameras">Cameras</a></li> -->
-    <!-- <li><a href="./Babylon_501_walk.html" title="NPC andando pela cena">NPC andando</a></li> -->
-    <!-- <li><a href="./Babylon_502_maze.html" title="16. 3D Maze with Walking Animation">16. 3D Maze</a></li> -->
-  </ul>
-</nav>
-
-<!-- Moldura dos HUDs -->
-<div style="position: fixed; top: 0px; left: 0px; z-index: -2;">
+	<!-- Moldura dos HUDs -->
+	<!-- <div style="position: fixed; top: 0px; left: 0px; z-index: -2;"> -->
 	<!-- <video src="assets/videos/Abertura.mp4" autoplay="true";  width="160%"; height="100%"> -->
-	<video src="assets/videos/Menu.mp4" autoplay="true";  width="160%"; height="100%"></video>
-</div> 
+	<!-- <video src="assets/videos/Menu.mp4" autoplay="true";  width="160%"; height="100%"></video> -->
+	<!-- </div>  -->
 
 </body>
+
 </html>

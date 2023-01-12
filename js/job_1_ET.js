@@ -8,9 +8,7 @@ var startRenderLoop = function (engine, canvas) {
     });
 }
 
-var engine = null;
 var job_1RT2 = null;
-var sceneToRender = null;
 
 var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
 var recognition = new SpeechRecognition();
@@ -94,7 +92,6 @@ var create_Tarefa = function () {
 //     });
 //   //  manager.addControl(button);
     
-
     //# EXTRAIR FUNÇÃO DO HUD ABAIXO
     // HUD (Heads-Up Display)>>>------------------------------------------------------------------------->
 //     var clicks = 0;

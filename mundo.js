@@ -1,3 +1,4 @@
+// "use strict"; // altera o comportamento de alguns scripts de forma a evitar erros comuns e aumentar a segurança do código.
 // Mundo: 167 MB (29/12/2022)
 
 // chronos.gui
@@ -13,6 +14,8 @@ var canvas = document.getElementById("canvasPrimario");
 
 // Antes de renderizar a cena, verifica se existe uma cena a ser renderizada (sceneToRender)
 //  e se essa cena possui uma câmera ativa.
+var sceneToRender = null;
+
 var startRenderLoop = function (engine, canvas) {
     engine.runRenderLoop(function () {
         if (sceneToRender && sceneToRender.activeCamera) {
@@ -21,9 +24,6 @@ var startRenderLoop = function (engine, canvas) {
     });
 }
 
-var engine = null;
-var scene = null;
-var sceneToRender = null;
 
 var createDefaultEngine = function () {
     return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false });
@@ -40,10 +40,14 @@ const abelha = './assets/animais/Bee.glb';
 
 // Elementos de construções
 // const towerURL = "assets/ambiente/tower/TowerHouse.obj";
-const labirinto = './assets/ambiente/labirinto_01.glb';
-// const labirinto = './assets/ambiente/labirinto/maze1.glb';
-// const labirinto = './assets/ambiente/labirinto/maze2/recursive-backtracking-maze-example.obj';
+// const labirinto = './assets/ambiente/labirinto_01.glb';
+const labirinto = './assets/ambiente/labirinto/maze1.glb';
+// const labirinto = './assets/ambiente/labirinto/maze2.obj';
 
+// Carregue o labirinto como um objeto 3D
+// const labirinto = BABYLON.OBJFileLoader.Load("assets/ambiente/labirinto/maze2.obj");
+
+    
 // SIG
 // const sig = './assets/personagens/npc/sig.glb';
 
@@ -71,7 +75,6 @@ const pilha_folhas = './assets/plantas/Pilha de folhas.glb';
 // Skyboxes 
 const atmosfera = 'assets/skybox/TropicalSunnyDay';
 // const atmosfera = 'assets/skybox/TropicalSunnyDay';
-
 
 
 // Elementos sonoros--------------------------------------------------------------
@@ -126,8 +129,8 @@ var create_Mundo = function () {
     // Faz com que o motor de renderização baixe todos os recursos necessários 
     // para a cena 3D e os armazene localmente, permitindo que a cena seja renderizada 
     // mesmo quando o usuário estiver offline.
-    // engine.enableOfflineSupport = false;
-    engine.enableOfflineSupport = true;
+    engine.enableOfflineSupport = false;
+    // engine.enableOfflineSupport = true;
 
     // Utilizado para decomposeLerp e interpolação de matrizes
     // BABYLON.Animation.AllowMatricesInterpolation = true;
@@ -145,22 +148,36 @@ var create_Mundo = function () {
 
     // Cria um efeito de neblina na cena, útil para esconder os limites do cenário
     // e dar uma sensação de distância.
-    scene_Mundo.fogEnabled = true; // desabilitada
+    scene_Mundo.fogEnabled = false; // desabilitada
     scene_Mundo.fogMode = BABYLON.Scene.FOGMODE_EXP2; // tipo de neblina
 	scene_Mundo.fogDensity = 0.01; // densidade da neblina
     scene_Mundo.fogColor = new BABYLON.Color3(0.8, 10.9, 1.0); // cor da neblina
     scene_Mundo.clearColor = scene_Mundo.fogColor; // A cor de limpeza da cena (a cor que é usada para limpar a tela a cada frame)
 
     // Adiciona a CÂMERA
-    var camera = new BABYLON.UniversalCamera("camera", new BABYLON.Vector3.Zero(0, 0, 0), scene_Mundo);
+    // var camera = new BABYLON.UniversalCamera("camera", new BABYLON.Vector3.Zero(0, 0, 0), scene_Mundo);
+
+    var camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 4, 10, new BABYLON.Vector3(0, 0, 30), scene_Mundo);
     
     // var camera = new BABYLON.VirtualJoysticksCamera("VJ_camera", new BABYLON.Vector3(0, 1, -15), scene_Mundo);
     
-    camera.inputs.clear();
+    scene_Mundo.activeCamera = camera;
+    scene_Mundo.activeCamera.attachControl(canvas, true);// para usar o scrool deve estar habilitada
 
-    camera.ellipsoid = new BABYLON.Vector3(0.5,1, 0.5);
-    // drawEllipsoid(camera);
+    camera.lowerRadiusLimit = 5; // Limite de zoom in
+    camera.upperRadiusLimit = 100; // Limite de zoom out
+    camera.wheelDeltaPercentage = 0.01; // Velocidade do zoom do mouse
+    camera.radius = 30;
+    // camera.lowerBetaLimit = 0.1; // Limite da visão inferior
+    // camera.upperBetaLimit = (Math.PI / 2) * 0.9; // Limite da visão superior
+    // camera.pinchDeltaPercentage = 0.01;
     // camera.minZ = 0.1;
+
+    // camera.inputs.clear();
+
+    // camera.ellipsoid = new BABYLON.Vector3(0.5,1, 0.5);
+    // drawEllipsoid(camera);
+
 
 
     // Adiciona as fontes de LUZ 
@@ -171,19 +188,21 @@ var create_Mundo = function () {
 
     // scene_Mundo.createDefaultCameraOrLight(false, false, false);// FUNCIONA BLZ
 
-    var dirLight = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(0, -0.5, -1.0), scene_Mundo);
-    dirLight.position = new BABYLON.Vector3(0, 130, 130);
+    // Adiciona as LUZES
+    var light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene_Mundo);
+    light1.intensity = 0.6;
+    light1.specular = BABYLON.Color3.Black();
 
-    // Ponto de luz
+    var light2 = new BABYLON.DirectionalLight("dir01", new BABYLON.Vector3(0, -0.5, -1.0), scene_Mundo);
+    light2.position = new BABYLON.Vector3(0, 5, 5);
+
     // var lightPoint = new BABYLON.PointLight("PointLight", new BABYLON.Vector3(20, 20, 10), scene_Mundo);
     // lightPoint.intensity = 0.7;
 
 
     // Adiciona as SOMBRAS
-    var shadowGenerator = new BABYLON.ShadowGenerator(3072, dirLight);
-    // var shadowGenerator = new BABYLON.ShadowGenerator(3072, lightPoint);
-    // var shadowGenerator = new BABYLON.ShadowGenerator(3072, hemLight);
-    shadowGenerator.usePercentageCloserFiltering = true;
+    // var shadowGenerator = new BABYLON.ShadowGenerator(3072, light2);
+    // shadowGenerator.usePercentageCloserFiltering = true;
     
     
     
@@ -212,7 +231,6 @@ var create_Mundo = function () {
     // grade.majorUnitFrequency = 10;    
     // ground.fogEnabled = true;
     ground.material = grade;
-    
     // ground.visibility = false; //Oculta o elemento
 
     // Cria uma repetição do material 
@@ -224,13 +242,9 @@ var create_Mundo = function () {
     // ground.material = texturaNitLab;
 
 
-    var addShadows = function(mesh){
-        mesh.receiveShadows = true;
-        shadowGenerator.addShadowCaster(mesh);
-    }
-
-    // var addToMirror = function(mesh){
-    //     helper.groundMirrorRenderList.push(mesh);
+    // var addShadows = function(mesh){
+    //     mesh.receiveShadows = true;
+    //     shadowGenerator.addShadowCaster(mesh);
     // }
 
     //tps ???
@@ -307,6 +321,7 @@ var create_Mundo = function () {
     engine.displayLoadingUI();
 
 
+    // Carrega o Player
     BABYLON.SceneLoader.ImportMesh("", "", player, scene_Mundo, function (mesh_Heroi, particleSystems, skeletons_Heroi){
         skeleton_Heroi = skeletons_Heroi[0];
 
@@ -358,17 +373,17 @@ var create_Mundo = function () {
         walkAnim = scene_Mundo.beginWeightedAnimation(skeleton_Heroi, walkRange.from+1, walkRange.to, 0, true);
 		runAnim = scene_Mundo.beginWeightedAnimation(skeleton_Heroi, runRange.from+1, runRange.to, 0, true);
         sprintAnim = scene_Mundo.beginWeightedAnimation(skeleton_Heroi, sprintRange.from+1, sprintRange.to, 0, true);
-        //jumpAnim = scene_Mundo.beginWeightedAnimation(skeleton_Heroi, jumpRange.from+1, jumpRange.to, 0, true);
+        jumpAnim = scene_Mundo.beginWeightedAnimation(skeleton_Heroi, jumpRange.from+1, jumpRange.to, 0, true);
 		
     
         // #TIRAR!!!!// Elipse para verificar as colisões 
-        main.ellipsoid = new BABYLON.Vector3(0.5, 1, 0.5);
-        main.ellipsoidOffset = new BABYLON.Vector3(0, 0.9, 0);
+        // main.ellipsoid = new BABYLON.Vector3(0.5, 1, 0.5);
+        // main.ellipsoidOffset = new BABYLON.Vector3(0, 0.9, 0);
         // drawEllipsoid(main);
 
         main.checkCollisions = false;  
         
-        character.ellipsoidOffset = new BABYLON.Vector3(0, 0.9, 0);
+        // character.ellipsoidOffset = new BABYLON.Vector3(0, 0.9, 0);
         // drawEllipsoid(character);
         
         
@@ -392,7 +407,7 @@ var create_Mundo = function () {
 
 
 
-        // Oculta a animação de carregando
+        // # Procurar o lcoal correto para isso.  Oculta a animação de carregando
         engine.hideLoadingUI();
 
 
@@ -427,10 +442,7 @@ var create_Mundo = function () {
                 // mesh_Heroi.position = new BABYLON.Vector3(j[4].x*(6), 0, 0);//x (desloca ao mover horizontalmente)
 
                 // mesh_Heroi.position = new BABYLON.Vector3(j[4].x*(3), j[8].y * 0.4, 0);
-                
-                
-                
-                
+                            
                 
                 //# Habilitar o zoom para funcionas apenas com a mão esquerda!!!!!!!!!!
                 // camera.position = new BABYLON.Vector3(1, 1.5, j[12].z * -60); // zoom quando aproxima ou afasta o dedo
@@ -439,19 +451,11 @@ var create_Mundo = function () {
                 // camera.position = new BABYLON.Vector3(1, 1.5, j[0].z * -60); // zoom quando aproxima ou afasta o dedo
 
 
-
-
                 console.log("j: ",j);
                 console.log("j[4].x: ",j[4].x);
                 console.log("j[8].y: ",j[8].y);
             }
         };
-
-
-
-
-
-
 
         // Interação com Camera usando a mão
         // control_Player(Camera, scene_Mundo);
@@ -486,12 +490,66 @@ var create_Mundo = function () {
         //     }
         // };
 
+        
+        
+        
+        // Fazer player mover para local do clique
+
+//         scene_Mundo.registerBeforeRender(function (){
+// // Obtém a malha do personagem
+// // var character = scene_Mundo.getMeshByName("character");
+// // var event;
+// // Adiciona um evento de clique do mouse à cena
+// scene_Mundo.onPointerObservable.add(function(event) {
+//   // Verifica se o evento é um clique do mouse
+//   if (event !== null && event !== undefined && event.type === BABYLON.PointerEventTypes.POINTERDOWN) {
+//     // Obtém a posição do clique na tela
+//   //  var clickPos = event.pointer.position;
+//     // Imprime a posição do clique na tela
+//     // console.log("Posição do clique: (" + clickPos.x + ", " + clickPos.y + ")");
+
+//     // Converte a posição do clique para coordenadas de mundo
+//     // var clickWorldPos = BABYLON.Vector3.Unproject(
+//     //   new BABYLON.Vector3(clickPos.x, clickPos.y, 0),
+//     //   scene_Mundo.getEngine().getRenderWidth(),
+//     //   scene_Mundo.getEngine().getRenderHeight(),
+//     //   BABYLON.Matrix.Identity()
+//     // );
+
+//     // Atualiza a posição do personagem para a posição do clique
+//     body.position.x = 0;
+//     joints.position.y += 0.01;
+//     body.position.z = 0;
+
+//     //main: move a camera e player juntos
+//     //target: move a camera 
+//     //body/character: move o player
+//   }
+// });
+        // });
+        //# Adiciona o LABIRINTO!!
+        BABYLON.SceneLoader.ImportMesh("", "", labirinto, scene_Mundo, function (mesh_Labirinto){
+            const Labirinto = mesh_Labirinto[0];
+
+            // labirinto = BABYLON.Mesh.MergeMeshes([mesh_Labirinto, box]);
+            // mesh_Labirinto[0].scaling = new BABYLON.Vector3(10, 1, 1);
+            // mesh_Labirinto[0].position = new BABYLON.Vector3(0, 5.1, 0);
+            // // addToMirror(mesh_Labirinto);
+            // // addShadows(mesh_Labirinto);
+            mesh_Labirinto.collisionsEnabled = true;
+            mesh_Labirinto.checkCollisions = true;
+
+    //         // Adicione colisão ao personagem
+    // player.addPhysics(null, BABYLON.PhysicsEngine.BoxImpostor, { mass: 1, restitution: 0.5 });
+    
+            // Adicione um componente de física às paredes do labirinto
+            // Labirinto.addPhysics(null, BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution: 0.9 });
+        });
+
+});
 
 
-        
-        // Devo add aqui todos os elementos com que for haver interação ou tirar?!
-        
-        // Adiciona a ABELHA
+    // Adiciona a ABELHA
         // var abelha = null;
         BABYLON.SceneLoader.ImportMesh("", "", abelha, scene_Mundo, function (mesh_Bee, particleSystems, skeletons_Bee) {
             mesh_Bee[0].scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
@@ -507,94 +565,7 @@ var create_Mundo = function () {
             mesh_Bee[0].checkCollisions = true;
 
             // Exibe a elipse que envolve a abelha
-            drawEllipsoid(mesh_Bee[0]);
-
-
-            //mesh_Bee[0].parent = main;
-
-            // scene_Mundo.registerBeforeRender(function () {
-
-                // if (mesh_Heroi.intersectsMesh(character, true)) {
-                //     console.log("Heroi colidiu no Character!")
-                //  box.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-                //     // box.dispose();
-                // }
-                // else{
-                //     console.log("Heroi não colidiu no Character!")
-                //     box.material.emissiveColor = new BABYLON.Color3(0, 0, 0); 
-                // }
-
-                if (main.intersectsMesh(mentor, true)) {
-                    console.log("MAIN colidiu na Abelha!")
-                 box.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-                    // box.dispose();
-                }
-                else{
-                    console.log("MAIN Não colidiu na Abelha!")
-                    box.material.emissiveColor = new BABYLON.Color3(0, 1, 0); 
-                }
-
-                if (body.intersectsMesh(mentor, true)) {
-                    console.log("Character colidiu na Abelha!")
-                 box.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-                    // box.dispose();
-                }
-                else{
-                    console.log("Character não colidiu na Abelha!")
-                    box.material.emissiveColor = new BABYLON.Color3(0, 1, 0); 
-                }
-
-                if (body.intersectsMesh(mesh_Bee, true)) {
-                    console.log("Heroi colidiu na Abelha!")
-                 box.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-                    // box.dispose();
-                }
-                else{
-                    console.log("Heroi não colidiu na Abelha!")
-                    box.material.emissiveColor = new BABYLON.Color3(0, 1, 0); 
-                }
-
-                if (body.intersectsMesh(target, true)) {
-                    console.log("Colidiu no Target!")
-                 box.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-                    // box.dispose();
-                }
-                else{
-                    console.log("Não colidiu no Target!")
-                    box.material.emissiveColor = new BABYLON.Color3(0, 0, 1); 
-                }
-
-                if (body.intersectsMesh(box, true)) {
-                    console.log("Colidiu na Caixa!")
-                 box.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-                    // box.dispose();
-                }
-                else{
-                    console.log("Não colidiu na Caixa!")
-                    box.material.emissiveColor = new BABYLON.Color3(0, 1, 0); 
-                }
-
-                if (main.intersectsMesh(box, true)) {
-                    console.log("MAIN colidiu na Caixa!")
-                 box.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-                    // box.dispose();
-                }
-                else{
-                    console.log("MAIN Não colidiu na Caixa!")
-                    box.material.emissiveColor = new BABYLON.Color3(0, 1, 0); 
-                }
-
-                if (mesh_Heroi.intersectsMesh(box, true)) {
-                    console.log("Colidiu na caixa!")
-                 box.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-                    // box.dispose();
-                }
-                else{
-                    console.log("Não colidiu na caixa!")
-                    box.material.emissiveColor = new BABYLON.Color3(0, 0, 0); 
-                }
-            // }); 
-            // }
+            // drawEllipsoid(mesh_Bee[0]);
 
             // skeleton_Bee = skeletons_Bee[];
 
@@ -602,122 +573,7 @@ var create_Mundo = function () {
             // flyBee_Anim = scene_Mundo.beginWeightedAnimation(skeleton_Bee, flyBee.from, flyBee.to, 0, true);
 
             // flyBee_Anim;
-
-
-
-
-// IDENTIFICADORES DE ELEMENTOS NO AMBIENTE ------------------------------------------
-var identificadores = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-identificadores.idealWidth = 600;
-
-// criaEtiqueta(identificadores, box, "Me siga!");
-var etiqueta_ = criaEtiqueta(identificadores, box, "Me siga!");
-// var target_1 = criaEtiqueta(identificadores, box, "Me siga!");  
-// var target_2 = criaEtiqueta(identificadores, box2, "Mentor");  
-
-identificadores.addControl(etiqueta_);
-//---------------------------------------------------------------------------------------
-
-
-
-
-
-// HUD (Heads-Up Display)>>>------------------------------------------------------------------------->
-    var gui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("GUI");
-    // gui.idealWidth = 600; // # testar alterar o tamanho
-    
-    // 2. Pontuação e tentativas
-    var textblockStatus = new BABYLON.GUI.TextBlock();
-    textblockStatus.text = "Pontuação: 0\n Tentativas restantes: 1/3"; //add a variável da tentativa 1/3, 2/3...
-    textblockStatus.fontSize = 20;
-    textblockStatus.fontFamily = "Segoe UI"
-    textblockStatus.height = "60px";
-    textblockStatus.width = "30%";
-    textblockStatus.top = 0;
-    textblockStatus.color = "white";
-    textblockStatus.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-    textblockStatus.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    gui.addControl(textblockStatus);
-
-    // 3. Botão Start
-    var Button_Start = BABYLON.GUI.Button.CreateSimpleButton("butStart", "W>> INTERAGIR <<");
-    Button_Start.width = "400px";
-    // Button_Start.width = "30%";
-    Button_Start.height = "65px";
-    Button_Start.color = "white";
-    Button_Start.fontSize = 30;
-    Button_Start.fontFamily = "Segoe UI"
-    Button_Start.cornerRadius = 20;
-    Button_Start.background = "green";
-    Button_Start.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-
-    Button_Start.onPointerUpObservable.add(function () {
-        Button_Start.children[0].text = ">> INTERAGIR <<";
-           
-        // Sbtrair individualmente e depois soma os resultados de cada eixo
-        var distancia_X = mesh_Bee[0].position.x - main.position.x;
-        var distancia_Y = mesh_Bee[0].position.y - main.position.y;
-        var distancia_Z = mesh_Bee[0].position.z - main.position.z;
-        dist_Total = distancia_X + distancia_Y + distancia_Z;
-
-        textblockStatus.text = dist_Total;
-
-        if (dist_Total >= 1){
-            if (dist_Total <= 3){
-                console.log("Colidiu com distância ", dist_Total);
-                textblockStatus.text = "Colisão com abelha";
-            }
-
-        }
-
-
-
-        // var distancia_Y = mesh_Bee[0].position.y - main.position.y;
-        // console.log(mesh_Bee[0].position);
-
-        // var distancia_Y = character.position.y - main.position.y;
-        // console.log(character.position);
-
-        // var distancia_Y = target.position.y - main.position.y;
-        // console.log(target.position);
-
-        // var distancia_Y = camera.position.y - main.position.y;
-        // console.log(camera.position);
-
-        // var distancia_Y = mesh_Heroi.position.y - main.position.y;
-        // console.log(mesh_Heroi.position);
-
-        // textblockStatus.text = distancia_Y;
-
-        // if (distancia_Y >= 1){
-        //     if (distancia_Y <= 4){
-        //         console.log("Colidiu!");
-        //         textblockStatus.text = "Colisão com abelha";
-        //     }
-
-        // }
-        
-    });
-    gui.addControl(Button_Start);
-
-    
-    // 5. Regras da tarefa
-    var textblockRegras = new BABYLON.GUI.TextBlock();
-    textblockRegras.text = "1. Aproxime-se de algum elemento\n 2.  Click no botão [INTERAGIR]\n";
-    textblockRegras.fontSize = 30;
-    textblockRegras.fontFamily = "Segoe UI"
-    textblockRegras.height = "150px";
-    textblockRegras.top = "80px";
-    textblockRegras.color = "Yellow";
-    // textblockRegras.background = "black";
-    textblockRegras.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-    textblockRegras.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    gui.addControl(textblockRegras);
-
-    });
-
-
-    }, function(evt){} ); // ??
+    }); 
 
 
     // Determina as teclas das ações
@@ -778,10 +634,24 @@ identificadores.addControl(etiqueta_);
             new BABYLON.Vector3(
                 BABYLON.Tools.ToRadians(mouseY),
                 BABYLON.Tools.ToRadians(mouseX), 0
+                // BABYLON.Tools.ToRadians(target.rotation.x),
+                // BABYLON.Tools.ToRadians(target.rotation.y), 0
             ), cameraSpeed*deltaTime
         );
     }
 
+
+    // function updateCamera(){
+    //     main.rotation = lerp3(
+    //         main.rotation, 
+    //         new BABYLON.Vector3(
+    //             BABYLON.Tools.ToRadians(mouseY),
+    //             BABYLON.Tools.ToRadians(mouseX), 0
+    //             // BABYLON.Tools.ToRadians(target.rotation.x),
+    //             // BABYLON.Tools.ToRadians(target.rotation.y), 0
+    //         ), cameraSpeed*deltaTime
+    //     );
+    // }
 
 
 
@@ -792,19 +662,6 @@ identificadores.addControl(etiqueta_);
             cameraSpeed*deltaTime
         );
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -829,15 +686,30 @@ identificadores.addControl(etiqueta_);
                 speed = lerp(speed, sprintSpeed, sprintAnim.weight);
             }
 
+            // Move o player nas 4 direções (OK)
             var rotation = (target.rotation.y+direction) % 360;
             character.rotation.y = lerp(
                 character.rotation.y, rotation, 0.25
             );
             
+            // # Move a camera na visão do player (Bug)
+            //  var rotation = (target.rotation.y+direction) % 360;
+            // main.rotation.y = lerp(
+            //     main.rotation.y, rotation, 0.25
+            // );
+            
+            // Anda no solo
             vectorMove = new BABYLON.Vector3(
                 (Math.sin(rotation)), 0,
                 (Math.cos(rotation))
             );
+
+            // Anda para cima (subir escada, levitar...)
+            // vectorMove = new BABYLON.Vector3(
+            //     0, (Math.cos(rotation)),
+            //     0
+            // );
+
         }else{
             speed = lerp(speed, 0, 0.001);
         }
@@ -854,13 +726,14 @@ identificadores.addControl(etiqueta_);
         //         vsp += gravity.y/10;
         //         vsp = Math.min(vsp, gravity.y);
         //         if (vsp == gravity.y){
-        //             vsp = gravity.y;
+        //             // vsp = gravity.y;
         //             jumped = false;
         //         }
         //     }
         //     var rr = skeleton_Heroi.getAnimationRange("None_Jump");
         //     var a = scene_Mundo.beginAnimation(skeleton_Heroi, rr.from+1, rr.to, false, 1, function(){
-        //         jumped = false;console.log("stopped "+rr.from+1+" "+rr.to);
+        //         jumped = false;
+        //         console.log("stopped "+rr.from+1+" "+rr.to);
         //     });
         // }else{
         //     vsp = gravity.y;
@@ -868,10 +741,13 @@ identificadores.addControl(etiqueta_);
 
 
         var m = vectorMove.multiply(new BABYLON.Vector3().setAll( speed*deltaTime ));
-        main.moveWithCollisions( m.add(new BABYLON.Vector3(0, vsp, 0)) );
+        main.moveWithCollisions( m.add(new BABYLON.Vector3(0, vsp, 0)) ); // se pular, cai 
+        // main.moveWithCollisions( m.add(new BABYLON.Vector3(0, 0, 0)) );// pula, mas não volta para andar normalmente
         
 
         switchAnimation(currentState);
+
+        // camera.target = main.position;
     }
 
 
@@ -897,8 +773,8 @@ identificadores.addControl(etiqueta_);
                     speed = lerp(speed, runSpeed, runAnim.weight);
                 }
             }else{ // Desnecessário
-                // currentState = "walk";
-                // speed = lerp(speed, walkSpeed, walkAnim.weight);
+                currentState = "walk";
+                speed = lerp(speed, walkSpeed, walkAnim.weight);
             }
 
             vectorMove = new BABYLON.Vector3(
@@ -1009,15 +885,14 @@ identificadores.addControl(etiqueta_);
         }
     };
 
-
-    setupPointerLock();
-    // scene_Mundo.detachControl(); // Se habilitar, a camera do player fica aparecendo
+    // Trava o ponteiro do mouse
+//    setupPointerLock();
 
 
     // Constrói elementos do cenário
     var box = BABYLON.MeshBuilder.CreateBox("box", {size: 2}, scene_Mundo);
     box.position = new BABYLON.Vector3(20, 1, 8);
-    addShadows(box);
+    // addShadows(box);
     box.material = new BABYLON.StandardMaterial("materialGround", scene_Mundo);
     // box.material.emissiveColor = new BABYLON.Color3.Blue();
     box.material.diffuseColor = new BABYLON.Color3.Red();
@@ -1072,272 +947,89 @@ identificadores.addControl(etiqueta_);
     // ground_1.material = new BABYLON.GridMaterial("groundMat");
     
     
-    // Definição da Interface do Usuário
-    // var UiPanel = painelButtons();
+
 
    
 
-    // var pause = false;
+    var pause = false;
 
-        // scene_Mundo.onKeyboardObservable.add((kbInfo) => {
-        //     switch (kbInfo.type) {
-        //         case BABYLON.KeyboardEventTypes.KEYDOWN:
-        //             switch (kbInfo.event.key) {
-        //                 case "w":
-        //                     scene_Mundo.beginAnimation(skeleton_Heroi, walkRange.from, walkRange.to, true);
-        //                     //mesh_Heroi[0].position.z += 0.1; // Move o herói ao inves da plataforma
-        //                     ground_1.position.z -= 0.5;
-        //                     ground_2.position.z -= 0.5;
-        //                     ground_3.position.z -= 0.5;
-        //                     ground_4.position.z -= 0.5;
-        //                     button_Walk.background = "blue";
-        //                     break
+    scene_Mundo.onKeyboardObservable.add((kbInfo) => {
+        switch (kbInfo.type) {
+            case BABYLON.KeyboardEventTypes.KEYDOWN:
+                switch (kbInfo.event.key) {
+                    case "1": // 1ª visão
+                        camera.lowerRadiusLimit = 5;
+                        camera.upperRadiusLimit = 100;
+                        camera.radius = 20;
+                        break
 
-        //                 case "s":
-        //                     scene_Mundo.beginAnimation(skeleton_Heroi, idleRange.from, idleRange.to, true);
-        //                     button_Idle.background = "blue";
-        //                     break
+                    case "2": // 2ª visão
+                        camera.lowerRadiusLimit = 35;
+                        camera.upperRadiusLimit = 200;
+                        camera.radius = 20;
+                        break
+                    
+                    case "3": // 3ª visão
+                        camera.lowerRadiusLimit = 60;
+                        camera.upperRadiusLimit = 600;
+                        camera.radius = 30;
+                        break
 
-        //                 case "q":
-        //                     if (walkRange && leftRange) {
-        //                         scene_Mundo.stopAnimation(skeleton_Heroi);
-        //                         var walkAnim = scene_Mundo.beginWeightedAnimation(skeleton_Heroi, walkRange.from, walkRange.to, 0.5, true);
-        //                         var leftAnim = scene_Mundo.beginWeightedAnimation(skeleton_Heroi, leftRange.from, leftRange.to, 0.5, true);
+                    case "p": //Pausar/Despausar o jogo
+                        if (!pause) {
+                            // Rotaciona a camera orbitando o herói
+                            scene_Mundo.activeCamera.useAutoRotationBehavior = true;
+                            // Desabilitar controle?
+                            //Desligar a câmera?
+                            pause = true;
+                        }
+                        else {
+                            // Para a rotação da camera
+                            scene_Mundo.activeCamera.useAutoRotationBehavior = false;
+                            // Resetar posição da camera
+                            // Habilitar controle?
+                            //Ligar a câmera?
+                            pause = false;
+                        }
+                        break
 
-        //                         walkAnim.syncWith(null);
-        //                         leftAnim.syncWith(walkAnim);
-        //                         button_Blend_Left.background = "blue";
-        //                     }
-        //                     break
-
-        //                 case "e":
-        //                     if (walkRange && rightRange) {
-        //                         scene_Mundo.stopAnimation(skeleton_Heroi);
-        //                         var walkAnim = scene_Mundo.beginWeightedAnimation(skeleton_Heroi, walkRange.from, walkRange.to, 0.5, true);
-        //                         var rightAnim = scene_Mundo.beginWeightedAnimation(skeleton_Heroi, rightRange.from, rightRange.to, 0.5, true);
-
-        //                         walkAnim.syncWith(null);
-        //                         rightAnim.syncWith(walkAnim);
-        //                         button_Blend_Right.background = "blue";
-        //                     }
-        //                     break
-
-        //                 case "a":
-        //                     scene_Mundo.beginAnimation(skeleton_Heroi, leftRange.from, leftRange.to, true);
-        //                     button_Left.background = "blue";
-        //                     break
-
-        //                 case "d":
-        //                     scene_Mundo.beginAnimation(skeleton_Heroi, rightRange.from, rightRange.to, true);
-        //                     button_Right.background = "blue";
-        //                     break
-
-        //                 case "r":
-        //                     scene_Mundo.beginAnimation(skeleton_Heroi, runRange.from, runRange.to, true);
-        //                     button_Run.background = "blue";
-        //                     break
-
-        //                 case "1": //Alterna para 3ª pessoa
-        //                     camera_3.lowerRadiusLimit = 4;
-        //                     camera_3.upperRadiusLimit = 100;
-        //                     camera_3.wheelDeltaPercentage = 0.01;
-        //                     break
-
-        //                 case "2": //Alterna para 1ª pessoa
-        //                     camera_3.lowerRadiusLimit = 1;
-        //                     camera_3.upperRadiusLimit = 0;
-        //                     camera_3.wheelDeltaPercentage = 0.01;
-        //                     break
-
-        //                 case "3": //Alterna para visão lateral "2d" do ambiente
-        //                     camera_3.lowerRadiusLimit = 60;
-        //                     camera_3.upperRadiusLimit = 600;
-        //                     camera_3.radius = 30;
-        //                     break
-
-        //                 // case "o": 
-        //                 // // Adiciona o AMBIENTE
-        //                 // BABYLON.SceneLoader.ImportMesh("", "./ambiente/", "estadio.glb", scene_Mundo, function(mesh_ambiente){
-        //                 //     // mesh_ambiente[0].scaling = new BABYLON.Vector3(0.05, 0.05, 0.05);
-        //                 //     mesh_ambiente[0].position = new BABYLON.Vector3(0, 0, 0);
-        //                 // });
-        //                 // break
-
-        //                 case "p": //Pausar/Despausar o jogo
-        //                     if (!pause) {
-        //                         // Rotaciona a camera orbitando o herói
-        //                         scene_Mundo.activeCamera.useAutoRotationBehavior = true;
-        //                         // Desabilitar controle?
-        //                         //Desligar a câmera?
-        //                         pause = true;
-        //                     }
-        //                     else {
-        //                         // Para a rotação da camera
-        //                         scene_Mundo.activeCamera.useAutoRotationBehavior = false;
-        //                         // Resetar posição da camera
-        //                         // Habilitar controle?
-        //                         //Ligar a câmera?
-        //                         pause = false;
-        //                     }
-        //                     break
-        //             }
-        //     }
-        // });
-
-    //     function heroiButtons() {
-    //         // BOTÃO: Idle
-    //         var button_Idle = BABYLON.GUI.Button.CreateSimpleButton("but_Idle", "Play Idle");
-    //         button_Idle.paddingTop = "10px";
-    //         button_Idle.width = "100px";
-    //         button_Idle.height = "50px";
-    //         button_Idle.color = "white";
-    //         button_Idle.background = "black";
-    //         button_Idle.onPointerDownObservable.add(() => {
-    //             if (idleRange) {
-    //                 scene_Mundo.beginAnimation(skeleton_Heroi, idleRange.from, idleRange.to, true);
-    //                 button_Idle.background = "green";
-    //             }
-    //         });
-    //         UiPanel.addControl(button_Idle);
-
-
-    //         // BOTÃO: Walk
-    //         var button_Walk = BABYLON.GUI.Button.CreateSimpleButton("but_Walk", "Play Walk");
-    //         button_Walk.paddingTop = "10px";
-    //         button_Walk.width = "100px";
-    //         button_Walk.height = "50px";
-    //         button_Walk.color = "white";
-    //         button_Walk.background = "black";
-    //         button_Walk.onPointerDownObservable.add(() => {
-    //             if (walkRange) {
-    //                 scene_Mundo.beginAnimation(skeleton_Heroi, walkRange.from, walkRange.to, true);
-    //                 button_Walk.background = "green";
-    //             }
-    //         });
-    //         UiPanel.addControl(button_Walk);
-
-    //         // BOTÃO: Run
-    //         var button_Run = BABYLON.GUI.Button.CreateSimpleButton("but_Run", "Play Run");
-    //         button_Run.paddingTop = "10px";
-    //         button_Run.width = "100px";
-    //         button_Run.height = "50px";
-    //         button_Run.color = "white";
-    //         button_Run.background = "black";
-    //         button_Run.onPointerDownObservable.add(() => {
-    //             if (runRange) {
-    //                 scene_Mundo.beginAnimation(skeleton_Heroi, runRange.from, runRange.to, true);
-    //                 button_Run.background = "green";
-    //             }
-    //         });
-    //         UiPanel.addControl(button_Run);
-
-    //         // BOTÃO: Left
-    //         var button_Left = BABYLON.GUI.Button.CreateSimpleButton("but_Left", "Play Left");
-    //         button_Left.paddingTop = "10px";
-    //         button_Left.width = "100px";
-    //         button_Left.height = "50px";
-    //         button_Left.color = "white";
-    //         button_Left.background = "black";
-    //         button_Left.onPointerDownObservable.add(() => {
-    //             if (leftRange) {
-    //                 scene_Mundo.beginAnimation(skeleton_Heroi, leftRange.from, leftRange.to, true);
-    //                 button_Left.background = "green";
-    //             }
-    //         });
-    //         UiPanel.addControl(button_Left);
-
-    //         // BOTÃO: Right
-    //         var button_Right = BABYLON.GUI.Button.CreateSimpleButton("but_Right", "Play Right");
-    //         button_Right.paddingTop = "10px";
-    //         button_Right.width = "100px";
-    //         button_Right.height = "50px";
-    //         button_Right.color = "white";
-    //         button_Right.background = "black";
-    //         button_Right.onPointerDownObservable.add(() => {
-    //             if (rightRange) {
-    //                 scene_Mundo.beginAnimation(skeleton_Heroi, rightRange.from, rightRange.to, true);
-    //                 button_Right.background = "green";
-    //             }
-    //         });
-    //         UiPanel.addControl(button_Right);
-
-    //         // BOTÃO: Blend Left
-    //         var button_Blend_Left = BABYLON.GUI.Button.CreateSimpleButton("but_Bl_left", "Blend Left");
-    //         button_Blend_Left.paddingTop = "10px";
-    //         button_Blend_Left.width = "100px";
-    //         button_Blend_Left.height = "50px";
-    //         button_Blend_Left.color = "white";
-    //         button_Blend_Left.background = "black";
-    //         button_Blend_Left.onPointerDownObservable.add(() => {
-    //             if (walkRange && leftRange) {
-    //                 scene_Mundo.stopAnimation(skeleton_Heroi);
-    //                 var walkAnim = scene_Mundo.beginWeightedAnimation(skeleton_Heroi, walkRange.from, walkRange.to, 0.5, true);
-    //                 var leftAnim = scene_Mundo.beginWeightedAnimation(skeleton_Heroi, leftRange.from, leftRange.to, 0.5, true);
-
-    //                 // Note: Sync Speed Ratio With Master Walk Animation
-    //                 walkAnim.syncWith(null);
-    //                 leftAnim.syncWith(walkAnim);
-
-    //                 button_Blend_Left.background = "green";
-    //             }
-    //         });
-    //         UiPanel.addControl(button_Blend_Left);
-
-    //         // BOTÃO: Blend Right
-    //         var button_Blend_Right = BABYLON.GUI.Button.CreateSimpleButton("but_Bl_right", "Blend Right");
-    //         button_Blend_Right.paddingTop = "10px";
-    //         button_Blend_Right.width = "100px";
-    //         button_Blend_Right.height = "50px";
-    //         button_Blend_Right.color = "white";
-    //         button_Blend_Right.background = "black";
-    //         button_Blend_Right.onPointerDownObservable.add(() => {
-    //             if (walkRange && rightRange) {
-    //                 scene_Mundo.stopAnimation(skeleton_Heroi);
-    //                 var walkAnim = scene_Mundo.beginWeightedAnimation(skeleton_Heroi, walkRange.from, walkRange.to, 0.5, true);
-    //                 var rightAnim = scene_Mundo.beginWeightedAnimation(skeleton_Heroi, rightRange.from, rightRange.to, 0.5, true);
-
-    //                 // Note: Sync Speed Ratio With Master Walk Animation
-    //                 walkAnim.syncWith(null);
-    //                 rightAnim.syncWith(walkAnim);
-
-    //                 button_Blend_Right.background = "green";
-    //             }
-    //         });
-    //         UiPanel.addControl(button_Blend_Right);
-
-    //         return { button_Walk, button_Idle, button_Blend_Left, button_Blend_Right, button_Left, button_Right, button_Run };
-    //     }
-    // });
-
-    // Adiciona o GIGANTE
-    // BABYLON.SceneLoader.ImportMesh("", Assets.meshes.Yeti.rootUrl, Assets.meshes.Yeti.filename, scene_Mundo, function (mesh_Gigante) {
-    //     mesh_Gigante[0].scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
-    //     mesh_Gigante[0].position = new BABYLON.Vector3(0, 0, 20);
-
-    //     //mesh_Gigante.checkCollisions = true;
-    // });
-
-     //# Adiciona o LABIRINTO!!
-    // BABYLON.SceneLoader.ImportMesh("", "", labirinto, scene_Mundo, function (mesh_Labirinto)
-    // BABYLON.SceneLoader.ImportMesh("", "", labirinto, scene_Mundo, function (mesh_Labirinto)
-    // BABYLON.SceneLoader.ImportMesh("", "", labirinto, scene_Mundo, function (mesh_Labirinto)
-    BABYLON.SceneLoader.ImportMesh("", "", labirinto, scene_Mundo, function (mesh_Labirinto)
-    // BABYLON.SceneLoader.ImportMesh("", "./assets/ambiente/", "ambiente_01/scene.glb", scene_Mundo, function (mesh_Labirinto)
-    {
-        // labirinto = BABYLON.Mesh.MergeMeshes([mesh_Labirinto, box]);
-        // mesh_Labirinto[0].scaling = new BABYLON.Vector3(10, 1, 1);
-        // mesh_Labirinto[0].position = new BABYLON.Vector3(0, 5.1, 0);
-        // // addToMirror(mesh_Labirinto);
-        // // addShadows(mesh_Labirinto);
-        mesh_Labirinto.collisionsEnabled = true;
-        mesh_Labirinto.checkCollisions = true;
+                        // case "m": // Ativar/Desativar trilha sonora
+                        // if (!mudo) {
+                        //     //...
+                        //     mudo = true;
+                        // }
+                        // else {
+                        //     //...
+                        //     mudo = false;
+                        // }
+                        // break
+                }
+        }
     });
 
-    // });
+//      //# Adiciona o LABIRINTO!!
+//     BABYLON.SceneLoader.ImportMesh("", "", labirinto, scene_Mundo, function (mesh_Labirinto)
+//     // BABYLON.SceneLoader.ImportMesh("", "./assets/ambiente/", "ambiente_01/scene.glb", scene_Mundo, function (mesh_Labirinto)
+//     {
+//         const Labirinto = mesh_Labirinto[0];
+
+//         // labirinto = BABYLON.Mesh.MergeMeshes([mesh_Labirinto, box]);
+//         // mesh_Labirinto[0].scaling = new BABYLON.Vector3(10, 1, 1);
+//         // mesh_Labirinto[0].position = new BABYLON.Vector3(0, 5.1, 0);
+//         // // addToMirror(mesh_Labirinto);
+//         // // addShadows(mesh_Labirinto);
+//         // mesh_Labirinto.collisionsEnabled = true;
+//         // mesh_Labirinto.checkCollisions = true;
+
+//           // Adicione colisão ao personagem
+//   player.addPhysics(null, BABYLON.PhysicsEngine.BoxImpostor, { mass: 1, restitution: 0.5 });
+
+//         // Adicione um componente de física às paredes do labirinto
+//         Labirinto.addPhysics(null, BABYLON.PhysicsEngine.BoxImpostor, { mass: 0, restitution: 0.9 });
+//     });
 
 
-    //# Adiciona o PORTAL NORDESTE no LABIRINTO!!
-     
+
     // });
 
     //# Adiciona o PORTAL NORTE no LABIRINTO!!
@@ -1356,6 +1048,13 @@ identificadores.addControl(etiqueta_);
      
     // });
 
+    // Adiciona o GIGANTE
+    // BABYLON.SceneLoader.ImportMesh("", Assets.meshes.Yeti.rootUrl, Assets.meshes.Yeti.filename, scene_Mundo, function (mesh_Gigante) {
+    //     mesh_Gigante[0].scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+    //     mesh_Gigante[0].position = new BABYLON.Vector3(0, 0, 20);
+
+    //     //mesh_Gigante.checkCollisions = true;
+    // });
 
     // Adiciona o personagem personalizado GLTF OK!!
     // BABYLON.SceneLoader.ImportMesh("", "", mentor, scene_Mundo, function (mesh_Old_Man_Separado) {
@@ -1369,38 +1068,6 @@ identificadores.addControl(etiqueta_);
 
     //     // Exibe a elipse que envolve o OldMan
     //     drawEllipsoid(mentor);
-
-        
-
-
-    //     // if (mesh_Heroi.intersectsMesh(mentor, true)) {
-    //     //     console.log("Heroi colidiu no mentor!")
-    //     //  box.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-    //     //     // box.dispose();
-    //     // }
-    //     // else{
-    //     //     console.log("Heroi não colidiu no mentor!")
-    //     //     box.material.emissiveColor = new BABYLON.Color3(0, 0, 0); 
-    //     // }
-
-    // });
-
-    
-    // Adiciona o EMOGI OLHOS
-    // BABYLON.SceneLoader.ImportMesh("", "", emogi, scene_Mundo, function (mesh_Carinha_Olhos, particleSystems, skeletons_Carinha_cor) {
-    //     mesh_Carinha_Olhos[0].scaling = new BABYLON.Vector3(150, 150, 150);
-    //     mesh_Carinha_Olhos[0].position = new BABYLON.Vector3(10, 2, 20);
-
-    //     mesh_Carinha_Olhos.checkCollisions = true;
-
-    //     // Elipse para verificar as colisões
-    //     mesh_Carinha_Olhos.ellipsoid = new BABYLON.Vector3(2.5, 0.2, 2.5);
-    //     mesh_Carinha_Olhos.ellipsoidOffset = new BABYLON.Vector3(0, 0, 0);
-    //     mesh_Carinha_Olhos.checkCollisions = false; 
-    //     drawEllipsoid(mesh_Carinha_Olhos);
-
-    //     mesh_Carinha_Olhos.alpha = 0.5;
-    // });
 
     // Adiciona o Bordo Japonês
     BABYLON.SceneLoader.ImportMesh("", "", bordo, scene_Mundo, function (mesh_Bordo) {
@@ -1429,6 +1096,9 @@ identificadores.addControl(etiqueta_);
     // // Adiciona as Folhas caindo
     // BABYLON.SceneLoader.ImportMesh("", "", folhas_caindo, scene_Mundo, function (mesh_Folhas) {
     //     mesh_Folhas[0].scaling = new BABYLON.Vector3(20, 20, 20);
+
+    //# Adiciona o PORTAL NORDESTE no LABIRINTO!!
+     
     //     mesh_Folhas[0].position = new BABYLON.Vector3(25, 0, 0);
 
     // });
@@ -1457,26 +1127,6 @@ identificadores.addControl(etiqueta_);
 
     });
 
-    // // Adiciona a ABELHA
-    // BABYLON.SceneLoader.ImportMesh("", "./assets/animais/", "Bee.glb", scene_Mundo, function (mesh_Bee, particleSystems, skeletons_Bee) {
-    //     mesh_Bee[0].scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
-    //     mesh_Bee[0].position = new BABYLON.Vector3(0, 0, 25);
-
-    //     // skeleton_Bee = skeletons_Bee[];
-
-    //     // var flyBee = skeleton_Bee.getAnimationRange("fly");
-    //     // flyBee_Anim = scene_Mundo.beginWeightedAnimation(skeleton_Bee, flyBee.from, flyBee.to, 0, true);
-
-    //     // flyBee_Anim;
-
-    //     if ((mesh_Bee[0].position.z - mesh_Heroi.position.z) <= 20)
-    //         console.log("colidiu abelha!");
-    
-    // console.log("Abelha: ", mesh_Bee[0].position);
-    
-
-    // });
-
 
      // Adiciona o NPC que acompanhará o herói
     //  BABYLON.SceneLoader.ImportMesh("", "./assets/personagens/npc/", "xx.glb", scene_Mundo, function (mesh_NPC, particleSystems, skeletons_NPC) {
@@ -1500,12 +1150,6 @@ identificadores.addControl(etiqueta_);
     //  });  
 
 
-    // // Adiciona o AMBIENTE
-    // BABYLON.SceneLoader.ImportMesh("", "./ambiente/", "estadio.glb", scene_Mundo, function(mesh_ambiente){
-    //     // mesh_ambiente[0].scaling = new BABYLON.Vector3(0.05, 0.05, 0.05);
-    //      mesh_ambiente[0].position = new BABYLON.Vector3(0, 0, 0);
-    //  });
-
     // Adiciona a MÃO
     //BABYLON.SceneLoader.ImportMesh("", "./scenes/", "hand.babylon", scene_Mundo, function (newMeshes, particleSystems, skeletons) {
 
@@ -1518,72 +1162,195 @@ identificadores.addControl(etiqueta_);
     
     // Deve haver um par de portal para cada dimenssão
     // Portal da dimensão da 1ª tarefa
-    var portal_Azul = geraPortal("assets/textures/item/blue_Portal1.png", new BABYLON.Vector3(0, 1, -10));
-    var portal_Vermelho = geraPortal("assets/textures/item/red_Portal1.png", new BABYLON.Vector3(0, -2, 0));
+    var portal_Azul = geraPortal("assets/textures/portal/blue_Portal1.png", new BABYLON.Vector3(0, 1, -10));
+    var portal_Vermelho = geraPortal("assets/textures/portal/red_Portal1.png", new BABYLON.Vector3(0, -2, 0));
 
     // Portal da dimensão da 2ª tarefa
-    var portal_Azul = geraPortal("assets/textures/item/blue_Portal1.png", new BABYLON.Vector3(2, 1, -10));
-    var portal_Vermelho = geraPortal("assets/textures//item/red_Portal1.png", new BABYLON.Vector3(-2, -2, 0));
+    var portal_Azul = geraPortal("assets/textures/portal/blue_Portal1.png", new BABYLON.Vector3(2, 1, -10));
+    var portal_Vermelho = geraPortal("assets/textures/portal/red_Portal1.png", new BABYLON.Vector3(-2, -2, 0));
 
     // Portal da dimensão da 3ª tarefa
-    var portal_Azul = geraPortal("assets/textures/item/blue_Portal1.png", new BABYLON.Vector3(2, 1, -10));
-    var portal_Vermelho = geraPortal("assets/textures/item/red_Portal1.png", new BABYLON.Vector3(-2, -2, 0));
+    var portal_Azul = geraPortal("assets/textures/portal/blue_Portal1.png", new BABYLON.Vector3(2, 1, -10));
+    var portal_Vermelho = geraPortal("assets/textures/portal/red_Portal1.png", new BABYLON.Vector3(-2, -2, 0));
 
     
+
+     // HUD (Heads-Up Display)>>>------------------------------------------------------------------------->
+    
+     var gui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("GUI");
+    //  gui.idealWidth = 1000; // # Quanto maior o valor, menor ficam os textos
+
+    
+    // 2. Pontuação e tentativas
+    // Cria um novo container para o HUD
+    //E. Barra superior
+    var barraSuperior = new BABYLON.GUI.StackPanel();
+    barraSuperior.isVertical = false;
+    barraSuperior.background = "black"; 
+    barraSuperior.alpha = 0.5;
+    // panel.background = "transparent";
+    barraSuperior.horizontalAlignment = 1;
+    barraSuperior.verticalAlignment = 0;
+    barraSuperior.width = "100%";
+    barraSuperior.height = "60px";
+
+    // Botão que habilita a interação do usuário com a interface gráfica
+    // var gui_ativado = false;
+    activateBtn = BABYLON.GUI.Button.CreateImageOnlyButton("ativar", "assets/gui/activateButton.png");
+    activateBtn.width = "130px";
+    activateBtn.height = "55px";
+    activateBtn.thickness = 0;
+    // activateBtn.VerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    // activateBtn.HorizontalAlignment = "right";
+    // activateBtn.HorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_BOTTOM;
+
+    activateBtn.onPointerClickObservable.add(function() {
+        if(barraSuperior.isVisible){
+            barraSuperior.isVisible = false;
+        }
+        else{
+            barraSuperior.isVisible = true;
+        }
+    });
+
+    
+    
+    // F. Barra inferior
+    var barraInferior = new BABYLON.GUI.StackPanel();
+    barraInferior.isVertical = true;
+    barraInferior.background = "black"; 
+    barraInferior.alpha = 0.5;
+    barraInferior.horizontalAlignment = 0;
+    barraInferior.verticalAlignment = 1;
+    barraInferior.width = "100%";
+    barraInferior.height = "W60px";
+    
+
+    // // Cria um componente de retângulo com cor transparente para o background
+    // var rect = new BABYLON.GUI.Rectangle();
+    // rect.width = "100%";
+    // rect.height = "100%";
+    // rect.color = "black";
+    // rect.alpha = 0.5;
+
+    // // Adiciona o componente de retângulo ao container
+    // hud.addControl(rect);
+
+    // // Cria uma imagem para o background
+    // var image = new BABYLON.GUI.Image("image", "assets/textures/box/madeira_1.png");
+    // image.width = "100%";
+    // image.height = "100%";
+    // image.stretch = BABYLON.GUI.Image.STRETCH_UNIFORM;
+
+    // Adiciona a imagem ao container
+    // hud.addControl(image);
+
+    // Cria um componente de texto para exibir a pontuação
+    var scoreText = new BABYLON.GUI.TextBlock();
+    scoreText.text = "Pontuação: 0";
+    scoreText.height = "30px";
+    scoreText.color = "white";
+
+    // Adiciona o componente de texto ao container
+    barraSuperior.addControl(scoreText);
+
+    // Cria um componente de texto para exibir o tempo restante
+    var timeText = new BABYLON.GUI.TextBlock();
+    timeText.text = "Tempo restante: 60";
+    timeText.height = "30px";
+    timeText.color = "white";
+    timeText.textHorizontalAlignment = "right";
+
+    // Adiciona o componente de texto ao container
+    barraSuperior.addControl(timeText);
+
+    // Cria um componente de texto para exibir a vida do jogador
+    var healthText = new BABYLON.GUI.TextBlock();
+    healthText.text = "Vida: 100";
+    healthText.height = "30px";
+    healthText.color = "white";
+    // healthText.textHorizontalAlignment = "left";
+    healthText.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+
+    // Adiciona o componente de texto ao container
+    barraSuperior.addControl(healthText);
+
+    // Adiciona o container ao GUI
+    gui.addControl(barraSuperior);
+   
+  
+ 
+
+
+    
+    // Instruções e atalhos
+    var atalhos = new BABYLON.GUI.TextBlock();
+    atalhos.text =  "Para controlar o personagem, use WASD do teclado.\n" +
+                    "- P: pausar/continuar o jogo\n" +
+                    "- 1, 2, 3: alternar os modos de visão da camera\n" +
+                    "- M: ativar/Desativar trilha sonora\n" +
+                    "- F: ativar habilidade especial 1 (fogo)";
+                    "- C: ativar habilidade especial 2 (chuva)";
+                    "- S: ativar habilidade especial 3 (fumaça)";
+                    "- E: ativar habilidade especial 4 (explosão)";
+    atalhos.color = "white";
+    atalhos.fontSize = 12;
+    atalhos.textHorizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    // atalhos.textHorizontalAlignment = "left";
+    // atalhos.textVerticalAlignment = "bottom"; // não funciona!!
+    atalhos.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+
+    barraInferior.addControl(atalhos);
+    gui.addControl(atalhos);
+
+    barraInferior.addControl(activateBtn);
+    gui.addControl(barraInferior);
+
+   
+
+
+
     // Atmosfera 1
-    // var skySize = 50.0;
-    var skybox = BABYLON.MeshBuilder.CreateBox("SkyBox", {size:100.0}, scene_Mundo);
-    var skyboxMaterial = new BABYLON.StandardMaterial("skyboxMaterial", scene_Mundo);
-    skyboxMaterial.backFaceCulling = false;
-    //  skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets/skybox/9.hdr", scene_Mundo, 512);     
+    var skySize = 512.0;
+    // var skybox = BABYLON.MeshBuilder.CreateBox("SkyBox", {size:512.0}, scene_Mundo);
+    // var skyboxMaterial = new BABYLON.StandardMaterial("skyboxMaterial", scene_Mundo);
+    // skyboxMaterial.backFaceCulling = false;
+    // //  skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets/skybox/9.hdr", scene_Mundo, 512);     
     // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/bosque1.hdr", scene_Mundo, 512);     
-    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/bosque2.hdr", scene_Mundo, 512);     
-    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/bancoBosque.hdr", scene_Mundo, 512);     
-    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuRosa.hdr", scene_Mundo, 512);     
-    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuTropical.hdr", scene_Mundo, 512);     
-    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuCarregado.hdr", scene_Mundo, 512);     
-    skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuAzul.hdr", scene_Mundo, 512);     
-    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/estacionamento.hdr", scene_Mundo, 512);     
-    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/escadarias.hdr", scene_Mundo, 512);     
-    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/predioNevoeiro.hdr", scene_Mundo, 512);     
-    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/montanhasNeve.hdr", scene_Mundo, 512);     
-    // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/montanhasRocha.hdr", scene_Mundo, 512);     
-    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-    skybox.material = skyboxMaterial;
-
-
-    // Atmosfera 2
-    // var skybox = BABYLON.Mesh.CreateBox("Skybox", skySize, scene_Mundo, undefined, BABYLON.Mesh.BACKSIDE);
-    // var skyboxMaterial = new BABYLON.BackgroundMaterial("skyboxMaterial", scene_Mundo);
-    // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(atmosfera, scene_Mundo);
+    // // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/bosque2.hdr", scene_Mundo, 512);     
+    // // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/bancoBosque.hdr", scene_Mundo, 512);     
+    // // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuRosa.hdr", scene_Mundo, 512);     
+    // // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuTropical.hdr", scene_Mundo, 512);     
+    // // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuCarregado.hdr", scene_Mundo, 512);     
+    // // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuAzul.hdr", scene_Mundo, 512);     
+    // // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/estacionamento.hdr", scene_Mundo, 512);     
+    // // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/escadarias.hdr", scene_Mundo, 512);     
+    // // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/predioNevoeiro.hdr", scene_Mundo, 512);     
+    // // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/montanhasNeve.hdr", scene_Mundo, 512);     
+    // // skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/montanhasRocha.hdr", scene_Mundo, 512);     
     // skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
     // skybox.material = skyboxMaterial;
 
 
-    //#  Verifica colisões
-    // if (box.intersectsMesh(box2, true)) {
-    //     console.log("box Verde colidiu no box Vermelho!")
-    //     box.material.emissiveColor = new BABYLON.Color3(0, 0, 1);
-    //     // box.dispose();
-    // }
-    // else{
-    //     console.log("As caixas não colidiram!")
-    //     box.material.emissiveColor = new BABYLON.Color3(0, 1, 0); 
-    // }
+    // Atmosfera 2
+    var skybox = BABYLON.Mesh.CreateBox("Skybox", skySize, scene_Mundo, undefined, BABYLON.Mesh.BACKSIDE);
+    var skyboxMaterial = new BABYLON.BackgroundMaterial("skyboxMaterial", scene_Mundo);
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(atmosfera, scene_Mundo);
+    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    skybox.material = skyboxMaterial;
 
 
-    // scene_Mundo.registerBeforeRender(function (){
-    //     if (scene_Mundo.isReady()) {
+    // IDENTIFICADORES DE ELEMENTOS NO AMBIENTE ------------------------------------------
+    var identificadores = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    // identificadores.idealWidth = 1600;
 
-    //         // Verifica se as caixas colidiram
-    //         // if (box.intersectsMesh(box2, true) && box2.isVisible)  {
-    //         //     explode_();
-    //         //     box2.dispose()
-    //         //     box2.isVisible = false;
-    //         //     console.log("box Verde colidiu no box Vermelho!")            
-    //         // }  
-    //     }
-    //  });
+    var etiqueta_1 = criaEtiqueta(identificadores, box, "Parede");
+    var etiqueta_2 = criaEtiqueta(identificadores, box2, "Portal");  
+    var etiqueta_3 = criaEtiqueta(identificadores, character, "Leinylson");  
+    // var etiqueta_4 = criaEtiqueta(identificadores, mesh_Bee, "Me siga!");  
+
+    // identificadores.addControl(etiqueta_3, etiqueta_2);
+
 //------------------------------- Animação dos elementos- --------------------------------
 
 // Girar o cenário rapidamente e dá um zoomIN na tarefa 
@@ -2113,49 +1880,72 @@ function explode_(){
 
 function criaEtiqueta(identificadores, elemento, texto) {
     var etiqueta = new BABYLON.GUI.Rectangle();
-    etiqueta.width = 0.2;
+    etiqueta.width = 0.1;
     etiqueta.height = "40px";
-    etiqueta.cornerRadius = 20;
+    etiqueta.cornerRadius = 15;
     etiqueta.color = "Yellow";
-    etiqueta.thickness = 4;
+    etiqueta.alpha = 0.5;
+    etiqueta.thickness = 2;
     etiqueta.background = "green";
     identificadores.addControl(etiqueta);
     etiqueta.linkWithMesh(elemento);
-    etiqueta.linkOffsetY = -150;
+    etiqueta.linkOffsetY = -125; // altura da tag em relação ao elemento
 
     var label = new BABYLON.GUI.TextBlock();
     label.text = texto;
+    // label.color = "Blue";
     etiqueta.addControl(label);
 
     var target = new BABYLON.GUI.Ellipse();
-    target.width = "40px";
-    target.height = "40px";
+    target.width = "25px";
+    target.height = "25px";
     target.color = "Yellow";
-    target.thickness = 4;
+    target.alpha = 0.5;
+    target.thickness = 5;
     target.background = "green";
     identificadores.addControl(target);
     target.linkWithMesh(elemento);
 
     var line = new BABYLON.GUI.Line();
-    line.lineWidth = 4;
+    line.lineWidth = 3;
     line.color = "Yellow";
     line.y2 = 20;
-    line.linkOffsetY = -20;
+    line.linkOffsetY = -13;
     identificadores.addControl(line);
     line.linkWithMesh(elemento);
     line.connectedControl = etiqueta;
     return target;
 }
 
+// Efeito Coletar item (ampulheta, chave, cristal)
+// function evento_ColetarItem(player, item, som) {
+//     if (player.intersectsMesh(item, true) && item.isVisible) {
+//         som(); // troca um efeito sonoro
+//         item.dispose();
+//         item.isVisible = false;
+//         console.log(player.name + ' coletou o ' + item.name);
+//     }
+// }
 
-function evento_Colidir(elemento_1, elemento_2, efeito) {
-    if (elemento_1.intersectsMesh(elemento_2, true) && elemento_2.isVisible) {
-        efeito();
-        elemento_2.dispose();
-        elemento_2.isVisible = false;
-        console.log(elemento_1.name + ' colidiu no ' + elemento_2.name);
+// Efeito ao Colidir com bloco (parede, portal)
+function evento_Colidir(player, bloco, efeito) {
+    if (player.intersectsMesh(bloco, true) && bloco.isVisible) {
+        // efeito(); // efeito de acordo como o tipo de bloco
+        bloco.material.emissiveColor = new BABYLON.Color3(0, 0, 1);
+        bloco.material.alpha = 1;
+        console.log(player.name + ' colidiu no ' + bloco.name);
     }
 }
+
+// Efeito ao Colidir com NPC
+// function evento_Colidir(player, npc, video) {
+//     if (player.intersectsMesh(npc, true) && npc.isVisible) {
+//         // video();
+//         // npc.material.emissiveColor = new BABYLON.Color3(0, 0, 1);
+//         console.log(player.name + ' encontrou o(a) ' + npc.name);
+//     }
+// }
+
 
 // Constrói portais de teletransporte entre dimenssões
 function geraPortal(texture, position) {
@@ -2170,81 +1960,6 @@ function geraPortal(texture, position) {
 
     // Gera e emite as partículas
     origem_ParticleSystem.start();
-}
-
-
-// Painel com botões para testes
-function painelButtons() {
-    var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-    var UiPanel = new BABYLON.GUI.StackPanel();
-    UiPanel.width = "220px";
-    UiPanel.fontSize = "14px";
-    UiPanel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    UiPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-    advancedTexture.addControl(UiPanel);
-
-    // Botão Menu
-    var Button_Menu = BABYLON.GUI.Button.CreateSimpleButton("butMenu", "Menu");
-    Button_Menu.paddingTop = "10px";
-    Button_Menu.width = "100px";
-    Button_Menu.height = "50px";
-    Button_Menu.color = "white";
-    Button_Menu.background = "black";
-    Button_Menu.onPointerDownObservable.add(() => {
-        if (Button_Menu) {
-            document.write("<canvas id='canvasPrimario' width='1520' height='840'></canvas><script src='js/menuPrincipal.js'></script>");
-            console.log("apertou MENU");
-            Button_Menu = 0;
-        }
-    });
-    UiPanel.addControl(Button_Menu);
-
-    // Botão Camera do Player
-    var Button_Camera = BABYLON.GUI.Button.CreateSimpleButton("butCam", "Camera");
-    Button_Camera.paddingTop = "10px";
-    Button_Camera.width = "100px";
-    Button_Camera.height = "50px";
-    Button_Camera.color = "white";
-    Button_Camera.background = "black";
-    // Button_Camera.onPointerDownObservable.add(() => {
-    //     if (Button_Camera) {
-    //         document.write("<canvas id='canvasPrimario' width='1520' height='840'></canvas><script src='js/menuPrincipal.js'></script>");
-            
-    //         // // Moldura da câmera
-    //         document.write("<div class='divs divFixed' style='z-index': 999;'><img src='textures/hud/molduraCamera.png'></div>");
-    //         document.write("<div style="position: fixed; top: 29px; left: 11px; z-index: 100;" top="50px" left="350px">
-    //         <video class="input_video"></video>
-    //         <canvas class="output_canvas" width="18%" height="20%"></canvas>
-    //     </div>           ");
-    
-    //     {/* Camera do Player
-        
-            
-    //         console.log("apertou CAMERA");
-    //         Button_Camera = 0;
-    //     }
-    // });
-    UiPanel.addControl(Button_Camera);
-
-    // Botão Tarefa 01
-    var Button_Job01 = BABYLON.GUI.Button.CreateSimpleButton("butTarefa", "Tarefa 01");
-    Button_Job01.paddingTop = "10px";
-    Button_Job01.width = "100px";
-    Button_Job01.height = "50px";
-    Button_Job01.color = "white";
-    Button_Job01.background = "black";
-    Button_Job01.onPointerDownObservable.add(() => {
-        if (Button_Job01) {
-            document.write("<canvas id='canvasPrimario' width='1520' height='840'></canvas><script src='js/job_01MTA.js'></script>");
-            console.log("apertou Tarefa 01");
-            Button_Job01 = 0;
-        }
-    });
-    UiPanel.addControl(Button_Job01);
-
-    
-
-    return UiPanel;
 }
 
 

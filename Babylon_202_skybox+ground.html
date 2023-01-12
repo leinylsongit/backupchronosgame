@@ -3,7 +3,8 @@
   <head>
 	<meta charset="utf-8">
 	<title>Babylon.js - SkyBox & Ground - 2019/10/19 by T. Fujita</title>
-	<link rel = "stylesheet" type="text/css" href = "./css/babylon_menu.css" />
+	<!-- <link rel = "stylesheet" type="text/css" href = "./css/chronos_menu_black.css" /> -->
+	<link rel = "stylesheet" type="text/css" href = "./css/chronos_menu_blue.css" />
 	<script src="https://code.jquery.com/pep/0.4.0/pep.min.js"></script>
         <script src="https://preview.babylonjs.com/babylon.js"></script>
         <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
@@ -17,25 +18,29 @@
   <body>
   <nav id="menu-wrap">  
 	<ul id="menu">
-		<li><a href="#">Menu</a>
+		<li><a href="./index.html" title="Voltar para o Menu">Menu</a>
 		<ul id="information">
-			<li><a>Please select the Environment or the Ground.</a></li>
+			<li><a>Selecione as opções e realize os devidos testes.</a></li>
 		</ul>
 		</li>
 
-		<li><a href="#">Environment</a>
+		<li><a href="#">Avatar</a>
 		<ul id="scroll">
-			<li><a><input type = "radio" name ="Env_Layer" value = "0" checked onclick = "javascript: Sel_Env_Layer();">skybox</a></li>
-			<li><a><input type = "radio" name ="Env_Layer" value = "1" onclick = "javascript: Sel_Env_Layer();">skybox2</a></li>
-			<li><a><input type = "radio" name ="Env_Layer" value = "2" onclick = "javascript: Sel_Env_Layer();">skybox3</a></li>
-			<li><a><input type = "radio" name ="Env_Layer" value = "3" onclick = "javascript: Sel_Env_Layer();">skybox4</a></li>
-			<li><a><input type = "radio" name ="Env_Layer" value = "4" onclick = "javascript: Sel_Env_Layer();">nebula</a></li>
-			<li><a><input type = "radio" name ="Env_Layer" value = "5" onclick = "javascript: Sel_Env_Layer();">TropicalSunnyDay</a></li>
+			<li><a><input type = "radio" name ="Env_Layer" value = "1" onclick = "javascript: Sel_Env_Layer();">Heroi</a></li>
+			<li><a><input type = "radio" name ="Env_Layer" value = "2" onclick = "javascript: Sel_Env_Layer();">Heroina</a></li>
 		</ul>
 		</li>
-		<li><a href="#">Ground</a>
+
+		<li><a href="#">Mundo</a>
 		<ul id="scroll">
-			<li><a><input type = "radio" name = "Ground_Layer" value = "0" checked onclick = "javascript: Sel_Ground_Layer();">dirt</a></li>
+			<li><a href="./Mundo.html" title="Explorar o mundo">Passado</a></li>
+			<li><a href="./Mundo.html" title="Explorar o mundo">Presente</a></li>
+			<li><a href="./Mundo.html" title="Explorar o mundo">Futuro</a></li>
+		</ul>
+		</li>
+
+		<li><a href="#">Tarefa</a>
+		<ul id="scroll">
 			<li><a><input type = "radio" name = "Ground_Layer" value = "1" onclick = "javascript: Sel_Ground_Layer();">grass_01</a></li>
 			<li><a><input type = "radio" name = "Ground_Layer" value = "2" onclick = "javascript: Sel_Ground_Layer();">distortion</a></li>
 			<li><a><input type = "radio" name = "Ground_Layer" value = "3" onclick = "javascript: Sel_Ground_Layer();">floor</a></li>
@@ -47,8 +52,7 @@
 			<li><a><input type = "radio" name = "Ground_Layer" value = "9" onclick = "javascript: Sel_Ground_Layer();">sand</a></li>
 			<li><a><input type = "radio" name = "Ground_Layer" value = "10" onclick = "javascript: Sel_Ground_Layer();">speckles</a></li>
 			<li><a><input type = "radio" name = "Ground_Layer" value = "11" onclick = "javascript: Sel_Ground_Layer();">wood</a></li>
-			<li><a><input type = "radio" name = "Ground_Layer" value = "12" onclick = "javascript: Sel_Ground_Layer();">water</a></li>
-			<li>
+			<li><a><input type = "radio" name = "Ground_Layer" value = "12" onclick = "javascript: Sel_Ground_Layer();">wood</a></li>
 		</ul>
 		</li>
 

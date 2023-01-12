@@ -247,6 +247,78 @@ var create_Tarefa = function () {
 var interface = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 // interface.renderScale = 1; // não alterou nada
 // interface.useRealisticScaling = true;// // não alterou nada
+    
+//# TESTAR ESSAS 3 LINHAS!!!
+//This adds some parameters towards how the GUI will display on resize.
+    //Explanations will be part of lesson #3 
+    // interface.idealWidth = 800;
+    // interface.idealHeight = 900;
+    // interface.useSmallestIdeal = true;
+
+
+
+//# TESTAR ESSAS GRADE !!!
+    /////////// GUI 2D GRID ////////////////
+
+// Creating a grid to split the advancedTexture layer into cells of a defined and remaining size.
+// The parameter 'true' fixes the size of the row or column, expressed in pixels (relative to the window/advancedTexture FS size).
+// Rows and columns without parameter 'true' will use the BJS value (where 1 is equal to 100%) and will simply fill-in the remaining space.
+var grid = new BABYLON.GUI.Grid();
+grid.addColumnDefinition(128,true);
+grid.addColumnDefinition(384,true);
+grid.addColumnDefinition(1);
+grid.addColumnDefinition(80,true);
+
+grid.addRowDefinition(128,true);
+grid.addRowDefinition(1);
+grid.addRowDefinition(80,true);
+
+//Adding our grid to the advancedTexture layer. 
+//Before this step, the grid does not show and you cannot interact with it.
+interface.addControl(grid);
+
+
+// Botão fullscreen
+// A  button added to the far right bottom grid cell (row #3, column #3)
+var btnfs = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "https://dl.dropbox.com/s/elhq6yfwr9p7dmf/expand.png");
+    btnfs.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    btnfs.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    btnfs.width = '64px';   
+    btnfs.height = '64px';
+    btnfs.background = "transparent";
+    btnfs.thickness = 0;
+    btnfs.image.shadowBlur = 5;
+    btnfs.image.paddingTop = "5px";
+    btnfs.image.paddingBottom = "5px";
+    btnfs.image.paddingLeft = "5px";
+    btnfs.image.paddingRight = "5px";
+
+    //Adding observables to the button
+    //on pointer up
+    btnfs.onPointerUpObservable.add(() => {
+        if (!engine.isFullscreen){
+            engine.enterFullscreen();
+            btnfs.image.source = "textures/icons/Undo.png";
+        }
+        else{
+            engine.exitFullscreen();
+            btnfs.image.source = "https://dl.dropbox.com/s/elhq6yfwr9p7dmf/expand.png";
+        }                
+    });
+    //on pointer enter
+    btnfs.onPointerEnterObservable.add(() => {
+        if (!engine.isFullscreen){
+            btnfs.image.source = "https://dl.dropbox.com/s/elhq6yfwr9p7dmf/expand.png";
+        }
+        else{
+            btnfs.image.source = "textures/icons/Undo.png";
+        }                
+    });
+
+//Attaching the control to the grid on row #3 and column #3 cell
+grid.addControl(btnfs,3,3);
+
+
 
 //A. Feedback com informações sobre as ações de interação do jogador
 var textblock_Feedback = new BABYLON.GUI.TextBlock();
@@ -431,33 +503,6 @@ textblock_Resposta.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMEN
 // textblock_Regras.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 // textblock_Regras.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
 
-// // L. Botão Desistir
-// var Button_Desistir = BABYLON.GUI.Button.CreateSimpleButton("Desistir", "DESISTIR");
-// Button_Desistir.paddingTop = "10px";
-// Button_Desistir.width = "100px";
-// Button_Desistir.height = "50px";
-// Button_Desistir.color = "white";
-// Button_Desistir.fontSize = 30;
-// Button_Desistir.fontFamily = "Segoe UI"
-// Button_Desistir.cornerRadius = 20;
-// Button_Desistir.background = "green";
-// Button_Desistir.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-
-// Button_Desistir.onPointerDownObservable.add(() => {
-//     textblock_Feedback.children[0].text = "Desistindo 😢☹🙁";
-//     console.log('Desistindo do desafio...');
-
-//     Button_Desistir.isEnabled = false;
-//     Button_Desistir.children[0].text = "Desistiu! 🙁";
-
-//     if (Button_Desistir) {
-//         document.write("<canvas id='canvasPrimario' width='1520' height='840'></canvas><script src='js/mundoExploratorio2.js'></script>");
-//         console.log("apertou DESISTIR");
-//         Button_Desistir = 0; // # usar false
-//     }
-// });
-
-
 // Botão seta para esquerda
 leftBtn = BABYLON.GUI.Button.CreateImageOnlyButton("esquerda", "assets/gui/leftButton.png");
 leftBtn.width = "55px";
@@ -486,6 +531,9 @@ rightBtn.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
 //     }
 // });
 
+
+
+
 // Botão que habilita a interação do usuário com a interface gráfica
 // var gui_ativado = false;
 activateBtn = BABYLON.GUI.Button.CreateImageOnlyButton("ativar", "assets/gui/activateButton.png");
@@ -493,13 +541,21 @@ activateBtn.width = "130px";
 activateBtn.height = "55px";
 activateBtn.thickness = 0;
 activateBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-activateBtn.onPointerClickObservable.add(() => {
+
+activateBtn.onPointerClickObservable.add(function() {
+    panel1.isVisible = false;
+ });
+
+// activateBtn.onPointerClickObservable.add(() => {
     // gui_ativado = true;
     // if  (gui_ativado){
+
+    // Colocar tudo dentro de painel e ocultar o painel!!!
+        // REESCREVER TODOS PASSANDO COMO PARAMETROS!!!
         interface.addControl(leftBtn);   
         interface.addControl(rightBtn);  
         interface.addControl(panel1);
-        interface.addControl(panel2);
+        // interface.addControl(panel2);
         interface.addControl(input);    
         interface.addControl(keyboard);
         interface.addControl(button_Click);    
@@ -511,12 +567,17 @@ activateBtn.onPointerClickObservable.add(() => {
         interface.addControl(textblock_Nivel);
         interface.addControl(textblock_Pontos);
       
+        // interface.addControl(leftBtn, rightBtn);
+        // interface.addControl(panel1, panel2);   
+        // interface.addControl(input, keyboard, button_Click, Button_Falar); 
+        // interface.addControl(textblock_Feedback, textblock_Resposta);   
+        // interface.addControl(textblock_Nivel, textblock_Pontos);
         // interface.removeControl //# pesquisar se existe algo similar
     // }
 
     // gui_ativado = false;
 
-    });
+    // });
     
 interface.addControl(activateBtn);   
 

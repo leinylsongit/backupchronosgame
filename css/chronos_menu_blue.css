@@ -1,0 +1,140 @@
+html, body {
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-size: 14px;
+}
+
+#renderCanvas {
+	width: 100%;
+	height: 100%;
+	touch-action: none;
+}
+#menu, #menu ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	position: absolute;
+	z-index: 2000;
+}
+
+/* Barra horizontal superior */
+#menu {
+	width: 22%;
+	height: 29px;
+	margin: 0px auto;
+	border: 1px solid rgb(68, 68, 68);
+	background-color: rgb(17, 17, 17);
+	background-image: linear-gradient(rgb(0, 72, 253), rgb(0, 0, 0));
+	/* border-top-left-radius: 6px;
+	border-top-right-radius: 6px; */
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
+	box-shadow: 0 1px 1px rgb(119, 119, 119), 0 1px 0 rgb(102, 102, 102) inset;
+}
+
+#menu:before,
+
+#menu:after {
+	content: "";
+	display: table;
+}
+
+#menu:after {
+	clear: both;
+}
+
+#menu li {
+	float: left;
+	border: 1px solid rgb(0, 76, 255);
+	box-shadow: 2px 0 0 rgb(17, 255, 0);
+	position: relative;
+	border-top-right-radius: 2px;
+	border-top-left-radius: 2px;
+}
+
+/* Textos */
+#menu a { 
+	float: left;
+	padding: 5px 10px;
+	color: #FAFAFA;
+	text-transform: uppercase;
+	font: 12px Arial, Helvetica;
+	text-decoration: none;
+	text-shadow: 0 1px 0 #000;
+	/* visibility: hidden; */
+}
+	
+#menu li:hover > a {
+	color: #3eba00;
+	/* visibility: visible; */
+}
+
+#menu ul {
+	margin: 10px 0 0 0;
+	opacity: 0;
+	visibility: hidden;
+	position: absolute;
+	top: 26px;
+	left: 0;
+	z-index: 2000;    
+	background: rgb(68, 68, 68);
+	background: linear-gradient(rgb(0, 60, 255), rgb(17, 17, 17));
+	box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.3);	
+	border-radius: 5px;
+	transition: all .2s ease-in-out;
+}
+
+#menu li:hover > ul {
+	opacity: 1;
+	visibility: visible;
+	margin: 0;
+}
+
+#menu ul ul {
+	top: 0;
+	left: 200px;
+	margin: 0 0 0 8px;
+	box-shadow: -1px 0 0 rgba(255, 0, 0, 0.3);		
+}
+
+#menu ul li {
+	float: none;
+	display: block;
+	border: 0;
+	box-shadow: 0 1px 0 rgb(17, 17, 17), 0 2px 0 rgb(102, 102, 102);
+}
+
+#menu ul li:last-child {   
+	box-shadow: none;    
+}
+
+#menu ul a {    
+	padding: 3px;
+	width: 250px;
+	height:30px;
+	display: block;
+	white-space: nowrap;
+	float: none;
+	text-transform: none;
+}
+
+#menu ul a:hover {
+	color: #FAFAFA;
+	background-color: #BA0000;
+	background-image: linear-gradient(#3cff00, #111);
+}
+
+#menu ul li:last-child > a {
+	border-radius: 0 0 3px 3px;
+}
+
+#scroll {
+	max-width: 210px;
+	max-height: 300px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+

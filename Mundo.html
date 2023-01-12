@@ -6,8 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>MUNDO</title>
+    <title>MUNDO (Carrega Labirinto .glb)</title>
 
+    <link rel = "stylesheet" type="text/css" href = "./css/chronos_menu_black.css" />
+
+    
     <!-- scripts JavaScript que são utilizados para carregar bibliotecas e frameworks de criação de cenas 3D no navegador. -->
     <!-- Babylon.js # Depois verificar quais destes links são desnecessários--> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
@@ -21,17 +24,31 @@
     <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
     <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
     <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+
+
+    <!-- // do labirinto!!!! -->
+    <!-- <script src="https://code.jquery.com/pep/0.4.0/pep.min.js"></script> -->
+	<!-- <script src="https://cdn.babylonjs.com/babylon.js"></script> -->
+	<!-- <script src="https://cdn.babylonjs.com/gui/babylon.gui.js"></script> -->
+<!--	<script src="https://cdn.babylonjs.com/loaders/babylon.glTFFileLoader.js"></script>	-->
+	<!-- <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.js"></script> -->
+    
+    <!-- <script src="https://cdn.babylonjs.com/loaders/dist/OBJ/objFileLoader.js"></script> -->
+    
+    <!-- <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script> -->
+    
     <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
     <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
     <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
-
+    
     <!-- MediaPipe.js -->
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    
+    <!-- Estágios do labirinto -->
+    <script src="./stages_301.js"></script>
 
     <style>
         html, body{
@@ -78,8 +95,70 @@
              clear:both;
          }
     </style>
+
+    <!-- <style>
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            z-index: 2000;
+        }
+
+        .nav-menu li {
+            display: inline-block;
+        }
+
+        .nav-menu li a {
+            text-decoration: none;
+            color: #000;
+            font-size: 18px;
+            padding: 10px 15px;
+        }
+
+        .nav-menu li a:hover {
+            background-color: #ddd;
+            color: #000;
+            -webkit-animation: pulse 1s ease infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.2);
+            }
+        }
+    </style> -->
+    
 </head>
-<body> 
+
+<body onLoad = "init()">
+	<nav id="menu-wrap">
+	    <ul id="menu">
+            <li><a href="#">Instruções</a>
+                <ul>
+            <li><a>Controle o player do lado esquerdo.</a></li>
+            <li><a>Controle a camera do lado direito.</a></li>
+        </ul>
+        </li>
+        <li><a href="#">Velocidade</a>
+        <ul>
+            <li><a href="#" onclick = "slow()">Lenta</a></li>
+            <li><a href="#" onclick = "medium()">Média</a></li>
+            <li><a href="#" onclick = "fast()">Rápida</a></li>
+        </ul>
+        </li>
+        <li><a href="#">Jogo</a>
+        <ul>
+            <li><a href="#" onclick = "again()">Mesmo estágio</a></li>
+            <li><a href="#" onclick = "init()">Próximo estágio</a></li>
+            <li><a href="#" onclick = "window.location.reload()">Resetar tudo</a></li>
+		</ul>
+		</li>
+	    </ul>
+	</nav>
     <!-- Executa vídeo de abertura -->
     <!-- <video src='assets/videos/abertura.mp4' autoplay='true' width="100%" height="100%">; -->
 	
