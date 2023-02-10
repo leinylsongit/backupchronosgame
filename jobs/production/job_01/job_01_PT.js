@@ -46,9 +46,22 @@ function init() {
   new BABYLON.HemisphericLight('light', new BABYLON.Vector3(1, 1, 0), scene)
   new BABYLON.DirectionalLight('dir-light', new BABYLON.Vector3(1, 1, 0), scene)
 
+  // // # Adiciona o animal
+  // BABYLON.SceneLoader.ImportMesh(null, 'game/assets/animais/', 'T-Rex.glb', scene, (meshes_Trex) => {
+  //   // 3D assets are loaded, now load nav mesh
+
+  //   var animal = meshes_Trex[0];
+  //   animal.scaling = new BABYLON.Vector3(1, 1, 1);
+  //   animal.position = new BABYLON.Vector3(0, 0, 0);
+  // })
+
   //
   BABYLON.SceneLoader.ImportMesh(null, 'model/', 'pre_historia.glb', scene, (meshes) => {
     // 3D assets are loaded, now load nav mesh
+
+    var ambiente = meshes[0];
+    ambiente.scaling = new BABYLON.Vector3(150, 150, 150);
+    ambiente.position = new BABYLON.Vector3(-10, -7, 0);
 
     const loader = new YUKA.NavMeshLoader()
     loader.load('./navmesh/navmesh.glb', { epsilonCoplanarTest: 0.25 }).then((navMesh) => {
@@ -117,6 +130,9 @@ function init() {
     })
   })
 }
+
+
+
 
 function onWindowResize() {
   engine.resize()

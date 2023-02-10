@@ -50,6 +50,10 @@ function init() {
   BABYLON.SceneLoader.ImportMesh(null, 'model/', 'corridor_scifi.glb', scene, (meshes) => {
     // 3D assets are loaded, now load nav mesh
 
+    var ambiente = meshes[0];
+    // ambiente.scaling = new BABYLON.Vector3(150, 150, 150);
+    ambiente.position = new BABYLON.Vector3(-10, 0, 0);
+
     const loader = new YUKA.NavMeshLoader()
     loader.load('./navmesh/navmesh.glb', { epsilonCoplanarTest: 0.25 }).then((navMesh) => {
       const loadingScreen = document.getElementById('loading-screen')

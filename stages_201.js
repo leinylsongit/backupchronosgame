@@ -1,6 +1,3 @@
-// All the rooms are here for ice world game. 
-// by T. Fujita
-// 
 // B: Block(Movable)
 // F: Floor
 // G: Goal

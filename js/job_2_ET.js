@@ -9,7 +9,7 @@ var startRenderLoop = function (engine, canvas) {
 }
 
 var engine = null;
-var job_2ET = null;
+var scene = null;
 var sceneToRender = null;
 
 var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
@@ -45,7 +45,7 @@ function GameLoop() {
 	if (spawnTimer <= 0.0 && globalCount < 1){
 		globalCount++;
 		
-		var newTarget = {alive:true, timer:0.0, mesh:BABYLON.MeshBuilder.CreateSphere("sphere" + globalCount.toString(), {}, job_2ET)};
+		var newTarget = {alive:true, timer:0.0, mesh:BABYLON.MeshBuilder.CreateSphere("sphere" + globalCount.toString(), {}, scene)};
 		
         // Determina o tamanho da esfera
         newTarget.mesh.scaling = new BABYLON.Vector3(4, 4, 4);
@@ -57,7 +57,7 @@ function GameLoop() {
         newTarget.mesh.position = new BABYLON.Vector3(0, 0, 0);
 
 
-		newTarget.mesh.material = new BABYLON.StandardMaterial("texture" + globalCount.toString(), job_2ET);
+		newTarget.mesh.material = new BABYLON.StandardMaterial("texture" + globalCount.toString(), scene);
 		newTarget.mesh.material.diffuseColor = new BABYLON.Color3(1.0, 1.0, 0.0);
 		targets.push(newTarget);
 		
@@ -93,13 +93,13 @@ function GameLoop() {
 //--------------------------------------- Inicio da tarefa---------------------------------
 var create_Tarefa = function () {
     // Cria a Cena
-    job_2ET = new BABYLON.Scene(engine);
+    scene = new BABYLON.Scene(engine);
 
 //  Cria a câmera, luz e som
 
     // createSkyboxAndLight(); // # Atualizar esta função e ativar
 
-    var camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.8, 5, new BABYLON.Vector3(0, 0, 0), job_2ET);
+    var camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.8, 5, new BABYLON.Vector3(0, 0, 0), scene);
     
     // var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 4, Math.PI / 2.5, 200, BABYLON.Vector3.Zero(), job_2ET);
 
@@ -143,7 +143,7 @@ var create_Tarefa = function () {
     // lightHemis.intensity = 0.1;
 
     // Ponto de luz
-    var lightPoint = new BABYLON.PointLight("PointLight", new BABYLON.Vector3(20, 20, 10), job_2ET);
+    var lightPoint = new BABYLON.PointLight("PointLight", new BABYLON.Vector3(20, 20, 10), scene);
     // lightPoint.intensity = 0.7;
 
 
@@ -155,7 +155,7 @@ var create_Tarefa = function () {
     // dirLight.intensity = 0.7;
 
     // Reflexo de lente
-    var lensFlareSystem = new BABYLON.LensFlareSystem("lensFlareSystem", lightPoint, job_2ET);
+    var lensFlareSystem = new BABYLON.LensFlareSystem("lensFlareSystem", lightPoint, scene);
     var flare00 = new BABYLON.LensFlare(0.2, 0, new BABYLON.Color3(1, 1, 1), "assets/skybox/lens5.png", lensFlareSystem);
     var flare01 = new BABYLON.LensFlare(0.5, 0.5, new BABYLON.Color3(0.5, 0.5, 1), "assets/skybox/lens4.png", lensFlareSystem);
     var flare02 = new BABYLON.LensFlare(0.2, 1.0, new BABYLON.Color3(1, 0, 0), "assets/skybox/lens4.png", lensFlareSystem);
@@ -165,8 +165,8 @@ var create_Tarefa = function () {
 
 
      // Atmosfera 1
-     var skybox1 = BABYLON.MeshBuilder.CreateBox("SkyBox1", {size:1000.0}, job_2ET);
-     var skyboxMaterial1 = new BABYLON.StandardMaterial("skyBox1", job_2ET);
+     var skybox1 = BABYLON.MeshBuilder.CreateBox("SkyBox1", {size:1000.0}, scene);
+     var skyboxMaterial1 = new BABYLON.StandardMaterial("skyBox1", scene);
      skyboxMaterial1.backFaceCulling = false;
     //  skyboxMaterial1.reflectionTexture = new BABYLON.HDRCubeTexture("assets/skybox/9.hdr", job_2ET, 512);     
     // skyboxMaterial1.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/bosque1.hdr", job_2ET, 512);     
@@ -175,7 +175,7 @@ var create_Tarefa = function () {
     // skyboxMaterial1.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuRosa.hdr", job_2ET, 512);     
     // skyboxMaterial1.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuTropical.hdr", job_2ET, 512);     
     // skyboxMaterial1.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuCarregado.hdr", job_2ET, 512);     
-    skyboxMaterial1.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuAzul.hdr", job_2ET, 512);     
+    skyboxMaterial1.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/ceuAzul.hdr", scene, 512);     
     // skyboxMaterial1.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/estacionamento.hdr", job_2ET, 512);     
     // skyboxMaterial1.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/escadarias.hdr", job_2ET, 512);     
     // skyboxMaterial1.reflectionTexture = new BABYLON.HDRCubeTexture("assets_ignorados/skybox/predioNevoeiro.hdr", job_2ET, 512);     
@@ -194,7 +194,7 @@ var create_Tarefa = function () {
 
     // Checkbox opção de som ou mudo
     if (som_Ambiente)//# abaixar o volume
-        var backSound = new BABYLON.Sound("Ambiente", "assets/sounds/soundtracks/Ambiente_Calmo_01.mp3", job_2ET, null, { loop: false, autoplay: true });
+        var backSound = new BABYLON.Sound("Ambiente", "assets/sounds/soundtracks/Ambiente_Calmo_01.mp3", scene, null, { loop: false, autoplay: true });
 
 
     // Executa vídeo de abertura
@@ -491,17 +491,6 @@ textblock_Resposta.color = "white";
 textblock_Resposta.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 textblock_Resposta.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
 
-// // K. Regras da tarefa
-// var textblock_Regras = new BABYLON.GUI.TextBlock();
-// textblock_Regras.text = "1. Click no botão [INICIAR]\n 2. OBSERVE o que vai acontecer com o Sol\n 3. Informe quanto tempo demorou para o Sol explodir\n";
-// textblock_Regras.fontSize = 30;
-// textblock_Regras.fontFamily = "Segoe UI"
-// textblock_Regras.height = "150px";
-// textblock_Regras.top = "80px";
-// textblock_Regras.color = "blue";
-// // textblock_Regras.background = "black";
-// textblock_Regras.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-// textblock_Regras.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
 
 // Botão seta para esquerda
 leftBtn = BABYLON.GUI.Button.CreateImageOnlyButton("esquerda", "assets/gui/leftButton.png");
@@ -617,7 +606,7 @@ interface.addControl(activateBtn);
 
     
     // Adiciona o Sol
-    var sol = BABYLON.ParticleHelper.CreateAsync("sun", job_2ET).then((set) => {
+    var sol = BABYLON.ParticleHelper.CreateAsync("sun", scene).then((set) => {
         console.log(set);        
         //scale all of the particle subsystems uniformly
         for(const sys of set.systems) { // Permite alterar as propriedades do sol
@@ -632,7 +621,7 @@ interface.addControl(activateBtn);
     
     
     // Adiciona planeta Lava
-    BABYLON.SceneLoader.ImportMesh("", "./assets/ambiente/planetas/", "planeta_lava.glb", job_2ET, function (mesh_planeta_Lava){
+    BABYLON.SceneLoader.ImportMesh("", "./assets/ambiente/planetas/", "planeta_lava.glb", scene, function (mesh_planeta_Lava){
         // mesh_planeta_Lava[0].scaling = new BABYLON.Vector3(20, 20, 20);
         mesh_planeta_Lava[0].scaling = new BABYLON.Vector3(2, 2, 2);
         mesh_planeta_Lava[0].position = new BABYLON.Vector3(30, 0, 0);
@@ -682,28 +671,28 @@ interface.addControl(activateBtn);
     // Evento de fumaça
     document.addEventListener('keydown', fumaceia);
     // Remove listeners when scene disposed
-    job_2ET.onDisposeObservable.add(function(){
+    scene.onDisposeObservable.add(function(){
         document.removeEventListener('keydown', fumaceia);
     });
   
     // Evento de chuva
     document.addEventListener('keydown', chove);
     // Remove listeners when scene disposed
-    job_2ET.onDisposeObservable.add(function(){
+    scene.onDisposeObservable.add(function(){
         document.removeEventListener('keydown', chove);
     });
 
     // Ativa evento de fogo
     document.addEventListener('keydown', queima);
     // Remove listeners when scene disposed
-    job_2ET.onDisposeObservable.add(function(){
+    scene.onDisposeObservable.add(function(){
         document.removeEventListener('keydown', queima);
     });
    
      // Ativa evento de explosão
      document.addEventListener('keydown', explode);
      // Remove listeners when scene disposed
-     job_2ET.onDisposeObservable.add(function(){
+     scene.onDisposeObservable.add(function(){
          document.removeEventListener('keydown', explode);
      });
 
@@ -719,20 +708,20 @@ interface.addControl(activateBtn);
     // Ativa evento de Gravação da tela
     document.addEventListener('keydown', gravaTela);
     // Remove listeners when scene disposed
-    job_2ET.onDisposeObservable.add(function(){
+    scene.onDisposeObservable.add(function(){
         document.removeEventListener('keydown', gravaTela);
     });
 
 
 //---------------------------------- Síntese de fala -------------------------------------
-    var box = BABYLON.MeshBuilder.CreateBox("box", {size: 1}, job_2ET);
+    var box = BABYLON.MeshBuilder.CreateBox("box", {size: 1}, scene);
     box.position.x = -2;
     box.metadata = {speech: "Oi, sou uma caixa!"}
     // console.log(box.metadata.speech);
     // console.log(box.metadata);
 
     // SIG instruindo a tarefa
-    var bola = BABYLON.MeshBuilder.CreateSphere("bola", {size: 1}, job_2ET);
+    var bola = BABYLON.MeshBuilder.CreateSphere("bola", {size: 1}, scene);
     bola.position.x = 2;
     bola.metadata = {speech: "Olá herói! Veja o que está acontecendo com o Sol! Ele está superaquecendo! Observe o que vai acontecer em seguida me conta quanto tempo levou para ele explodir. Preparado? Iniciaremos em 3, 2, 1."}
     // console.log(bola.metadata);
@@ -754,12 +743,12 @@ interface.addControl(activateBtn);
 
 
     // Asteróide que colidirá com o Sol
-    var asteroide = BABYLON.Mesh.CreateBox("asteroide", 0.5, job_2ET);
+    var asteroide = BABYLON.Mesh.CreateBox("asteroide", 0.5, scene);
         // asteroide.isVisible = false;
 
     // Particles
-    var particleSystem = new BABYLON.ParticleSystem("particles", 4000, job_2ET);
-    particleSystem.particleTexture = new BABYLON.Texture("assets/textures/flare/flare.png", job_2ET);
+    var particleSystem = new BABYLON.ParticleSystem("particles", 4000, scene);
+    particleSystem.particleTexture = new BABYLON.Texture("assets/textures/flare/flare.png", scene);
     
     particleSystem.minSize = 0.1;
     particleSystem.maxSize = 0.3;
@@ -791,8 +780,8 @@ interface.addControl(activateBtn);
 //# -------- Gerar vários asteróides rotacionando ---------------------------------
     // Meterial do asteróide
     var url = "http://jerome.bousquie.fr/BJS/images/rock.jpg";
-	var mat = new BABYLON.StandardMaterial("mat1", job_2ET);
-	var texture = new BABYLON.Texture(url, job_2ET);
+	var mat = new BABYLON.StandardMaterial("mat1", scene);
+	var texture = new BABYLON.Texture(url, scene);
 	mat.diffuseTexture = texture;
 	mat.backFaceCulling = false;
 	
@@ -829,8 +818,8 @@ interface.addControl(activateBtn);
     };
  
     // Cria o sistema de particulas: Immutável
-    var SPS = new BABYLON.SolidParticleSystem('SPS', job_2ET, {updatable: false});
-    var sphere = BABYLON.MeshBuilder.CreateSphere("s", {diameter: 6, segments: 8}, job_2ET);
+    var SPS = new BABYLON.SolidParticleSystem('SPS', scene, {updatable: false});
+    var sphere = BABYLON.MeshBuilder.CreateSphere("s", {diameter: 6, segments: 8}, scene);
     SPS.addShape(sphere, 200, {positionFunction: myPositionFunction, vertexFunction: myVertexFunction});
     var mesh = SPS.buildMesh();
     mesh.material = mat;
@@ -839,7 +828,7 @@ interface.addControl(activateBtn);
 
     // Animação dos asteróides
     var k = Date.now();
-    job_2ET.registerBeforeRender(function() {
+    scene.registerBeforeRender(function() {
         SPS.mesh.rotation.y += 0.01;
         SPS.mesh.position.y = Math.sin((k - Date.now())/1000) * 2;
         k += 0.07;
@@ -868,7 +857,7 @@ interface.addControl(activateBtn);
     // asteroide.position.x = 1050;
     // asteroide.position.z = 150;
 
-    job_2ET.registerBeforeRender(function (){
+    scene.registerBeforeRender(function (){
         
         //# Apenas chamar as funções de animações aqui!!!
 
@@ -904,10 +893,10 @@ interface.addControl(activateBtn);
         // anima_Tamanho(box, velocidade);
 
 
-        alpha += 0.01 * job_2ET.getAnimationRatio();
+        alpha += 0.01 * scene.getAnimationRatio();
     });
  
-return job_2ET;
+return scene;
 
 //#  Executa vídeo automaticamente
 function executaVideo(video) {
@@ -917,11 +906,11 @@ function executaVideo(video) {
         sideOrientation: BABYLON.Mesh.DOUBLESIDE
     };
 
-    var Video = BABYLON.MeshBuilder.CreatePlane("tela", tela_Opts, job_2ET);
+    var Video = BABYLON.MeshBuilder.CreatePlane("tela", tela_Opts, scene);
     Video.position = new BABYLON.Vector3(0, 0, 0.1);
 
-    var Video_Material = new BABYLON.StandardMaterial("m", job_2ET);
-    var Video_Textura = new BABYLON.VideoTexture("vidtex", video, job_2ET);
+    var Video_Material = new BABYLON.StandardMaterial("m", scene);
+    var Video_Textura = new BABYLON.VideoTexture("vidtex", video, scene);
     // var abertura_VideoTex = new BABYLON.VideoTexture("vidtex",video",
     //  job_2ET, false, false, {autoplay: false, loop: false, playsinline: false, poster: "https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217"}
     // );
@@ -932,7 +921,7 @@ function executaVideo(video) {
 
 
     // Executa vídeo ao clicar na tela do vídeo
-    job_2ET.onPointerObservable.add(function (evt) {
+    scene.onPointerObservable.add(function (evt) {
         if (evt.pickInfo.pickedMesh === Video) {
             console.log("Clicou no vídeo.");
             if (Video_Textura.video.paused)
@@ -949,7 +938,7 @@ function executaVideo(video) {
 // Efeito de fumaça ao pressionar a tecla S
     function fumaceia(event, lava){
         if(event.keyCode == 83){ 
-            BABYLON.ParticleHelper.CreateAsync("smoke", job_2ET).then((set) => {
+            BABYLON.ParticleHelper.CreateAsync("smoke", scene).then((set) => {
                 set.systems.forEach(s => {
                     s.disposeOnStop = true;
                 });
@@ -962,13 +951,13 @@ function executaVideo(video) {
 // Efeito de chuva ao pressionar a tecla c
     function chove(event){
         if(event.keyCode == 67){ 
-            BABYLON.ParticleHelper.CreateAsync("rain", job_2ET).then((set) => {
+            BABYLON.ParticleHelper.CreateAsync("rain", scene).then((set) => {
                 set.systems.forEach(s => {
                     s.disposeOnStop = true;
                 });
                 set.start();
                 if (som_Efeitos)//
-                    var chuva = new BABYLON.Sound("chuva", "assets/sounds/effects/chuva.mp3", job_2ET, null, { loop: false, autoplay: true });
+                    var chuva = new BABYLON.Sound("chuva", "assets/sounds/effects/chuva.mp3", scene, null, { loop: false, autoplay: true });
                 });
         }
     }
@@ -976,13 +965,13 @@ function executaVideo(video) {
 // Efeito de explosão ao pressionar a tecla E
     function explode(event){
         if(event.keyCode == 69){ 
-            BABYLON.ParticleHelper.CreateAsync("explosion", job_2ET).then((set) => {
+            BABYLON.ParticleHelper.CreateAsync("explosion", scene).then((set) => {
                 set.systems.forEach(s => {
                     s.disposeOnStop = true;
                 });
                 set.start();
                 if (som_Efeitos)
-                    var explosao = new BABYLON.Sound("explosao", "assets/sounds/effects/explosao.mp3", job_2ET, null, { loop: false, autoplay: true });
+                    var explosao = new BABYLON.Sound("explosao", "assets/sounds/effects/explosao.mp3", scene, null, { loop: false, autoplay: true });
             });
         }
     }
@@ -990,13 +979,13 @@ function executaVideo(video) {
 // Efeito de chamas ao pressionar a tecla F
     function queima(event){
         if(event.keyCode == 70){ 
-            BABYLON.ParticleHelper.CreateAsync("fire", job_2ET).then((set) => {
+            BABYLON.ParticleHelper.CreateAsync("fire", scene).then((set) => {
                 set.systems.forEach(s => {
                     s.disposeOnStop = true;
                 });
                 set.start();
                 if (som_Efeitos)
-                    var fogo = new BABYLON.Sound("fogo", "assets/sounds/effects/fogo.mp3", job_2ET, null, { loop: false, autoplay: true });
+                    var fogo = new BABYLON.Sound("fogo", "assets/sounds/effects/fogo.mp3", scene, null, { loop: false, autoplay: true });
             });
         }
     }
@@ -1027,7 +1016,7 @@ function executaVideo(video) {
     function adicionaParticulas() {
 
         // Emissor das partículas
-        var emissor = BABYLON.Mesh.CreateBox("emissor", 0.1, job_2ET);
+        var emissor = BABYLON.Mesh.CreateBox("emissor", 0.1, scene);
         emissor.isVisible = false;
 
         // Custom shader for particles
@@ -1058,8 +1047,8 @@ function executaVideo(video) {
         var effect = engine.createEffectForParticles("myParticle", ["time"]);
 
         // Particles
-        var particleSystem = new BABYLON.ParticleSystem("particles", 40, job_2ET, effect);
-        particleSystem.particleTexture = new BABYLON.Texture("assets/textures/flare/flare.png", job_2ET);
+        var particleSystem = new BABYLON.ParticleSystem("particles", 40, scene, effect);
+        particleSystem.particleTexture = new BABYLON.Texture("assets/textures/flare/flare.png", scene);
         particleSystem.minSize = 0.1;
         particleSystem.maxSize = 0.5;
         particleSystem.minLifeTime = 0.5;
@@ -1152,15 +1141,15 @@ function executaVideo(video) {
     // # Cria a luz e a atmosfera
     function createSkyboxAndLight() {
         // Define a general environment texture
-        hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("assets/textures/environment.dds", job_2ET);
-        job_2ET.environmentTexture = hdrTexture;
+        hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("assets/textures/environment.dds", scene);
+        scene.environmentTexture = hdrTexture;
 
         // Let's create a color curve to play with background color
         var curve = new BABYLON.ColorCurves();
         curve.globalHue = 10;
         curve.globalDensity = 10;
 
-        var box = job_2ET.createDefaultSkybox(hdrTexture, true, 200, 0.7);
+        var box = scene.createDefaultSkybox(hdrTexture, true, 200, 0.7);
         box.infiniteDistance = false;
         box.material.imageProcessingConfiguration = new BABYLON.ImageProcessingConfiguration();
         box.material.cameraColorCurvesEnabled = true;
@@ -1168,16 +1157,16 @@ function executaVideo(video) {
         box.name = "MYMESHFORSKYBOX";
         box.isPickable = false;
 
-        directionalLight = new BABYLON.DirectionalLight('light', new BABYLON.Vector3(-0.2, -1, 0), job_2ET)
+        directionalLight = new BABYLON.DirectionalLight('light', new BABYLON.Vector3(-0.2, -1, 0), scene)
         directionalLight.position = new BABYLON.Vector3(100 * 0.2, 100 * 2, 0)
         directionalLight.intensity = 4.5;
 
     // Cria a ATMOSFERA # TROCAR POR UM CÉU NOTURNO
-    var skybox = BABYLON.Mesh.CreateBox("BackgroundSkybox", 500, job_2ET, undefined, BABYLON.Mesh.BACKSIDE);
-    var skyboxMaterial = new BABYLON.BackgroundMaterial("backgroundMaterial", job_2ET);
+    var skybox = BABYLON.Mesh.CreateBox("BackgroundSkybox", 500, scene, undefined, BABYLON.Mesh.BACKSIDE);
+    var skyboxMaterial = new BABYLON.BackgroundMaterial("backgroundMaterial", scene);
     // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("assets/skybox/TropicalSunnyDay", job_2ET);
     // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("assets/skybox/Cerebro", job_2ET);
-    skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets/skybox/1.hdr", job_2ET, 512);
+    skyboxMaterial.reflectionTexture = new BABYLON.HDRCubeTexture("assets/skybox/1.hdr", scene, 512);
     //textures/forest.hdr
 
     
@@ -1296,7 +1285,7 @@ function executaVideo(video) {
         let rate = 1;
         let pitch = 1;
 
-        job_2ET.onPointerUp = function (evt, pickResult) {
+        scene.onPointerUp = function (evt, pickResult) {
             if (evt.button === 0) {
                 if (pickResult.hit) {
                     var meshName = pickResult.pickedMesh.name;

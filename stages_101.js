@@ -1,6 +1,3 @@
-// All the rooms are here for SOKOBAN type of game. 
-// by T. Fujita
-// 
 // B: Block(Movable)
 // F: Floor
 // G: Goal / Set Points of Box

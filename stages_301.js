@@ -1,6 +1,3 @@
-// All the rooms are here. 
-// by T. Fujita
-// 
 // B: Box(Movable)
 // E: Enemy
 // F: Floor / Free

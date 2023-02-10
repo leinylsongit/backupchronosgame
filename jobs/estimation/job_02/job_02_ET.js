@@ -7,9 +7,9 @@ import { FirstPersonControls } from './src/FirstPersonControls.js'
 import { Player } from './src/Player.js'
 
 let engine, scene, camera, step1, step2
-let entityManager, time, controls
+let time, controls
 
-const entityMatrix = new BABYLON.Matrix()
+// const entityMatrix = new BABYLON.Matrix()
 
 init()
 
@@ -25,40 +25,74 @@ function init() {
 
   scene = new BABYLON.Scene(engine)
   scene.clearColor = BABYLON.Color3.FromHexString('#a0a0a0')
-  scene.useRightHandedSystem = true
+  scene.useRightHandedSystem = true; // Rotaciona para direita
+  // scene.useRightHandedSystem = false; // Rotaciona para esquerda
 
-  camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(-13, 0.75, -9), scene, true)
-  camera.minZ = 0.1
+  camera = new BABYLON.ArcRotateCamera("Camera", -90/180*Math.PI, 45/180*Math.PI, Math.PI, new BABYLON.Vector3(0, 0, 0), scene);
+  camera.minZ = 0.1;
+  // camera.maxZ = 20000;
 
-  // scene.fogMode = BABYLON.Scene.FOGMODE_EXP2
-  // scene.fogColor = BABYLON.Color3.FromHexString('#a0a0a0')
-  // scene.fogDensity = 0.01
+  // Permite distanciar a camera
+  // camera.setPosition(new BABYLON.Vector3(20, 100, 100));
+    
 
-  //
-  const ground = BABYLON.MeshBuilder.CreateGround('ground', { width: 250, height: 250 }, scene)
-  ground.position.y = -5
-  const groundMaterial = new BABYLON.StandardMaterial('grid', scene)
-  groundMaterial.diffuseColor = BABYLON.Color3.FromHexString('#999999')
-  ground.material = groundMaterial
+  camera.attachControl(canvas);
+  camera.lowerRadiusLimit = 2.5;
+  camera.upperRadiusLimit = 10;
+  camera.pinchDeltaPercentage = 0.01;
+  camera.wheelDeltaPercentage = 0.01;
 
-  //
-
+// Lights
   new BABYLON.HemisphericLight('light', new BABYLON.Vector3(1, 1, 0), scene)
   new BABYLON.DirectionalLight('dir-light', new BABYLON.Vector3(1, 1, 0), scene)
 
-  //
-  BABYLON.SceneLoader.ImportMesh(null, 'model/', 'Labirinto_grama.glb', scene, (meshes) => {
-    // 3D assets are loaded, now load nav mesh
+// Névoa
+  // scene.fogMode = BABYLON.Scene.FOGMODE_EXP2
+  // scene.fogColor = BABYLON.Color3.FromHexString('#a0a0a0')
+  // scene.fogDensity = 0.001
 
-    const loader = new YUKA.NavMeshLoader()
-    loader.load('./navmesh/navmesh.glb', { epsilonCoplanarTest: 0.25 }).then((navMesh) => {
+// Skybox
+var skybox = BABYLON.Mesh.CreateBox("skyBox", 1000.0, scene);
+var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+skyboxMaterial.backFaceCulling = false;           
+skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("./textures/nebula/nebula", scene);
+skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+skyboxMaterial.disableLighting = true;
+skybox.material = skyboxMaterial;
+
+// Create the Earth
+  var earth = BABYLON.Mesh.CreateSphere("earth", 20, 2.0, scene);
+//	var earth = BABYLON.MeshBuilder.CreateSphere("object", {}, scene);
+  var earthMaterial = new BABYLON.StandardMaterial("ground", scene);
+  earthMaterial.diffuseTexture = new BABYLON.Texture("./textures/earth.jpg", scene);
+  earthMaterial.diffuseTexture.uScale = -1;
+  earthMaterial.diffuseTexture.vScale = -1;
+  earth.material = earthMaterial;
+
+// Earth animation
+  var earthAxis = new BABYLON.Vector3(Math.sin(23.4/180 * Math.PI), Math.cos(23.4/180 * Math.PI), 0);
+  var angle = 0.003; // Influencia a velocidade
+  scene.registerBeforeRender(function() {
+      earth.rotate(earthAxis, angle, BABYLON.Space.WORLD);
+  })
+  
+
+  // Adiciona algum elemento 3d
+  // BABYLON.SceneLoader.ImportMesh(null, 'model/', 'Ambiente_A.glb', scene, (meshes) => {
+  //   // 3D assets are loaded, now load nav mesh
+  //   var ambiente = meshes[0];
+  //   ambiente.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+  //   ambiente.position = new BABYLON.Vector3(0, -20, 0);
+
+
+// Loading screen
       const loadingScreen = document.getElementById('loading-screen')
-
       loadingScreen.classList.add('fade-out')
       loadingScreen.addEventListener('transitionend', onTransitionEnd)
 
-      //
-
+ // Sounds
       step1 = new BABYLON.Sound('step1', 'audio/step1.ogg', scene, null, {
         loop: false,
         autoplay: false,
@@ -69,8 +103,7 @@ function init() {
         autoplay: false,
       })
 
-      //
-
+// Game setup
       window.addEventListener('resize', onWindowResize, false)
 
       const intro = document.getElementById('intro')
@@ -87,15 +120,9 @@ function init() {
         false
       )
 
-      // game setup
-
-      entityManager = new YUKA.EntityManager()
       time = new YUKA.Time()
 
       const player = new Player()
-      player.navMesh = navMesh
-      player.head.setRenderComponent(camera, syncCamera)
-      player.position.set(-13, -0.75, -9)
 
       controls = new FirstPersonControls(player)
       controls.setRotation(-2.2, 0.2)
@@ -103,6 +130,7 @@ function init() {
       controls.sounds.set('rightStep', step1)
       controls.sounds.set('leftStep', step2)
 
+      
       controls.addEventListener('lock', () => {
         intro.classList.add('hidden')
       })
@@ -111,12 +139,11 @@ function init() {
         intro.classList.remove('hidden')
       })
 
-      entityManager.add(player)
 
       animate()
-    })
-  })
-}
+    }
+  // }
+
 
 function onWindowResize() {
   engine.resize()
@@ -127,13 +154,8 @@ function animate() {
 
   const delta = time.update().getDelta()
   controls.update(delta)
-  entityManager.update(delta)
 
   scene.render()
-}
-
-function syncCamera(entity, renderComponent) {
-  renderComponent.getViewMatrix().copyFrom(BABYLON.Matrix.FromValues(...entity.worldMatrix.elements).invert())
 }
 
 function onTransitionEnd(event) {

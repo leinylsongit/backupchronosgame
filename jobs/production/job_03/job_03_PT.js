@@ -50,6 +50,10 @@ function init() {
   BABYLON.SceneLoader.ImportMesh(null, 'model/', 'old_hotel_door.glb', scene, (meshes) => {
     // 3D assets are loaded, now load nav mesh
 
+    var ambiente = meshes[0];
+    ambiente.scaling = new BABYLON.Vector3(2, 2, 2);
+    ambiente.position = new BABYLON.Vector3(0, 0, 0);
+
     const loader = new YUKA.NavMeshLoader()
     loader.load('./navmesh/navmesh.glb', { epsilonCoplanarTest: 0.25 }).then((navMesh) => {
       const loadingScreen = document.getElementById('loading-screen')

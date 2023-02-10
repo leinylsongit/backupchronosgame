@@ -1,8 +1,3 @@
-/**
- * @author Mugen87 / https://github.com/Mugen87
- * @author Examples with Babylon.js were made at https://github.com/eldinor/yuka-babylonjs-examples / roland@babylonjs.xyz
- */
-
 import { MovingEntity, Vector3, GameEntity } from '../../../../../lib/yuka.module.js'
 
 const startPosition = new Vector3()
