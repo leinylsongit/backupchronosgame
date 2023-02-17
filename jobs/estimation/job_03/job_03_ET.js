@@ -8,6 +8,7 @@ import 'https://preview.babylonjs.com/gui/babylon.gui.min.js'
 import { FirstPersonControls } from './src/FirstPersonControls.js'
 import { Player } from './src/Player.js'
 
+
 let engine, scene, camera, trilha
 let entityManager, time, controls
 
@@ -226,28 +227,57 @@ keyboard.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
 
 keyboard.connect(input);
 
+// H. Botão Falar
+var Button_Falar = BABYLON.GUI.Button.CreateSimpleButton("falar", "🗣 FALAR");
+// Button_Falar.top = "-150px";
+// Button_Falar.bottom = "150px";
+Button_Falar.left = "555px";
+Button_Falar.width = "150px";
+Button_Falar.height = "60px";
+Button_Falar.cornerRadius = 15;
+Button_Falar.thickness = 3;
+Button_Falar.children[0].color = "white";
+Button_Falar.fontSize = 25;
+// Button_Falar.fontFamily = "Segoe UI"
+Button_Falar.color = "white";
+Button_Falar.background = "black";
+Button_Falar.alpha = 0.7;
+Button_Falar.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+
+Button_Falar.onPointerUpObservable.add(function () {
+    reconheceFala();
+    
+    Button_Falar.children[0].text = ">> INICIOU <<";
+    textblock_Feedback.text = "Aguardando resposta...";
+    console.log('Aguardando resposta...');
+
+    clicks++;
+
+    textblock_Pontos.text = "Pontuação: " + clicks + "\n Tentativas restantes: 2/3"; // # add a variavel aqui
+
+    Button_Falar.isEnabled = false;
+});
 
 //E. Barra superior
-var panel1 = new BABYLON.GUI.StackPanel();
-panel1.isVertical = false;
-panel1.background = "black"; 
-panel1.alpha = 0.3;
-// panel.background = "transparent";
-panel1.horizontalAlignment = 1;
-panel1.verticalAlignment = 0;
-panel1.width = "100%";
-panel1.height = "60px";
+var barraSuperior = new BABYLON.GUI.StackPanel();
+barraSuperior.isVertical = false;
+barraSuperior.background = "black"; 
+barraSuperior.alpha = 0.3;
+barraSuperior.horizontalAlignment = 1;
+barraSuperior.verticalAlignment = 0;
+barraSuperior.width = "100%";
+barraSuperior.height = "60px";
 
 
 // F. Barra inferior
-var panel2 = new BABYLON.GUI.StackPanel();
-panel2.isVertical = false;
-panel2.background = "black"; 
-panel2.alpha = 0.3;
-panel2.horizontalAlignment = 0;
-panel2.verticalAlignment = 1;
-panel2.width = "100%";
-panel2.height = "60px";
+var barraInferior = new BABYLON.GUI.StackPanel();
+barraInferior.isVertical = false;
+barraInferior.background = "black"; 
+barraInferior.alpha = 0.3;
+barraInferior.horizontalAlignment = 0;
+barraInferior.verticalAlignment = 1;
+barraInferior.width = "100%";
+barraInferior.height = "60px";
 
 // G. Pontuação e tentativas
 var textblock_StatusJob = new BABYLON.GUI.TextBlock();
@@ -261,21 +291,21 @@ textblock_StatusJob.color = "white";
 textblock_StatusJob.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 textblock_StatusJob.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
 
-// I. Dados da tarefa
-var textblock_DataJob = new BABYLON.GUI.TextBlock();
-textblock_DataJob.text = "Tarefa de Estimativa: 03 | Velocidade: normal"; // # add variáveis
-textblock_DataJob.fontSize = 20;
-textblock_DataJob.height = "60px";
-textblock_DataJob.width = "30%";
-textblock_DataJob.top = 0;
-textblock_DataJob.right = 0;
-textblock_DataJob.color = "white";
-textblock_DataJob.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-textblock_DataJob.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+// I. Gabarito da tarefa
+var textblock_Gabarito = new BABYLON.GUI.TextBlock();
+textblock_Gabarito.text = "Tempo da tarefa: 0"; // # add variáveis
+textblock_Gabarito.fontSize = 20;
+textblock_Gabarito.height = "60px";
+textblock_Gabarito.width = "30%";
+textblock_Gabarito.top = 0;
+textblock_Gabarito.right = 0;
+textblock_Gabarito.color = "white";
+textblock_Gabarito.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+textblock_Gabarito.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
 
 // J. Local da Resposta do Player
 var textblock_Resposta = new BABYLON.GUI.TextBlock();
-textblock_Resposta.text = ">> (((((👂🏼))))) <<";
+// textblock_Resposta.text = ">> (((((👂🏼))))) <<";
 textblock_Resposta.fontSize = 40;
 textblock_Resposta.fontFamily = "Segoe UI"
 textblock_Resposta.height = "60px";
@@ -320,7 +350,7 @@ activateBtn.thickness = 0;
 activateBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
 
 activateBtn.onPointerClickObservable.add(function() {
-    panel1.isVisible = false;
+    barraSuperior.isVisible = false;
  });
 
 // activateBtn.onPointerClickObservable.add(() => {
@@ -331,17 +361,16 @@ activateBtn.onPointerClickObservable.add(function() {
         // // REESCREVER TODOS PASSANDO COMO PARAMETROS!!!
         // // interface_user.addControl(leftBtn);   
         // // interface_user.addControl(rightBtn);  
-        // // interface_user.addControl(panel1);
-        // // interface_user.addControl(panel2);
-        // // interface_user.addControl(input);    
-        // // interface_user.addControl(keyboard);
+        // interface_user.addControl(barraSuperior);
+        // interface_user.addControl(barraInferior);
+        // interface_user.addControl(input);    
+        // interface_user.addControl(keyboard);
         // interface_user.addControl(button_Click);    
-        // // interface_user.addControl(Button_Falar);
+        interface_user.addControl(Button_Falar);
         // // interface_user.addControl(Button_Desistir);
-        interface_user.addControl(textblock_Feedback);
-        // // interface_user.addControl(textblock_Regras);
-        // interface_user.addControl(textblock_Resposta);
-        // interface_user.addControl(textblock_DataJob);
+        interface_user.addControl(textblock_Feedback); 
+        interface_user.addControl(textblock_Resposta);
+        interface_user.addControl(textblock_Gabarito);// # Não exibir para o jogador
         interface_user.addControl(textblock_StatusJob);
       
         // interface_user.addControl(leftBtn, rightBtn);
@@ -545,14 +574,21 @@ var duration;
 // Armazenar o tempo de início
 var startTime = Date.now();
 
+// // 1º Feedback do comando
+// textblock_Feedback.text = ("👀 Observe a colisão");
+
 // Exibe o tempo da animação
 var elapsedTime = 0;
 elapsedTime = Date.now() - startTime;
-textblock_Feedback.text = ("⏱ Tempo: " + formatTime(elapsedTime));
+textblock_Gabarito.text = ("⏱ Tempo: " + formatTime(elapsedTime)); // # Não exibir para o jogador
 console.log('⏱ Tempo: ' + formatTime(elapsedTime));
 
 // Inicia percurso a partir da duração sorteada
 scene.registerBeforeRender(function() {
+
+  // 1º Feedback do comando
+  textblock_Feedback.text = ("👀 Observe a colisão"); //# Aqui dentro ele escreve várias vezes, isso sobrecarrega??
+
   sphere.position.x = points[distancia].x;
   sphere.position.z = points[distancia].z;
   // console.log(i);
@@ -562,6 +598,7 @@ scene.registerBeforeRender(function() {
     // linha.scaling.z +=0.01;
 
   distancia = (distancia - 1)    
+  
   if(distancia<1){ // "Colidiu" com o Sol
 
     // Exibe o numero do asteoride atual
@@ -570,7 +607,7 @@ scene.registerBeforeRender(function() {
 
     // Exibe o tempo da animação
     elapsedTime = Date.now() - startTime;
-    textblock_Feedback.text = ("⏱ Tempo: " + formatTime(elapsedTime));
+    textblock_Gabarito.text = ("⏱ Tempo: " + formatTime(elapsedTime));
     console.log('⏱ Tempo: ' + formatTime(elapsedTime));
 
     // # Exfeito de explosão, fogo, e destruição
@@ -595,11 +632,39 @@ scene.registerBeforeRender(function() {
     diameter = Math.floor(Math.random(100)*100);  
     console.log("Diâmetro: ", diameter);
     
+    // 2º Feedback do comando
+    textblock_Feedback.text = ("⏱ Quanto tempo?");
+
+    // Captura resposta do jogador
+    textblock_Resposta.text = ">> (((((👂🏼))))) <<";
+
+
+    
+    Button_Falar.children[0].text = ">> INICIOU <<";
+    textblock_Feedback.text = "Aguardando resposta...";
+    console.log('Aguardando resposta...');
+    
+    // reconheceFala();
+    
+    Button_Falar.isEnabled = false;
+
+    // # sobrecarrega por colocar várias vezes?????
+    // interface_user.addControl(input);    
+    // interface_user.addControl(keyboard);
+    // interface_user.addControl(button_Click); 
+
+    // sleep1(5000); 
+    sleep2(5000); // ok
+    
+    // speechSynthesis.speak(new SpeechSynthesisUtterance('Outro asteroide está se aproximando...!'));
+    //   console.log('Outro asteroide está se aproximando...!');
+
     // Reseta cronômetro
     startTime = Date.now();
   };  
 });
 // asteroide.dispose();
+
 
 // Função para formatar o tempo em minutos e segundos
 function formatTime(time) {
@@ -751,6 +816,131 @@ function zoomOut(cam, tar, duration) {
   BABYLON.Animation.CreateAndStartAnimation('at4', cam, 'position', speed, duration, cam.position, global_position, 0, ease);
   BABYLON.Animation.CreateAndStartAnimation('at5', cam, 'target', speed, duration, cam.target, targetEndPos, 0, ease);
 };
+
+
+// # Testar
+// Permite interagir enquanto pausado
+function sleep1(milliseconds) {
+  setTimeout(() => { console.log("Pausado por um tempo..."); }, milliseconds);
+}
+
+// # Testar
+// Não permite interagir enquanto pausado
+function sleep2(milliseconds) {
+  const date = Date.now();
+  let currentDate = null;
+  console.log("Pausado por um tempo...");
+  do {
+      currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}
+
+// Reconhece o fala o jogador
+function reconheceFala() {
+  if ("webkitSpeechRecognition" in window) {
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var recognition = new SpeechRecognition();
+  } else {
+    console.log("Seu navegador não possui o Speech Recognition! (Utilize o Chrome ou Edge)");
+  }
+  
+  //   const speechRecognitionList = new webkitSpeechGrammarList();
+  //   speechRecognitionList.addFromString(grammar, 1);
+  //   recognition.grammars = speechRecognitionList;
+
+  recognition.interimResults = true; // Resultados intermediários
+  recognition.lang = "pt-BR";
+  recognition.continuous = true; // Escuta contínua
+  recognition.maxAlternatives = 1;
+  
+  // Inicia o reconhecimento
+  recognition.start();
+  
+  //   speechSynthesis.speak(new SpeechSynthesisUtterance('Fale agora!')); 
+  
+  // colocar meio segundo de espera (sleep)
+
+//A
+  // Exibe o resultado reconhecido
+  // recognition.onresult = function (event) {
+  //     console.log(event.results[0]);
+  //     var elemento = event.results[0][0].transcript;
+      
+  //     // quebrar (strip) a string elemento em varias (de acordo com a qtd de elementos sorteados), usando '.' OU ',' OU ' ' como separador
+
+  //     console.log('Elemento: ' + elemento);
+  //     // console.log('Elemento: ' + elemento[0]);
+  //     // console.log('Elemento: ' + elemento[1]);
+  //     // console.log('Elemento: ' + elemento[0][0]);
+  //     textblock_Resposta.text = elemento.toUpperCase();       
+  // };
+
+//A2
+// Quando falar no microfone
+recognition.onresult = function(event) {
+  for (let i = event.resultIndex; i < event.results.length; i++) {
+    if (event.results[i].isFinal) {
+      // Transcreve o que foi falado
+      var content = event.results[i][0].transcript.trim();
+      textblock_Resposta.text = content.toUpperCase(); 
+
+      // Reproduz o que foi transcrito
+      var u = new SpeechSynthesisUtterance();
+      u.text = content;
+      u.lang = 'pt-BR';
+      u.rate = 1.2; // Quanto maior, mais rápido (0.1 .... 10)
+      u.pitch = 2; // Quanto menor, mais grave (0, 1, 2)
+      u.onend = console.log('Saída: ', content);
+      speechSynthesis.speak(u);
+      // u.getVoices;
+      // u.volume = 1000;
+      // console.log(u.elapsedTime);
+
+      // speechSynthesis.speak(new SpeechSynthesisUtterance('Outro asteroide está se aproximando...!'));
+      // console.log('Outro asteroide está se aproximando...!');
+    }
+  }
+};
+
+  // Finaliza o reconhecimento
+  recognition.onspeechend = function () {
+      recognition.stop();
+      console.log("Reconhecimento finalizado.");
+      Button_Falar.isEnabled = true;
+      Button_Falar.children[0].text = ">> COMEÇAR <<";
+      textblock_Resposta.text = ">> SUA RESPOSTA <<";
+  };
+
+  // Caso o que reconheça bata com os elementos sorteados
+  recognition.onmatch = function () {
+      // # incrementar a pontuação
+
+      textblock_Resposta.text = "Parabéns!";     
+      // # add síntese de voz
+      // # add alerta sonoro 
+      console.log("Muito bem! Você conseguiu!!");
+      Button_Falar.children[0].text = elemento.toUpperCase();
+  };
+
+
+  // Caso não reconheça o que foi pronunciado
+  recognition.onnomatch = function () {
+      textblock_Resposta.text = "Palavra desconhecida!";     
+      // # add síntese de voz
+      // # add alerta sonoro 
+      console.log("Não entendi o que falou.");
+      Button_Falar.children[0].text = "Tentar novamente!";
+  };
+
+  recognition.onerror = function (event) {
+      console.log("Ocorreu um erro no reconhecimento: " + event.error);
+      Button_Falar.isEnabled = true;
+      Button_Falar.children[0].text = "Tentar novamente!";
+      textblock_Resposta.text = ">> SUA RESPOSTA <<";
+  };
+  return recognition;
+}
+
 //------------------------------- Animação dos elementos- --------------------------------
     // scene.registerBeforeRender(function (){
         

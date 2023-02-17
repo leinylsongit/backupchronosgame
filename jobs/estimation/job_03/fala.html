@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Command Voice</title>
+  </head>
+  <body>
+    <p id="output"></p>
+    <button id="start">Click and say something!</button>
+    <script>
+      (() => {
+        // const startBtn = document.querySelector('#start');
+        // const output = document.querySelector('#output');
+
+        // const grammar = ' aqua | azure | beige | bisque | black | blue | brown | chocolate | coral | crimson | cyan | fuchsia | ghostwhite | gold | goldenrod | gray | green | indigo | ivory | khaki | lavender | lime | linen | magenta | maroon | moccasin | navy | olive | orange | orchid | peru | pink | plum | purple | red | salmon | sienna | silver | snow | tan | teal | thistle | tomato | turquoise | violet | white | yellow ;'
+        // console.log(grammar);
+
+        function start() {
+          const recognition = new webkitSpeechRecognition();
+        // const recognition = new SpeechRecognition();
+          recognition.interimResults = true; // Resultados intermediários
+          recognition.lang = "pt-BR";
+          recognition.continuous = true; // Escuta contínua
+          recognition.maxAlternatives = 1;
+
+
+          
+          recognition.start();
+          
+        //   speechSynthesis.speak(new SpeechSynthesisUtterance('Fale agora!')); 
+
+        // colocar meio segundo de espera
+
+          // Quando falar no microfone
+          recognition.onresult = function(event) {
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+              if (event.results[i].isFinal) {
+                // Transcreve o que foi falado
+                var content = event.results[i][0].transcript.trim();
+                output.textContent = content;
+                // Reproduz o que foi transcrito
+                var u = new SpeechSynthesisUtterance();
+                u.text = content;
+                u.lang = 'pt-BR';
+                u.rate = 1.2; // Quanto maior, mais rápido (0.1 .... 10)
+                u.pitch = 2; // Quanto menor, mais grave (0, 1, 2)
+                u.onend = console.log('Saída: ', content);
+                speechSynthesis.speak(u);
+                // u.getVoices;
+                // u.volume = 1000;
+                // console.log(u.elapsedTime);
+
+                // speechSynthesis.speak(new SpeechSynthesisUtterance('Outro asteroide está se aproximando...!'));
+                // console.log( u.charLength, 'Outro asteroide está se aproximando...!');
+              }
+            }
+          };
+
+        recognition.onspeechend = function() {
+            recognition.stop();
+        }
+
+        recognition.onnomatch = function(event) {
+            output.textContent = "Não reconheci o que falou!";
+        }
+
+        recognition.onerror = function(event) {
+            output.textContent = 'Ocorreu um erro no reconhecimento: ' + event.error;
+        }
+
+        };
+        
+        // startBtn.addEventListener('click', () => start());
+
+        
+        
+
+      })();
+
+    </script>
+  </body>
+</html>

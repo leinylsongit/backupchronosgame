@@ -42,6 +42,11 @@ body {
 	font-size: 20;
 }
 
+/* #intro .sub.destaque { 
+	font-size: 20;
+	color: blue;
+} */
+
 #loading-screen{
 	position: fixed;
 	height: 100%;

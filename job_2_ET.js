@@ -12,8 +12,8 @@ var engine = null;
 var job_2ET = null;
 var sceneToRender = null;
 
-var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
-var recognition = new SpeechRecognition();
+var SpeechRecognition = window.SpeechRecognition || window.WwebkitSpeechRecognition;
+// var recognition = new SpeechRecognition();
 
 var hdrTexture;
 var directionalLight;
@@ -242,7 +242,7 @@ var create_Tarefa = function () {
 //   //  manager.addControl(button);
 
 //---------------------------------- Interface do Usuário ---------------------------------
-var interface = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+var userInterface = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 // interface.renderScale = 1; // não alterou nada
 // interface.useRealisticScaling = true;// // não alterou nada
 
@@ -494,20 +494,20 @@ activateBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
 activateBtn.onPointerClickObservable.add(() => {
     // gui_ativado = true;
     // if  (gui_ativado){
-        interface.addControl(leftBtn);   
-        interface.addControl(rightBtn);  
-        interface.addControl(panel1);
-        interface.addControl(panel2);
-        interface.addControl(input);    
-        interface.addControl(keyboard);
-        interface.addControl(button_Click);    
-        interface.addControl(Button_Falar);
+        userInterface.addControl(leftBtn);   
+        userInterface.addControl(rightBtn);  
+        userInterface.addControl(panel1);
+        userInterface.addControl(panel2);
+        userInterface.addControl(input);    
+        userInterface.addControl(keyboard);
+        userInterface.addControl(button_Click);    
+        userInterface.addControl(Button_Falar);
         // interface.addControl(Button_Desistir);
-        interface.addControl(textblock_Feedback);
+        userInterface.addControl(textblock_Feedback);
         // interface.addControl(textblock_Regras);
-        interface.addControl(textblock_Resposta);
-        interface.addControl(textblock_Nivel);
-        interface.addControl(textblock_Pontos);
+        userInterface.addControl(textblock_Resposta);
+        userInterface.addControl(textblock_Nivel);
+        userInterface.addControl(textblock_Pontos);
       
         // interface.removeControl //# pesquisar se existe algo similar
     // }
@@ -516,7 +516,7 @@ activateBtn.onPointerClickObservable.add(() => {
 
     });
     
-interface.addControl(activateBtn);   
+userInterface.addControl(activateBtn);   
 
 //------------------------------- Cria o plano do chão ----------------------------------
 var groundSize = 150;
@@ -1233,45 +1233,45 @@ const videoInput = document.getElementsByClassName('input_video')[0];
 const canvasOutput = document.getElementsByClassName('output_canvas')[0];
 // const canvasCtx = canvasOutput.getContext('3d');
 
-function onResults(results) {
-    // canvasCtx.save();
-    if (results.multiHandLandmarks) {
-        for (const landmarks of results.multiHandLandmarks) {
+// function onResults(results) {
+//     // canvasCtx.save();
+//     if (results.multiHandLandmarks) {
+//         for (const landmarks of results.multiHandLandmarks) {
 
-            // Pega os pontos
-            pegarPontos(landmarks);
-            ponto = landmarks;
+//             // Pega os pontos
+//             pegarPontos(landmarks);
+//             ponto = landmarks;
           
-            // Desenha os contornos
-            // drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
-            // drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
-        }
-    }
-    // canvasCtx.restore();
-}
-const hand = new Hands({
-    locateFile: (file) => {
-        return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-    }
-});
+//             // Desenha os contornos
+//             // drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
+//             // drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
+//         }
+//     }
+//     // canvasCtx.restore();
+// }
+// const hand = new Hands({
+//     locateFile: (file) => {
+//         return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+//     }
+// });
 
-hand.setOptions({
-    selfieMode: true,
-    maxNumHands: 1,
-    modelComplexity: 1,
-    minDetectionConfidence: 0.5,
-    minTrackingConfidence: 0.5,
-});
+// hand.setOptions({
+//     selfieMode: true,
+//     maxNumHands: 1,
+//     modelComplexity: 1,
+//     minDetectionConfidence: 0.5,
+//     minTrackingConfidence: 0.5,
+// });
 
-hand.onResults(onResults);
+// hand.onResults(onResults);
 
-const cameraPlayer = new Camera(videoInput, {
-    onFrame: async () => {
-        await hand.send({ image: videoInput });
-    },
-    width: 350,
-    height: 180
-});
+// const cameraPlayer = new Camera(videoInput, {
+//     onFrame: async () => {
+//         await hand.send({ image: videoInput });
+//     },
+//     width: 350,
+//     height: 180
+// });
 
 // Inicializar a camera do player
 // cameraPlayer.start();
