@@ -1,331 +1,264 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-	<meta http-equiv="content-type" charset="utf-8" />
-	<title>MENU</title>
-	<style>
-		body {
-			font-family: Alegreya Sans;
-			background: #048701f0;
-		}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		.menu {
-			position: relative;
-			background: #007bff;
-			width: 3em;
-			height: 3em;
-			border-radius: 5em;
-			margin: auto;
-			margin-top: 21em;
-			margin-right: 34em;
-			margin-bottom: 5em;
-			cursor: crosshair;
-			border: 2em solid #fff201;
-		}
+    <link rel="stylesheet" type="text/css" href="../../../css/flipCard1.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/botao1.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="../../../nitlab.jpg" />
 
-		.menu:after {
-			content: "";
-			position: absolute;
-			top: 1em;
-			left: 1em;
-			width: 1em;
-			height: 0.2em;
-			border-top: 0.6em double #fff;
-			border-bottom: 0.2em solid #fff;
-		}
-
-		.menu ul {
-			list-style: none;
-			padding: 0;
-		}
-
-		.menu li {
-			width: 9em;
-			height: 1.4em;
-			padding: 0.2em;
-			margin-top: 0.2em;
-			text-align: center;
-			border-top-right-radius: 0.5em;
-			border-bottom-right-radius: 0.5em;
-			transition: all 1s;
-			background: #fff201;
-			opacity: 0;
-			z-index: -1;
-		}
-
-		.menu:hover li {
-			opacity: 1;
-		}
-
-		.menu:hover ul::before {
-			position: absolute;
-			content: "";
-			width: 0;
-			height: 0;
-			display: block;
-			left: 50%;
-			top: -5.0em;
-			border-width: 6.5em;
-			border-radius: 0 7.5em 7.5em 0;
-			border-left: 0;
-			border-style: solid;
-			border-color: rgba(0, 0, 0, 0.01);
-			z-index: -1;
-			cursor: default;
-		}
-
-		.menu a {
-			color: #000000f0;
-			text-decoration: none;
-			line-height: 1.5em;
-		}
-
-		.menu ul {
-			transform: rotate(180deg) translateY(-2em);
-			transition: 1s all;
-		}
-
-		.menu:hover ul {
-			transform: rotate(0deg) translateY(-1em);
-		}
-
-		.menu li:hover {
-			background: #007bff;
-			z-index: 10;
-		}
-
-		.menu li:nth-of-type(1) {
-			transform: rotate(-90deg);
-			position: absolute;
-			left: -3.2em;
-			top: -7.2em;
-		}
-
-		.menu li:nth-of-type(2) {
-			transform: rotate(-67.5deg);
-			position: absolute;
-			left: -0.3em;
-			top: -6.5em;
-		}
-
-		.menu li:nth-of-type(3) {
-			transform: rotate(-45deg);
-			position: absolute;
-			left: 2.3em;
-			top: -5.0em;
-		}
-
-		.menu li:nth-of-type(4) {
-			transform: rotate(-22.5deg);
-			position: absolute;
-			left: 4.0em;
-			top: -2.5em;
-		}
-
-		.menu li:nth-of-type(5) {
-			position: absolute;
-			left: 4.4em;
-			top: 0.4em;
-		}
-
-		.menu li:nth-of-type(6) {
-			transform: rotate(22.5deg);
-			position: absolute;
-			left: 4.0em;
-			top: 3.3em;
-		}
-
-		.menu li:nth-of-type(7) {
-			transform: rotate(45deg);
-			position: absolute;
-			left: 2.3em;
-			top: 5.8em;
-		}
-
-		.menu li:nth-of-type(8) {
-			transform: rotate(67.5deg);
-			position: absolute;
-			left: -0.3em;
-			top: 7.3em;
-		}
-
-		.menu li:nth-of-type(9) {
-			transform: rotate(90deg);
-			position: absolute;
-			left: -3.2em;
-			top: 8.0em;
-		}
-
-		.menu li:nth-of-type(10) {
-			transform: rotate(112.5deg);
-			position: absolute;
-			left: -6.1em;
-			top: 7.3em;
-		}
-
-		.menu li:nth-of-type(11) {
-			transform: rotate(135deg);
-			position: absolute;
-			left: -8.6em;
-			top: 5.8em;
-		}
-
-		.menu li:nth-of-type(12) {
-			transform: rotate(157.5deg);
-			position: absolute;
-			left: -10.3em;
-			top: 3.3em;
-		}
-
-		/*.menu li:nth-of-type(13) {
-	  transform: rotate(180deg);
-	  position: absolute;
-	  left: -10.8em;
-	  top: 0.4em;
-	}
-	.menu li:nth-of-type(14) {
-	  transform: rotate(202.5deg);
-	  position: absolute;
-	  left: -10.3em;
-	  top: -2.5em;
-	}
-	.menu li:nth-of-type(15) {
-	  transform: rotate(225deg);
-	  position: absolute;
-	  left: -8.6em;
-	  top: -5.0em;
-	}
-	.menu li:nth-of-type(16) {
-	  transform: rotate(247.5deg);
-	  position: absolute;
-	  left: -6.1em;
-	  top: -6.5em;
-	} */
-		.hint {
-			text-align: center;
-		}
-
-		.right {
-			text-align: right;
-		}
-	</style>
-
-<!-- Opção de menu 1 -->
-	<!-- <style>
-		.nav-menu {
-			list-style: none;
-			padding: 0;
-			margin: 0;
-		}
-
-		.nav-menu li {
-			display: inline-block;
-		}
-
-		.nav-menu li a {
-			text-decoration: none;
-			color: #000;
-			font-size: 18px;
-			padding: 10px 15px;
-		}
-
-		.nav-menu li a:hover {
-			background-color: #ddd;
-			color: #000;
-			-webkit-animation: pulse 1s ease infinite alternate;
-		}
-
-		@keyframes pulse {
-			from {
-				transform: scale(1);
-			}
-
-			to {
-				transform: scale(1.2);
-			}
-		}
-	</style>
-
-	<ul class="nav-menu">
-		<li><a href="#">Home</a></li>
-		<li><a href="#">About</a></li>
-		<li><a href="#">Contact</a></li>
-	</ul> -->
-
-<!-- Opção de menu 2 -->
-<!-- <div class="dropdown-menu">
-	<a href="#" class="dropdown-item">Home</a>
-	<a href="#" class="dropdown-item">Sobre</a>
-	<a href="#" class="dropdown-item">Serviços</a>
-	<div class="dropdown-divider"></div>
-	<a href="#" class="dropdown-item">Contato</a>
-  </div> -->
-
-<!-- Opção de menu 3 -->
-<!-- <ul class="icon-menu">
-	<li><i class="fas fa-home"></i><span>Home</span></li> 
-	<li><i class="fas fa-info"></i><span>Sobre</span></li>  
-	<li><i class="fas fa-cog"></i><span>Serviços</span></li>  
-	<li><i class="fas fa-envelope"></i><span>Contato</span></li>  
-  </ul> -->
-
-<!-- Opção de menu 4 -->
-<!-- <nav id="rightSideMenu">  											   
-    <ul id="menuList">  		   	   
-        <li data-animation='slideInRight' ><a href="#home">Home</a></li>  	   
-        <li data-animation='slideInRight' ><a href="#about">Sobre</a></li>  	   
-        <li data-animation='slideInRight' ><a href="#services">Serviços</a></li>  	   
-        <li data-animation ='slideInRight'><a href = "#contact">Contato</a></li>  	   
-
-    </ul>  	    
-
- </nav> -->
+    <title>Versão 0.1 - 25/02/23</title>
 </head>
-
 <body>
 
-	<h3 class="right">Versão 0.1 - 20/01/23</h3>
-	<nav class="menu">
-		<ul>
-		<!-----------------------------------------------------------------------------------------------
-                                				(MUNDO EXPLORATÓRIO)
-    	-------------------------------------------------------------------------------------------------
-			O Mundo de Exploração (labirinto) possibilitará ao jogador uma imersão e engajamento no jogo, 
-			este ambiente será constituído de elementos que remetem a paisagens naturais ou artificiais,
-			que caracterizam cada região do território brasileiro. Este ambiente contará com uma trilha 
-			sonora que estimule o senso de aventura do jogador, bem como a presença de alguns itens 
-			coletáveis denominados de recompensa (moeda), que no jogo tem a função de guiar o jogador 
-			pelo labirinto. 
-		-->
-			<!-- <li><a href="./Mundo_Labirinto.html" title="Explorar o labirinto">Mundo do Labirinto</a></li> -->
+<!----------------------------------------------------------------------------------------------
+										(TAREFAS DE PERCEPÇÃO)
+------------------------------------------------------------------------------------------------
+	Se passa dentro da temática de cada região do Brasil, para isto, contará com uma trilha 
+	específica da referida região além de elementos que criem no jogador a sensação de ter sido 
+	transportado para a região.
+-->
+  <!-- flip-card-container -->
+  <div class="flip-card-container" style="--hue: 170">
+    <div class="flip-card">
+  
+      <div class="card-front">
+        <figure>
+          <div class="img-bg"></div>
+          <img src="https://images.unsplash.com/photo-1545436864-cd9bdd1ddebc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60" alt="Image 2">
+          <figcaption>TAREFAS DE PERCEPÇÃO</figcaption>
+        </figure>
+  
+        <ul>
+          <li>1. Estimativa do Tempo ⏱</li>
+          <li>2. Produção do Tempo ⏱</li>
+          <li>3. Reprodução do Tempo ⏱</li>
+		      <li>4. Memória de Trabalho 🧠</li>
+        </ul>
+      </div>
+  
+      <div class="card-back">
+        <figure>
+          <div class="img-bg"></div>
+          <img src="https://images.unsplash.com/photo-1545436864-cd9bdd1ddebc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60" alt="image-2">
+        </figure>
+  
+        <button>
+          <div id="clip">
+			<a href="./jobs/jobsPerception.html" title="Tarefas de Percepção">TAREFAS de PERCEPÇÃO</a>
+			<!-- <div id="leftTop" class="corner"></div>
+              <div id="rightBottom" class="corner"></div>
+              <div id="rightTop" class="corner"></div>
+              <div id="leftBottom" class="corner"></div> -->
+          </div>
+          <span id="rightArrow" class="arrow"></span>
+          <span id="leftArrow" class="arrow"></span>
+      </button>
 
   
-		<!----------------------------------------------------------------------------------------------
-												(MUNDO DAS TAREFAS)
-		------------------------------------------------------------------------------------------------
-			Se passa dentro da temática de cada região do Brasil, para isto, contará com uma trilha 
-			específica da referida região além de elementos que criem no jogador a sensação de ter sido 
-			transportado para a região.
-		-->
+        <div class="design-container">
+          <span class="design design--1"></span>
+          <span class="design design--2"></span>
+          <span class="design design--3"></span>
+          <span class="design design--4"></span>
+          <span class="design design--5"></span>
+          <span class="design design--6"></span>
+          <span class="design design--7"></span>
+          <span class="design design--8"></span>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+
+<!-----------------------------------------------------------------------------------------------
+										(MUNDO EXPLORATÓRIO)
+-------------------------------------------------------------------------------------------------
+	O Mundo de Exploração (labirinto) possibilitará ao jogador uma imersão e engajamento no jogo, 
+	este ambiente será constituído de elementos que remetem a paisagens naturais ou artificiais,
+	que caracterizam cada região do território brasileiro. Este ambiente contará com uma trilha 
+	sonora que estimule o senso de aventura do jogador, bem como a presença de alguns itens 
+	coletáveis denominados de recompensa (moeda), que no jogo tem a função de guiar o jogador 
+	pelo labirinto. 
+-->
+			<!-- <li><a href="./Mundo_Labirinto.html" title="Explorar o labirinto">Mundo do Labirinto</a></li> -->
+<div class="flip-card-container" style="--hue: 220">
+    <div class="flip-card">
+  
+      <div class="card-front">
+        <figure>
+          <div class="img-bg"></div>
+          <img src="https://images.unsplash.com/photo-1486162928267-e6274cb3106f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60" alt="Brohm Lake">
+          <figcaption>LABIRINTO</figcaption>
+        </figure>
+  
+        <ul>
+          <li>04 Níveis de Labirinto 🏃🏽‍♀️🧭</li>
+          <li>No labirinto o jogador deverá atravessar por todo o trajeto e chegar ao final.</li>
+          <li>Este ambiente conta com uma trilha sonora que estimula o senso de aventura do jogador</li>
+          <li>O jogador poderá coletar alguns itens pelo trajeto, estes itens servem de guia de percurso
+             para o jogador indicando qual caminho seguir.</li> 
+        </ul>
+       
+      </div>
+  
+      <div class="card-back">
+        <figure>
+          <div class="img-bg"></div>
+          <img src="https://images.unsplash.com/photo-1486162928267-e6274cb3106f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60" alt="Brohm Lake">
+        </figure>
+
+        <button>
+            <div id="clip">
+				<a href="./Mundo_Labirinto.html" title="Explorar o labirinto">LABIRINTO</a>
+                <!-- <div id="rightBottom" class="corner"></div>
+                <div id="rightTop" class="corner"></div>
+                <div id="leftBottom" class="corner"></div> --> -->
+            </div>
+            <span id="rightArrow" class="arrow"></span>
+            <span id="leftArrow" class="arrow"></span>
+        </button>
+
+  
+        <div class="design-container">
+          <span class="design design--1"></span>
+          <span class="design design--2"></span>
+          <span class="design design--3"></span>
+          <span class="design design--4"></span>
+          <span class="design design--5"></span>
+          <span class="design design--6"></span>
+          <span class="design design--7"></span>
+          <span class="design design--8"></span>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+  
+<!----------------------------------------------------------------------------------------------
+										(TAREFAS DE EXPLORAÇÃO)
+------------------------------------------------------------------------------------------------
+	Se passa dentro da temática de cada região do Brasil, para isto, contará com uma trilha 
+	específica da referida região além de elementos que criem no jogador a sensação de ter sido 
+	transportado para a região.
+-->
+  <div class="flip-card-container" style="--hue: 170">
+    <div class="flip-card">
+  
+      <div class="card-front">
+        <figure>
+          <div class="img-bg"></div>
+          <img src="https://images.unsplash.com/photo-1545436864-cd9bdd1ddebc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60" alt="Image 2">
+          <figcaption>TAREFAS DE EXPLORAÇÃO</figcaption>
+        </figure>
+  
+        <ul>
+          <li>04 Épocas Diferentes 🌎</li> 
+          <li>Passado Distante (Período Jurássico - 1.000.000 A.C)</li>
+          <li>Década do Anos 60 (1964 D.C)</li>
+		      <li>Dias Atuais (2023 D.C)</li>
+          <li>Futuro Distante (2850 D.C)</li>
+        </ul>
+      </div>
+  
+      <div class="card-back">
+        <figure>
+          <div class="img-bg"></div>
+          <img src="https://images.unsplash.com/photo-1545436864-cd9bdd1ddebc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60" alt="image-2">
+        </figure>
+  
+        <button>
+          <div id="clip">
+			<a href="/jobs/jobsExploration.html" title="Explorar as tarefas">TAREFAS de EXPLORAÇÃO</a>
+			<!-- <div id="leftTop" class="corner"></div>
+              <div id="rightBottom" class="corner"></div>
+              <div id="rightTop" class="corner"></div>
+              <div id="leftBottom" class="corner"></div> -->
+          </div>
+          <span id="rightArrow" class="arrow"></span>
+          <span id="leftArrow" class="arrow"></span>
+      </button>
+
+  
+        <div class="design-container">
+          <span class="design design--1"></span>
+          <span class="design design--2"></span>
+          <span class="design design--3"></span>
+          <span class="design design--4"></span>
+          <span class="design design--5"></span>
+          <span class="design design--6"></span>
+          <span class="design design--7"></span>
+          <span class="design design--8"></span>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+  
+  <!-- Video de abertura -->
+	<!-- <div id="div-video" style="position: fixed; top: -12px; left: 0px; z-index: 1;">  -->
+	
+		<!-- ok -->
+		
+	<!-- <div style="position: fixed; top: -12px; left: 0px; z-index: 1;"> 
+		<video id="opening-video" src="../../../assets/videos/Rehabilite_abertura.mp4" autoplay="true" width="110%" height="120%"></video>
+	</div>
+	  
+	<script>
+		// Obter a referência para o elemento de abertura
+		var video = document.getElementById("opening-video");
+		
+		// Obter a referência para o elemento de vídeo do menu
+		var video2 = document.getElementById("opening-video");
+
+		// var divVideo = document.getElementById("div-video");
+
+		// Adicionar um evento de escuta para a propriedade 'ended' do vídeo
+		video.addEventListener("ended", function() {
+			// divVideo.style.z-index = -1;
+			// Quando o vídeo terminar de ser reproduzido, mudar o atributo 'src' do vídeo
+			video2.src = "../../../assets/videos/Menu.mp4";
+			// Carregar o novo vídeo
+			video2.load();
+			// // Redimensiona o tamanho do vídeo //# se redimensionar dá erro
+			video2.width = "1380";
+			video2.height ="800";
+			// Começar a reproduzir o novo vídeo
+			video2.play();
+
+			// Adicionar um evento de escuta para a propriedade 'ended' do vídeo
+			video2.addEventListener("ended", function() {
+				// Quando o vídeo terminar de ser reproduzido, esconder o elemento 'video'
+				video2.style.display = "none";
+				// Pausa o video
+				video2.pause();
+			});
+		});
+	</script> -->
+</body>
+</html>
+
 			<!--(1ª Tarefa de Estimativa de Tempo)---------------------------------------------------------------------------------
 				1. Um personagem surge de um portal e caminha até outro portal. 
 				2. O jogador deverá estimar em quanto tempo o personagem atravessou de um portal para o outro.
 			-->
-			<li><a href="./jobs/estimation/job_01/job_01_ET.html" title="1ª Tarefa de Estimativa de Tempo">1ª Estimativa</a></li>
+			<!-- <li><a href="./jobs/estimation/job_01/job_01_ET.html" title="1ª Tarefa de Estimativa de Tempo">1ª Estimativa</a></li> -->
+			
 			
 			<!--(2ª Tarefa de Estimativa de Tempo)---------------------------------------------------------------------------------
 				1. A Terra está passando por uma desaceleração da sua rotação até parar completamente.
 				2. O jogador deve estimar quanto tempo levou para a Terra para de rotacionar.
 			-->
-			<li><a href="./jobs/estimation/job_02/job_02_ET.html" title="1ª Tarefa de Estimativa de Tempo">2ª Estimativa</a></li>
+			<!-- <li><a href="./jobs/estimation/job_02/job_02_ET.html" title="1ª Tarefa de Estimativa de Tempo">2ª Estimativa</a></li>
 
-			<!--(3ª Tarefa de Estimativa de Tempo)---------------------------------------------------------------------------------
+			(3ª Tarefa de Estimativa de Tempo)---------------------------------------------------------------------------------
 				1. Vários asteróides são atraídos para a órbita do Sol e entram em rota de colisão com os planetas
 				que estiverem no caminho.
 				2. O jogador deve estimar quanto tempo levou para o asteróid colidir com o Sol.
 			-->
-			<li><a href="./jobs/estimation/job_03/job_03_ET.html" title="3ª Tarefa de Estimativa de Tempo">3ª Estimativa</a></li>
+			<!-- <li><a href="./jobs/estimation/job_03/job_03_ET.html" title="3ª Tarefa de Estimativa de Tempo">3ª Estimativa</a></li> -->
 			<!-- <li><a href="./jobs/estimation/job_03/fala.html" title="3ª Tarefa de Estimativa de Tempo">3ª Estimativa</a></li> -->
 
 
@@ -334,26 +267,26 @@
 				em seguida, é solicitado ao jogador que fale qual era o enésimo elemento. O jogador deverá responder pronunciando o
 				nome do elemento que recordar que estava na posição sorteada pelo sistema.
 			-->
-			<li><a href="./jobs/working_memory/job_01/job_01_WM.html" title="1ª Tarefa de Memória de Trabalho">1ª Memória</a></li>
+			<!-- <li><a href="./jobs/working_memory/job_01/job_01_WM.html" title="1ª Tarefa de Memória de Trabalho">1ª Memória</a></li> -->
 
 
 			<!--(1ª Tarefa de Produção de Tempo)---------------------------------------------------------------------------------
 				1.
 				2.
 			-->			
-			<li><a href="./jobs/production/job_01/job_01_PT.html" title="1ª Tarefa de Produção de Tempo">1ª Produção</a></li>
+			<!-- <li><a href="./jobs/production/job_01/job_01_PT.html" title="1ª Tarefa de Produção de Tempo">1ª Produção</a></li> -->
 
 			<!--(2ª Tarefa de Produção de Tempo)---------------------------------------------------------------------------------
 				1.
 				2.
 			-->			
-			<li><a href="./jobs/production/job_02/job_02_PT.html" title="2ª Tarefa de Produção de Tempo">2ª Produção</a></li>
+			<!-- <li><a href="./jobs/production/job_02/job_02_PT.html" title="2ª Tarefa de Produção de Tempo">2ª Produção</a></li> -->
 
 			<!--(3ª Tarefa de Produção de Tempo)---------------------------------------------------------------------------------
 				1.
 				2.
 			-->			
-			<li><a href="./jobs/production/job_03/job_03_PT.html" title="3ª Tarefa de Produção de Tempo">3ª Produção</a></li>
+			<!-- <li><a href="./jobs/production/job_03/job_03_PT.html" title="3ª Tarefa de Produção de Tempo">3ª Produção</a></li> -->
 
 
 			<!--(2ª Tarefa de Memória de Trabalho)---------------------------------------------------------------------------------
@@ -361,33 +294,33 @@
 				em seguida, é solicitado ao jogador que fale qual era o enésimo elemento. O jogador deverá responder pronunciando o
 				nome do elemento que recordar que estava na posição sorteada pelo sistema.
 			-->
-			<li><a href="./jobs/working_memory/job_02/job_02_WM.html" title="2ª Tarefa de Memória de Trabalho">2ª Memória</a></li>
+			<!-- <li><a href="./jobs/working_memory/job_02/job_02_WM.html" title="2ª Tarefa de Memória de Trabalho">2ª Memória</a></li> -->
 
 
 			<!--(1ª Tarefa de Reprodução de Tempo)---------------------------------------------------------------------------------
 				1.
 				2.
 			-->
-			<li><a href="./jobs/reproduction/job_01/job_01_RT.html" title="1ª Tarefa de Reprodução de Tempo">1ª Reprodução</a></li>
+			<!-- <li><a href="./jobs/reproduction/job_01/job_01_RT.html" title="1ª Tarefa de Reprodução de Tempo">1ª Reprodução</a></li> -->
 
 			<!--(2ª Tarefa de Reprodução de Tempo)---------------------------------------------------------------------------------
 				1.
 				2.
 			-->			
-			<li><a href="./jobs/reproduction/job_02/job_02_RT.html" title="2ª Tarefa de Reprodução de Tempo">2ª Reprodução</a></li>
+			<!-- <li><a href="./jobs/reproduction/job_02/job_02_RT.html" title="2ª Tarefa de Reprodução de Tempo">2ª Reprodução</a></li> -->
 
 			<!--(3ª Tarefa de Reprodução de Tempo)---------------------------------------------------------------------------------
 				1.
 				2.
 			-->			
-			<li><a href="./jobs/reproduction/job_03/job_03_RT.html" title="3ª Tarefa de Reprodução de Tempo">3ª Reprodução</a></li>
+			<!-- <li><a href="./jobs/reproduction/job_03/job_03_RT.html" title="3ª Tarefa de Reprodução de Tempo">3ª Reprodução</a></li> -->
 
 			
 			<!--(3ª Tarefa de Memória de Trabalho)---------------------------------------------------------------------------------
 				1.
 				2.
 			-->
-			<li><a href="./jobs/working_memory/job_03/job_03_WM.html" title="3ª Tarefa de Memória de Trabalho">3ª Memória</a></li>
+			<!-- <li><a href="./jobs/working_memory/job_03/job_03_WM.html" title="3ª Tarefa de Memória de Trabalho">3ª Memória</a></li> -->
 
 	<!-- 
 			<li><a href="./Babylon_105_animated_earth.html" title="Terra animada">Animação da Terra</a></li>
@@ -399,15 +332,4 @@
 			<!-- <li><a href="./Babylon_401_cameras.html" title="Cameras">Cameras</a></li> -->
 			<!-- <li><a href="./Babylon_501_walk.html" title="NPC andando pela cena">NPC andando</a></li> -->
 			<!-- <li><a href="./Babylon_502_maze.html" title="16. 3D Maze with Walking Animation">16. 3D Maze</a></li> -->
-		</ul>
-	</nav>
-
-	<!-- Moldura dos HUDs -->
-	<!-- <div style="position: fixed; top: 0px; left: 0px; z-index: -2;"> -->
-	<!-- <video src="assets/videos/Abertura.mp4" autoplay="true";  width="160%"; height="100%"> -->
-	<!-- <video src="assets/videos/Menu.mp4" autoplay="true";  width="160%"; height="100%"></video> -->
-	<!-- </div>  -->
-
-</body>
-
-</html>
+	

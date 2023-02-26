@@ -118,7 +118,130 @@ function init() {
       animate()
     })
   })
+
+// Inicializar o MediaPipe Hands
+  // tecladoFinger(canvas)
+
 }
+
+function tecladoFinger(canvas) {
+  var hands = new Hands({
+    locateFile: (file) => {
+      return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+    }
+  })
+  hands.setOptions({
+    maxNumHands: 1,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5
+  })
+
+  // Começar a transmitir a imagem da webcam para o MediaPipe Hands
+  navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
+    video.srcObject = stream
+    video.onloadedmetadata = function (e) {
+      video.play()
+      hands.send({ image: video })
+    }
+  }).catch(function (error) {
+    console.error(error)
+  })
+
+
+  var video = document.getElementById("video")
+
+
+  // Inicializa a detecção de mãos quando o vídeo estiver pronto para reprodução
+  video.addEventListener('loadeddata', function () {
+    hands.initialize(video.clientWidth, video.clientHeight)
+  })
+
+  // Inicia a reprodução do vídeo
+  video.addEventListener('canplay', function () {
+    video.play()
+  })
+
+  // Criar um objeto plano como botão
+  var button = BABYLON.MeshBuilder.CreatePlane("button", { width: 200, height: 100 }, scene)
+
+  // Definir a posição do botão na parte inferior da tela
+  button.position.y = -canvas.height / 2 + 50
+
+
+  engine.runRenderLoop(function () {
+    // Renderizar a cena
+    scene.render()
+
+    // Atualizar a posição do cursor virtual usando a detecção de mãos do MediaPipe
+    hands.send({ image: video }).then(function (results) {
+      
+      // Obter os pontos de referência da mão detectada
+      var handLandmarks = result.multiHandLandmarks[0];
+
+      // Verificar se o ponto de referência na posição 8 existe
+      if (handLandmarks[8]) {
+          // Obter as coordenadas do ponto de referência na posição 8
+          var x = handLandmarks[8].x * canvas.width;
+          var y = handLandmarks[8].y * canvas.height;
+          
+          // Converter as coordenadas do ponto de referência para as coordenadas da tela
+          var pos = new BABYLON.Vector3(x, -y, 0);
+          BABYLON.Vector3.UnprojectToRef(pos, scene.getTransformMatrix(), camera.viewport.toGlobal(canvas.width, canvas.height), ray.origin);
+          
+          // Usar um raio para verificar se ele colide com algum objeto na cena
+          var pickResult = scene.pickWithRay(ray);
+          if (pickResult.hit) {
+              // Se o raio colidiu com um objeto, chame a função "onClick" desse objeto
+              pickResult.pickedMesh.onClick();
+          }
+      }
+
+      // if (handLandmarks) {
+      //   var indexFinger = handLandmarks[8]
+      //   var x = indexFinger.x * video.clientWidth - canvas.width / 2
+      //   var y = -indexFinger.y * video.clientHeight + canvas.height / 2
+      //   cursor.position.x = x
+      //   cursor.position.y = y
+
+      //   // Verificar se o cursor virtual está dentro da área do botão
+      //   var buttonWidth = 200
+      //   var buttonHeight = 100
+      //   var buttonPosX = canvas.width / 2 - buttonWidth / 2
+      //   var buttonPosY = -canvas.height / 2 + buttonHeight / 2
+      //   if (x > buttonPosX && x < buttonPosX + buttonWidth
+      //     && y > buttonPosY && y < buttonPosY + buttonHeight) {
+      //     cursorMat.emissiveColor = new BABYLON.Color3(1, 0, 0)
+      //     if (button.actionManager) {
+      //       button.actionManager.processTrigger(BABYLON.ActionManager.OnPointerOverTrigger)
+      //       if (buttonPressed) {
+      //         button.actionManager.processTrigger(BABYLON.ActionManager.OnPickTrigger)
+      //       }
+      //     }
+      //   } else {
+      //     cursorMat.emissiveColor = new BABYLON.Color3(0, 1, 0)
+      //   }
+      // }
+    })
+  })
+
+  // Adicionar evento pointerdown ao botão para registrar o início do clique do usuário
+  button.actionManager = new BABYLON.ActionManager(scene)
+  button.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+    BABYLON.ActionManager.OnPointerDownTrigger,
+    function () {
+      buttonPressed = true
+    }
+  ))
+
+  // Adicionar evento pointerup ao botão para registrar o final do clique do usuário
+  button.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+    BABYLON.ActionManager.OnPointerUpTrigger,
+    function () {
+      buttonPressed = false
+    }
+  ))
+}
+
 
 function onWindowResize() {
   engine.resize()

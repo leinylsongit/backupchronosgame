@@ -33,15 +33,30 @@ function init() {
   // scene.useRightHandedSystem = false; // Rotaciona para esquerda
 
   camera = new BABYLON.ArcRotateCamera("camera", -90/180*Math.PI, 45/180*Math.PI, Math.PI, new BABYLON.Vector3(0, 40, -70), scene);
+
+//   var camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 4, 5, BABYLON.Vector3.Zero(), scene);
+// camera.attachControl(canvas, true);
+
   // camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, 0, -20), scene, true)
   camera.minZ = 100;
 // camera.maxZ = 20000;
 // camera.detachControl(canvas);
-  camera.attachControl(canvas);
+  camera.attachControl(canvas, true);
   camera.lowerRadiusLimit = 250.5;
   camera.upperRadiusLimit = 150;
   camera.pinchDeltaPercentage = 2.01;
   camera.wheelDeltaPercentage = 20.01;
+
+  camera.wheelPrecision = 50;
+  camera.zoomOnFactor = 2;
+
+  camera.panningSensibility = 100; // Panorâmica (botão direito)
+
+  camera.angularSensibilityX = 500;
+  camera.angularSensibilityY = 500;
+
+
+
 
   // Cor do plano de fundo da cena
   // scene.clearColor = new BABYLON.Color3(0.0, 0.0, 0.0);
@@ -70,6 +85,148 @@ skybox.material = skyboxMaterial;
 
 // # Executa vídeo de transição entre ambientes
 // executaVideo("assets/videos/teleporte.mp4");
+
+
+// Adiciona o Sol
+var sol = BABYLON.ParticleHelper.CreateAsync("sun", scene).then((set) => {
+  // console.log(set);        
+  //scale all of the particle subsystems uniformly
+  for(const sys of set.systems) { // Permite alterar as propriedades do sol
+      sys.maxScaleX = 20;
+      sys.maxScaleY = 40;
+  }
+  set.start(); 
+});
+
+var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 10, segments: 2.5}, scene);
+sphere.isVisible = false; // # Ocultar esta esfera depois!!!
+
+
+
+// Create a whirlpool
+var points = [];
+var tam_espiral = 1000; // # aqui deverá ser um valor que corresponda ao limite máximo de tempo (talvez 10 segundos)
+var radius = 0.5;
+var angle = 0; // ângulo da trajetória do caminho traçado
+for (var index = 0; index <= tam_espiral; index++) {// quanto maior o valor, maior a espiral
+    points.push(new BABYLON.Vector3(radius * Math.cos(angle), 0, radius * Math.sin(angle)));
+    radius += 0.3;
+    angle += 0.1; // Controla o comprimento do caminho
+}
+
+var path3d = new BABYLON.Path3D(points);
+var normals = path3d.getNormals();
+
+var linha = BABYLON.Mesh.CreateLines("whirlpool", points, scene, true);
+linha.color = new BABYLON.Color3(1, 1, 1);
+// linha.isVisible = false; // # Ocultar linha 
+linha.alpha = 0.2;
+
+var positionData = linha.getVerticesData(BABYLON.VertexBuffer.PositionKind);
+// var heightRange = 10;
+// var alpha = 0;
+
+var diameter = 2;  
+console.log("Diâmetro inicial: ", diameter);
+
+// Asteróide que colidirá com o Sol
+var createAsteroid = function(){
+  // var asteroide = BABYLON.MeshBuilder.CreateSphere("asteroide", {diameter: 2, segments: 1.5}, scene);
+  var asteroide = BABYLON.MeshBuilder.CreateSphere("asteroide", {diameter: diameter, segments: 1.5}, scene);
+  var mat = new BABYLON.StandardMaterial("mat1", scene)
+  var texture = new BABYLON.Texture("./textures/rock.jpg", scene) // # testar outras texturas 
+  mat.diffuseTexture = texture;
+  mat.backFaceCulling = false;
+  asteroide.material = mat;  
+  // asteroide.isVisible = false;
+  
+  // Create a particle system
+  var particleSystem = new BABYLON.ParticleSystem("particles", 150, scene);
+
+  //Texture of each particle
+  particleSystem.particleTexture = new BABYLON.Texture("./textures/flare/flare.png", scene);
+
+  // Where the particles come from
+  particleSystem.emitter = asteroide; // the starting object, the emitter
+  particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0); // Starting all from
+  particleSystem.maxEmitBox = new BABYLON.Vector3(1, 0, 0); // To...
+
+  // Colors of all particles
+  particleSystem.color1 = new BABYLON.Color4(0.16, 0.65, 0.93);
+  particleSystem.color2 = new BABYLON.Color4(0.91, 0.04, 0.45);
+  particleSystem.colorDead = new BABYLON.Color4(0.04, 0.93, 0.4, 0.3);
+
+  // Size of each particle (random between...
+  particleSystem.minSize = 0.01;
+  particleSystem.maxSize = 2.0
+
+  // Life time of each particle (random between...
+  particleSystem.minLifeTime = 0.01;
+  particleSystem.maxLifeTime = 2.0;
+
+  // Emission rate
+  particleSystem.emitRate = 300;
+
+  // # Blend mode
+  // particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+  // particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+  particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_STANDARD;
+
+  // Set the gravity of all particles
+  particleSystem.gravity = new BABYLON.Vector3(0, -12, 0);
+
+  // Direction of each particle after it has been emitted
+  particleSystem.direction1 = new BABYLON.Vector3(-2, 18, 2);
+  particleSystem.direction2 = new BABYLON.Vector3(2, 18, -2);
+
+  // Angular speed, in radians
+  particleSystem.minAngularSpeed = 0;
+  particleSystem.maxAngularSpeed = Math.PI;
+
+  // Speed
+  particleSystem.minEmitPower = 1;
+  particleSystem.maxEmitPower = 0.4;
+  particleSystem.updateSpeed = 0.9;
+
+  // Start the particle system
+  particleSystem.start(); // # Rastro de partículas do asteróide (aumenta uso da GPU em 10%)
+
+  var alpha = 0, beta=0;
+  scene.registerAfterRender(function(){
+      alpha+=0.08;
+      beta+=0.04;
+    //  asteroide.position = new BABYLON.Vector3(Math.cos(alpha)+Math.cos(beta)+10, 1, Math.sin(alpha)+Math.sin(beta)+10);
+      asteroide.position = sphere.position;
+
+    // zoomIn(camera, asteroide, 20);
+  })
+  // zoomIn(camera, asteroide, 20);
+}
+
+createAsteroid();
+
+// The Orb is made of several particle systems 
+// function createOrb() {
+var createOrb = function(){
+  // 1st Particle Sytem - Circles
+  BABYLON.ParticleHelper.CreateFromSnippetAsync("2JRD1A#2", scene, false)
+
+  // 2nd Particle Sytem - Core
+  BABYLON.ParticleHelper.CreateFromSnippetAsync("EXUQ7M#5", scene, false)
+
+  // 3rd Particle Sytem - Sparks
+  var sphereSpark = BABYLON.MeshBuilder.CreateSphere("sphereSpark", { diameter: 3.4, segments: 32 }, scene)
+  sphereSpark.isVisible = false;
+  BABYLON.ParticleHelper.CreateFromSnippetAsync("UY098C#3", scene, false).then(system => {
+    system.emitter = sphereSpark
+  })
+  // 4th Particle Sytem - Smoke
+  var sphereSmoke = BABYLON.MeshBuilder.CreateSphere("sphereSmoke", { diameter: 4.9, segments: 32 }, scene)
+  sphereSmoke.isVisible = false;
+  BABYLON.ParticleHelper.CreateFromSnippetAsync("UY098C#6", scene, false).then(system => {
+    system.emitter = sphereSmoke
+  })
+}
 
 //---------------------------------- Interface do Usuário ---------------------------------
 var interface_user = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -101,6 +258,8 @@ grid.addRowDefinition(128,true);
 grid.addRowDefinition(1);
 grid.addRowDefinition(80,true);
 
+grid.zIndex = 100;
+console.log("z-index: ", grid.zIndex);
 //Adding our grid to the advancedTexture layer. 
 //Before this step, the grid does not show and you cannot interact with it.
 interface_user.addControl(grid);
@@ -142,6 +301,9 @@ var btnfs = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "https://dl.dropbo
             btnfs.image.source = "textures/icons/Undo.png";
         }                
     });
+
+    btnfs.zIndex = 110;
+console.log("btnfs z-index: ", btnfs.zIndex);
 
 //Attaching the control to the grid on row #3 and column #3 cell
 grid.addControl(btnfs,3,3);
@@ -185,6 +347,8 @@ button_Click.onPointerClickObservable.add(function () {
     button_Click.children[0].text = clicks + "\nsegundos";
 });
 
+button_Click.zIndex = 120;
+console.log("button_Click z-index: ", button_Click.zIndex);
 
 //C. Campo para o jogador informar a resposta
 var input = new BABYLON.GUI.InputText("entrada", "⌨ Digite aqui");
@@ -210,6 +374,9 @@ input.onPointerClickObservable.add(function () {
     // input.background = "blue";
     input.text = ""; // if clicou, então apaga o texto
 });
+
+input.zIndex = 140;
+console.log("input z-index: ", input.zIndex);
 
         
 //D. Teclado virtual para entrada de dados do jogador
@@ -363,9 +530,9 @@ activateBtn.onPointerClickObservable.add(function() {
         // // interface_user.addControl(rightBtn);  
         // interface_user.addControl(barraSuperior);
         // interface_user.addControl(barraInferior);
-        // interface_user.addControl(input);    
-        // interface_user.addControl(keyboard);
-        // interface_user.addControl(button_Click);    
+        interface_user.addControl(input);    
+        interface_user.addControl(keyboard);
+        interface_user.addControl(button_Click);    
         interface_user.addControl(Button_Falar);
         // // interface_user.addControl(Button_Desistir);
         interface_user.addControl(textblock_Feedback); 
@@ -386,148 +553,6 @@ activateBtn.onPointerClickObservable.add(function() {
     // });
     
 // interface_user.addControl(activateBtn); 
-
-
-// Adiciona o Sol
-var sol = BABYLON.ParticleHelper.CreateAsync("sun", scene).then((set) => {
-  // console.log(set);        
-  //scale all of the particle subsystems uniformly
-  for(const sys of set.systems) { // Permite alterar as propriedades do sol
-      sys.maxScaleX = 20;
-      sys.maxScaleY = 40;
-  }
-  set.start(); 
-});
-
-var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 10, segments: 2.5}, scene);
-sphere.isVisible = false; // # Ocultar esta esfera depois!!!
-
-
-
-// Create a whirlpool
-var points = [];
-var tam_espiral = 1000; // # aqui deverá ser um valor que corresponda ao limite máximo de tempo (talvez 10 segundos)
-var radius = 0.5;
-var angle = 0; // ângulo da trajetória do caminho traçado
-for (var index = 0; index <= tam_espiral; index++) {// quanto maior o valor, maior a espiral
-    points.push(new BABYLON.Vector3(radius * Math.cos(angle), 0, radius * Math.sin(angle)));
-    radius += 0.3;
-    angle += 0.1; // Controla o comprimento do caminho
-}
-
-var path3d = new BABYLON.Path3D(points);
-var normals = path3d.getNormals();
-
-var linha = BABYLON.Mesh.CreateLines("whirlpool", points, scene, true);
-linha.color = new BABYLON.Color3(1, 1, 1);
-// linha.isVisible = false; // # Ocultar linha 
-linha.alpha = 0.2;
-
-var positionData = linha.getVerticesData(BABYLON.VertexBuffer.PositionKind);
-// var heightRange = 10;
-// var alpha = 0;
-
-var diameter = 2;  
-console.log("Diâmetro inicial: ", diameter);
-
-// Asteróide que colidirá com o Sol
-var createAsteroid = function(){
-  // var asteroide = BABYLON.MeshBuilder.CreateSphere("asteroide", {diameter: 2, segments: 1.5}, scene);
-  var asteroide = BABYLON.MeshBuilder.CreateSphere("asteroide", {diameter: diameter, segments: 1.5}, scene);
-  var mat = new BABYLON.StandardMaterial("mat1", scene)
-  var texture = new BABYLON.Texture("./textures/rock.jpg", scene) // # testar outras texturas 
-  mat.diffuseTexture = texture;
-  mat.backFaceCulling = false;
-  asteroide.material = mat;  
-  // asteroide.isVisible = false;
-  
-  // Create a particle system
-  var particleSystem = new BABYLON.ParticleSystem("particles", 150, scene);
-
-  //Texture of each particle
-  particleSystem.particleTexture = new BABYLON.Texture("./textures/flare/flare.png", scene);
-
-  // Where the particles come from
-  particleSystem.emitter = asteroide; // the starting object, the emitter
-  particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0); // Starting all from
-  particleSystem.maxEmitBox = new BABYLON.Vector3(1, 0, 0); // To...
-
-  // Colors of all particles
-  particleSystem.color1 = new BABYLON.Color4(0.16, 0.65, 0.93);
-  particleSystem.color2 = new BABYLON.Color4(0.91, 0.04, 0.45);
-  particleSystem.colorDead = new BABYLON.Color4(0.04, 0.93, 0.4, 0.3);
-
-  // Size of each particle (random between...
-  particleSystem.minSize = 0.01;
-  particleSystem.maxSize = 2.0
-
-  // Life time of each particle (random between...
-  particleSystem.minLifeTime = 0.01;
-  particleSystem.maxLifeTime = 2.0;
-
-  // Emission rate
-  particleSystem.emitRate = 300;
-
-  // # Blend mode
-  // particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
-  // particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
-  particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_STANDARD;
-
-  // Set the gravity of all particles
-  particleSystem.gravity = new BABYLON.Vector3(0, -12, 0);
-
-  // Direction of each particle after it has been emitted
-  particleSystem.direction1 = new BABYLON.Vector3(-2, 18, 2);
-  particleSystem.direction2 = new BABYLON.Vector3(2, 18, -2);
-
-  // Angular speed, in radians
-  particleSystem.minAngularSpeed = 0;
-  particleSystem.maxAngularSpeed = Math.PI;
-
-  // Speed
-  particleSystem.minEmitPower = 1;
-  particleSystem.maxEmitPower = 0.4;
-  particleSystem.updateSpeed = 0.9;
-
-  // Start the particle system
-  particleSystem.start(); // # Rastro de partículas do asteróide (aumenta uso da GPU em 10%)
-
-  var alpha = 0, beta=0;
-  scene.registerAfterRender(function(){
-      alpha+=0.08;
-      beta+=0.04;
-    //  asteroide.position = new BABYLON.Vector3(Math.cos(alpha)+Math.cos(beta)+10, 1, Math.sin(alpha)+Math.sin(beta)+10);
-      asteroide.position = sphere.position;
-
-    // zoomIn(camera, asteroide, 20);
-  })
-  // zoomIn(camera, asteroide, 20);
-}
-
-createAsteroid();
-
-// The Orb is made of several particle systems 
-// function createOrb() {
-var createOrb = function(){
-  // 1st Particle Sytem - Circles
-  BABYLON.ParticleHelper.CreateFromSnippetAsync("2JRD1A#2", scene, false)
-
-  // 2nd Particle Sytem - Core
-  BABYLON.ParticleHelper.CreateFromSnippetAsync("EXUQ7M#5", scene, false)
-
-  // 3rd Particle Sytem - Sparks
-  var sphereSpark = BABYLON.MeshBuilder.CreateSphere("sphereSpark", { diameter: 3.4, segments: 32 }, scene)
-  sphereSpark.isVisible = false;
-  BABYLON.ParticleHelper.CreateFromSnippetAsync("UY098C#3", scene, false).then(system => {
-    system.emitter = sphereSpark
-  })
-  // 4th Particle Sytem - Smoke
-  var sphereSmoke = BABYLON.MeshBuilder.CreateSphere("sphereSmoke", { diameter: 4.9, segments: 32 }, scene)
-  sphereSmoke.isVisible = false;
-  BABYLON.ParticleHelper.CreateFromSnippetAsync("UY098C#6", scene, false).then(system => {
-    system.emitter = sphereSmoke
-  })
-}
 
 // Zoom no orb
 // zoomIn(camera, sphereSpark, 120);
@@ -649,12 +674,12 @@ scene.registerBeforeRender(function() {
     Button_Falar.isEnabled = false;
 
     // # sobrecarrega por colocar várias vezes?????
-    // interface_user.addControl(input);    
-    // interface_user.addControl(keyboard);
-    // interface_user.addControl(button_Click); 
+    interface_user.addControl(input);    
+    interface_user.addControl(keyboard);
+    interface_user.addControl(button_Click); 
 
     // sleep1(5000); 
-    sleep2(5000); // ok
+    // sleep2(5000); // ok
     
     // speechSynthesis.speak(new SpeechSynthesisUtterance('Outro asteroide está se aproximando...!'));
     //   console.log('Outro asteroide está se aproximando...!');
@@ -691,40 +716,55 @@ var sphere = variosAsteroides();
   }
 
 // Game setup
-      window.addEventListener('resize', onWindowResize, false)
+    window.addEventListener('resize', onWindowResize, false)
 
-      const intro = document.getElementById('intro')
+    const intro = document.getElementById('intro')
+    var executando = true;
 
-      intro.addEventListener(
-        'click',
-        () => {
-          if (BABYLON.Engine.audioEngine) {
-            BABYLON.Engine.audioEngine.unlock()
-          }
+    intro.addEventListener(
+      'click',
+      () => {
+        // if (BABYLON.Engine.audioEngine) {
+        //   BABYLON.Engine.audioEngine.unlock()
+        // }
 
-          controls.connect()
-        },
-        false
-      )
+        controls.connect();
+        // animate(executando); // tentar resetar a animação
+        
+        // alert("Quanto tempo?");
 
-      entityManager = new YUKA.EntityManager()
-      time = new YUKA.Time()
+        // console.log(text)
+        // console.log(input.zIndex);
 
-      const player = new Player()
-      player.head.setRenderComponent(camera, syncCamera)
+      },
+      false
+    )
 
-      controls = new FirstPersonControls(player)
-      controls.setRotation(-2.2, 0.2)
-      
-      controls.addEventListener('lock', () => {
-        intro.classList.add('hidden')
-      })
+    entityManager = new YUKA.EntityManager()
+    time = new YUKA.Time()
 
-      controls.addEventListener('unlock', () => {
-        intro.classList.remove('hidden')
-      })
+    const player = new Player()
+    player.head.setRenderComponent(camera, syncCamera)
 
-      entityManager.add(player)
+    controls = new FirstPersonControls(player)
+    controls.setRotation(-2.2, 0.2)
+    
+    controls.addEventListener('lock', () => {
+      intro.classList.add('hidden')
+      executando = true;
+      animate(executando);
+      console.log("Jogo rodando");
+    })
+
+    controls.addEventListener('unlock', () => {
+      intro.classList.remove('hidden')
+      executando = false;
+      // animate(executando);
+      console.log("Jogo pausado");
+    })
+
+    entityManager.add(player);
+
 function variosAsteroides() {
   // Material dos asteróides
   var url = "http://jerome.bousquie.fr/BJS/images/rock.jpg" // baixar e usar offline
@@ -891,7 +931,7 @@ recognition.onresult = function(event) {
       u.rate = 1.2; // Quanto maior, mais rápido (0.1 .... 10)
       u.pitch = 2; // Quanto menor, mais grave (0, 1, 2)
       u.onend = console.log('Saída: ', content);
-      speechSynthesis.speak(u);
+      // speechSynthesis.speak(u);
       // u.getVoices;
       // u.volume = 1000;
       // console.log(u.elapsedTime);
@@ -973,8 +1013,125 @@ recognition.onresult = function(event) {
         // alpha += 0.3 * scene.getAnimationRatio();
     // })
     entityManager.add(player)
-      animate()
+    
+    if (executando){
+      // animate();
+      animate(executando);
     }
+    
+  // scene.render();
+
+
+
+// Teclado virtual com mão. O usuário pode clicar em um botão na tela usando o dedo 
+// enquanto uma imagem da webcam é usada para criar um cursor virtual controlado por 
+// detecção de mãos do MediaPipeJS. Quando o cursor virtual está dentro da área do botão, 
+// sua cor muda para vermelho e o evento OnPointerOverTrigger é acionado. 
+// Quando o usuário clica no botão, o evento OnPickTrigger é acionado
+
+// Inicializar o MediaPipe Hands
+  // tecladoFinger(canvas)
+
+
+
+}
+
+function tecladoFinger(canvas) {
+  var hands = new Hands({
+    locateFile: (file) => {
+      return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+    }
+  })
+  hands.setOptions({
+    maxNumHands: 1,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5
+  })
+
+  // Começar a transmitir a imagem da webcam para o MediaPipe Hands
+  navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
+    video.srcObject = stream
+    video.onloadedmetadata = function (e) {
+      video.play()
+      hands.send({ image: video })
+    }
+  }).catch(function (error) {
+    console.error(error)
+  })
+
+
+  var video = document.getElementById("video")
+
+
+  // Inicializa a detecção de mãos quando o vídeo estiver pronto para reprodução
+  video.addEventListener('loadeddata', function () {
+    hands.initialize(video.clientWidth, video.clientHeight)
+  })
+
+  // Inicia a reprodução do vídeo
+  video.addEventListener('canplay', function () {
+    video.play()
+  })
+
+  // Criar um objeto plano como botão
+  var button = BABYLON.MeshBuilder.CreatePlane("button", { width: 200, height: 100 }, scene)
+
+  // Definir a posição do botão na parte inferior da tela
+  button.position.y = -canvas.height / 2 + 50
+
+
+  engine.runRenderLoop(function () {
+    // Renderizar a cena
+    scene.render()
+
+    // Atualizar a posição do cursor virtual usando a detecção de mãos do MediaPipe
+    hands.send({ image: video }).then(function (results) {
+      var handLandmarks = results.multiHandLandmarks[0]
+      if (handLandmarks) {
+        var indexFinger = handLandmarks[8]
+        var x = indexFinger.x * video.clientWidth - canvas.width / 2
+        var y = -indexFinger.y * video.clientHeight + canvas.height / 2
+        cursor.position.x = x
+        cursor.position.y = y
+
+        // Verificar se o cursor virtual está dentro da área do botão
+        var buttonWidth = 200
+        var buttonHeight = 100
+        var buttonPosX = canvas.width / 2 - buttonWidth / 2
+        var buttonPosY = -canvas.height / 2 + buttonHeight / 2
+        if (x > buttonPosX && x < buttonPosX + buttonWidth
+          && y > buttonPosY && y < buttonPosY + buttonHeight) {
+          cursorMat.emissiveColor = new BABYLON.Color3(1, 0, 0)
+          if (button.actionManager) {
+            button.actionManager.processTrigger(BABYLON.ActionManager.OnPointerOverTrigger)
+            if (buttonPressed) {
+              button.actionManager.processTrigger(BABYLON.ActionManager.OnPickTrigger)
+            }
+          }
+        } else {
+          cursorMat.emissiveColor = new BABYLON.Color3(0, 1, 0)
+        }
+      }
+    })
+  })
+
+  // Adicionar evento pointerdown ao botão para registrar o início do clique do usuário
+  button.actionManager = new BABYLON.ActionManager(scene)
+  button.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+    BABYLON.ActionManager.OnPointerDownTrigger,
+    function () {
+      buttonPressed = true
+    }
+  ))
+
+  // Adicionar evento pointerup ao botão para registrar o final do clique do usuário
+  button.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+    BABYLON.ActionManager.OnPointerUpTrigger,
+    function () {
+      buttonPressed = false
+    }
+  ))
+}
 
   // }
 
@@ -983,14 +1140,19 @@ function onWindowResize() {
   engine.resize()
 }
 
-function animate() {
-  requestAnimationFrame(animate)
+function animate(executando) {
+  if(executando){
+    requestAnimationFrame(animate)
+    const delta = time.update().getDelta()
+    controls.update(delta) // # Não precisa
+    // entityManager.update(delta)
 
-  const delta = time.update().getDelta()
-  controls.update(delta)
-  // entityManager.update(delta)
+    scene.render()
+  }
 
-  scene.render()
+  if(!executando){
+    cancelAnimationFrame(animate); // # ta pausando demais
+  }
 }
 
 function syncCamera(entity, renderComponent) {

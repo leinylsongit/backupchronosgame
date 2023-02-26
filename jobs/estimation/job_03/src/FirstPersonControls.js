@@ -44,7 +44,7 @@ class FirstPersonControls extends EventDispatcher {
     document.addEventListener('keydown', this._keyDownHandler, false)
     document.addEventListener('keyup', this._keyUpHandler, false)
 
-    document.body.requestPointerLock()
+    document.body.requestPointerLock();
   }
 
   disconnect() {

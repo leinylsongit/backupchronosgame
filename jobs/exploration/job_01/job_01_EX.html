@@ -1,0 +1,56 @@
+<!-- <!DOCTYPE html> -->
+<html lang="pt_br">
+  <head>
+    <title>1º Desafio de Estimativa ⏱</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="../../../css/styles.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../nitlab.jpg" />
+  </head>
+  <body>
+    <section id="loading-screen">
+      <div class="spinner">
+        <div class="rect1"></div>
+        <div class="rect2"></div>
+        <div class="rect3"></div>
+        <div class="rect4"></div>
+        <div class="rect5"></div>
+      </div>
+    </section>
+
+    <section id="intro">
+      <p>1º Desafio de Estimativa ⏱</p>
+      <!-- <p>😎😁😮😏😲🤪👻🙈🐱‍🏍🧠🦾👣👂🏼🤞🏼🖐🏼👋🏼🎈✨🎁💎⚽🥇🥈🥉🎖🔊🏆🎼🎤💡💎💣💊🛡️📧📌🔒🔓🎵🎶🔔🔕🔇🔉🔊🔈💬🏁🏴‍☠️😀💫💨💥💤🖱💰⌛⏳⌚⏰⏲🕰⭐❌</p> -->
+      
+      <p>Click para continuar!</p>
+      
+      <p>👀 Um personagem aparecerá e irá do portal azul até o portal verde.<br><br>
+        🎯 Sua tarefa será estimar em quanto tempo ele atravessou de um portal para o outro.</p>
+      
+      <p class="sub">🤖Completando a tarefa, você ganhará esta incrível medalha 🏅<br> 
+      🤖Estou na torcida. Será que você consegue?🤨</p>
+    </section>
+    <canvas id="renderCanvas" style="width: 100%; height: 100%; touch-action: none"></canvas>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@latest"></script> -->
+    <!-- <video id="video" width="640" height="480" style="display: none;"></video>  -->
+    
+    <!-- Video de abertura da tarefa 01 -->   
+    <div style="position: fixed; top: 0px; left: 0px; z-index: 1;"> 
+      <video id="opening-video" src="../../../assets/videos/Final.mp4" autoplay="true" width="160%" height="150%"></video>
+    </div>
+    
+    <script>
+      // Obter a referência para o elemento de vídeo
+      var video = document.getElementById("opening-video");
+    
+      // Adicionar um evento de escuta para a propriedade 'ended' do vídeo
+      video.addEventListener("ended", function() {
+        // Quando o vídeo terminar de ser reproduzido, esconder o elemento 'video'
+        video.style.display = "none";
+      });
+    </script>
+        
+    <script type="module" src="job_01_ET.js"></script>
+  </body>
+</html>
