@@ -132,13 +132,13 @@ var positionData = linha.getVerticesData(BABYLON.VertexBuffer.PositionKind);
 // var heightRange = 10;
 // var alpha = 0;
 
-var diameter = 2;  
-console.log("Diâmetro inicial: ", diameter);
+// var diameter = 2;  
+// console.log("Diâmetro inicial: ", diameter);
 
 // Asteróide que colidirá com o Sol
 var createAsteroid = function(){
-  // var asteroide = BABYLON.MeshBuilder.CreateSphere("asteroide", {diameter: 2, segments: 1.5}, scene);
-  var asteroide = BABYLON.MeshBuilder.CreateSphere("asteroide", {diameter: diameter, segments: 1.5}, scene);
+  var asteroide = BABYLON.MeshBuilder.CreateSphere("asteroide", {diameter: 2, segments: 1.5}, scene);
+  // var asteroide = BABYLON.MeshBuilder.CreateSphere("asteroide", {diameter: diameter, segments: 1.5}, scene);
   var mat = new BABYLON.StandardMaterial("mat1", scene)
   var texture = new BABYLON.Texture("./textures/rock.jpg", scene) // # testar outras texturas 
   mat.diffuseTexture = texture;
@@ -303,7 +303,11 @@ gridTeclado.addColumnDefinition(50);
 gridTeclado.addColumnDefinition(50);
 gridTeclado.addColumnDefinition(50);
 gridTeclado.addColumnDefinition(50);
+gridTeclado.addColumnDefinition(50);
+gridTeclado.addColumnDefinition(50);
 
+gridTeclado.addRowDefinition(50);
+gridTeclado.addRowDefinition(50);
 gridTeclado.addRowDefinition(50);
 gridTeclado.addRowDefinition(50);
 gridTeclado.addRowDefinition(50);
@@ -363,7 +367,119 @@ var btn1 = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "../../../assets/gu
     btn3.image.paddingRight = "5px";
   
   btn3.zIndex = 150;
-  gridTeclado.addControl(btn3,1,0);
+  gridTeclado.addControl(btn3,0,2);
+
+  var btn4 = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "../../../assets/gui/4.png");
+    btn4.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    btn4.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    btn4.width = '80px';   
+    btn4.height = '80px';
+    btn4.background = "transparent";
+    btn4.thickness = 0;
+    btn4.image.shadowBlur = 5;
+    btn4.image.paddingTop = "5px";
+    btn4.image.paddingBottom = "5px";
+    btn4.image.paddingLeft = "5px";
+    btn4.image.paddingRight = "5px";
+  
+  btn4.zIndex = 150;
+  gridTeclado.addControl(btn4,0,3);
+
+  var btn5 = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "../../../assets/gui/5.png");
+    btn5.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    btn5.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    btn5.width = '80px';   
+    btn5.height = '80px';
+    btn5.background = "transparent";
+    btn5.thickness = 0;
+    btn5.image.shadowBlur = 5;
+    btn5.image.paddingTop = "5px";
+    btn5.image.paddingBottom = "5px";
+    btn5.image.paddingLeft = "5px";
+    btn5.image.paddingRight = "5px";
+  
+  btn5.zIndex = 150;
+  gridTeclado.addControl(btn5,0,4);
+
+  var btn6 = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "../../../assets/gui/6.png");
+    btn6.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    btn6.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    btn6.width = '80px';   
+    btn6.height = '80px';
+    btn6.background = "transparent";
+    btn6.thickness = 0;
+    btn6.image.shadowBlur = 5;
+    btn6.image.paddingTop = "5px";
+    btn6.image.paddingBottom = "5px";
+    btn6.image.paddingLeft = "5px";
+    btn6.image.paddingRight = "5px";
+  
+  btn6.zIndex = 150;
+  gridTeclado.addControl(btn6,1,0);
+
+  var btn7 = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "../../../assets/gui/7.png");
+    btn7.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    btn7.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    btn7.width = '80px';   
+    btn7.height = '80px';
+    btn7.background = "transparent";
+    btn7.thickness = 0;
+    btn7.image.shadowBlur = 5;
+    btn7.image.paddingTop = "5px";
+    btn7.image.paddingBottom = "5px";
+    btn7.image.paddingLeft = "5px";
+    btn7.image.paddingRight = "5px";
+  
+  btn7.zIndex = 150;
+  gridTeclado.addControl(btn7,1,1);
+
+  var btn8 = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "../../../assets/gui/8.png");
+    btn8.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    btn8.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    btn8.width = '80px';   
+    btn8.height = '80px';
+    btn8.background = "transparent";
+    btn8.thickness = 0;
+    btn8.image.shadowBlur = 5;
+    btn8.image.paddingTop = "5px";
+    btn8.image.paddingBottom = "5px";
+    btn8.image.paddingLeft = "5px";
+    btn8.image.paddingRight = "5px";
+  
+  btn8.zIndex = 150;
+  gridTeclado.addControl(btn8,1,2);
+
+  var btn9 = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "../../../assets/gui/9.png");
+    btn9.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    btn9.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    btn9.width = '80px';   
+    btn9.height = '80px';
+    btn9.background = "transparent";
+    btn9.thickness = 0;
+    btn9.image.shadowBlur = 5;
+    btn9.image.paddingTop = "5px";
+    btn9.image.paddingBottom = "5px";
+    btn9.image.paddingLeft = "5px";
+    btn9.image.paddingRight = "5px";
+  
+  btn9.zIndex = 150;
+  gridTeclado.addControl(btn9,1,3);
+
+  var btn10 = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "../../../assets/gui/10.png");
+    btn10.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    btn10.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    btn10.width = '80px';   
+    btn10.height = '80px';
+    btn10.background = "transparent";
+    btn10.thickness = 0;
+    btn10.image.shadowBlur = 5;
+    btn10.image.paddingTop = "5px";
+    btn10.image.paddingBottom = "5px";
+    btn10.image.paddingLeft = "5px";
+    btn10.image.paddingRight = "5px";
+  
+  btn10.zIndex = 150;
+  gridTeclado.addControl(btn10,1,4);
 
   
 
@@ -421,7 +537,7 @@ txtFeedback.top = "-275px";
 // txtFeedback.width = "150px";
 // txtFeedback.height = "50px";
 
-gridResposta.addControl(txtFeedback); 
+// gridResposta.addControl(txtFeedback); 
 
 // Pontuação com informações sobre os tempos sorteados
 var txtFeedback = new BABYLON.GUI.TextBlock();
@@ -434,7 +550,7 @@ txtFeedback.top = "-275px";
 // txtFeedback.width = "150px";
 // txtFeedback.height = "50px";
 
-gridResposta.addControl(txtFeedback); 
+// gridResposta.addControl(txtFeedback); 
 
 //B. Entrada de resposta por click em botão
 var btnClick = BABYLON.GUI.Button.CreateSimpleButton("botão", "🖱 Click");
@@ -464,7 +580,7 @@ btnClick.onPointerClickObservable.add(function () {
 });
 
 btnClick.zIndex = 10;
-gridEntrada.addControl(btnClick);   
+// gridEntrada.addControl(btnClick);   
 
 //C. Campo para o jogador informar a resposta
 var input = new BABYLON.GUI.InputText("entrada", "⌨ Digite aqui");
@@ -492,7 +608,7 @@ input.onPointerClickObservable.add(function () {
 });
 
 input.zIndex = 10;
-gridEntrada.addControl(input);    
+// gridEntrada.addControl(input);    
 
 //D. Teclado virtual para entrada de dados do jogador
 var keyboard = BABYLON.GUI.VirtualKeyboard.CreateDefaultLayout();
@@ -507,7 +623,7 @@ keyboard.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
 // keyboard.verticalAlignment = 0;
 // keyboard.alpha = 0.6;
 
-gridEntrada.addControl(keyboard);
+// gridEntrada.addControl(keyboard);
 keyboard.connect(input);
 
 // H. Botão Falar
@@ -528,7 +644,7 @@ btnFalar.alpha = 0.7;
 btnFalar.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;     
       
 btnFalar.zIndex = 10;
-gridEntrada.addControl(btnFalar);
+// gridEntrada.addControl(btnFalar);
 
 btnFalar.onPointerUpObservable.add(function () {
     reconheceFala();
@@ -592,11 +708,11 @@ txtGabarito.color = "white";
 txtGabarito.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 txtGabarito.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
 
-gridResposta.addControl(txtGabarito);// # Não exibir para o jogador
+// gridResposta.addControl(txtGabarito);// # Não exibir para o jogador
   
 // J. Local da Resposta do Player
 var txtResposta = new BABYLON.GUI.TextBlock();
-txtResposta.text = "Em algum lugar do cosmo";
+// txtResposta.text = "Em algum lugar do cosmo";
 txtResposta.fontSize = 40;
 txtResposta.fontFamily = "Segoe UI"
 txtResposta.height = "60px";
@@ -622,7 +738,7 @@ btnLeft.onPointerClickObservable.add(() => {
     // }
 });
 
-gridEntrada.addControl(btnLeft);    
+// gridEntrada.addControl(btnLeft);    
  
 
 // Botão seta para direita
@@ -637,7 +753,7 @@ btnRight.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
     //     }
     // });
     
-gridTela.addControl(btnRight);  
+// gridTela.addControl(btnRight);  
 
 // Botão que habilita a interação do usuário com a interface gráfica
 var btnExibeGUI = BABYLON.GUI.Button.CreateImageOnlyButton("ativar", "../../../assets/gui/exibirGui.png");
@@ -702,14 +818,14 @@ btnExibeGUI.onPointerClickObservable.add(() => {
 var num_Asteroid = 1;
 var qtd_Asteroide = 10
 
-var distancia = 1000; // Ponto de partida inicial do asteroide
+var distancia = 500; // Ponto de partida inicial do asteroide
 // Intervalo de tempo a ser estimado
-var minTime = 4;
-var maxTime = 6;
+var minTime = 1;
+var maxTime = 10;
 
 // Sorteia a duração dentro do intervalo 2 a 10
 var duration;
-// duration = Math.floor((Math.random(distancia)*maxTime) + minTime);
+duration = Math.floor((Math.random(distancia)*maxTime) + minTime);
 
 // Botão que inicia a execução do estímulo
 var btnEstimulo = BABYLON.GUI.Button.CreateImageOnlyButton("ativar", "../../../assets/gui/iniciaEstimulo.png");
@@ -723,6 +839,7 @@ userInterface.addControl(btnEstimulo);
 
 btnEstimulo.onPointerClickObservable.add(function() {
     btnEstimulo.isVisible = false;
+    gui_ativado = false;
     iniciaEstimulo();
     console.log("Estímulo iniciado!");
  });
@@ -759,6 +876,7 @@ function iniciaEstimulo() {
     distancia = (distancia - 1)
 
     if (distancia < 1) { // "Colidiu" com o Sol
+      sleep2(500); // ok
       // Exibe o numero do asteoride atual
       txtStatusJob.text = ("🌑 Asteroide: " + ++num_Asteroid + '/' + qtd_Asteroide)
       console.log('🌑 Asteroide: ' + num_Asteroid + '/' + qtd_Asteroide)
@@ -775,11 +893,110 @@ function iniciaEstimulo() {
       // Verifica se acertou
       btn1.onPointerUpObservable.add(() => {
         // btn1.image.source = "../../../assets/gui/0.png";
-          if(elapsedTime == 1){
-              console.log("Acertou");
+          if(formatTime(elapsedTime) == 1){
+              console.log("1: Acertou");
           }
           else{
-              console.log("Errou");
+              console.log("1: Errou");
+          }                
+      });
+
+      // Verifica se acertou
+      btn2.onPointerUpObservable.add(() => {
+        // btn1.image.source = "../../../assets/gui/0.png";
+          if(formatTime(elapsedTime) == 2){
+              console.log("2: Acertou");
+          }
+          else{
+              console.log("2: Errou");
+          }                
+      });
+
+      // Verifica se acertou
+      btn3.onPointerUpObservable.add(() => {
+        // btn1.image.source = "../../../assets/gui/0.png";
+          if(formatTime(elapsedTime) == 3){
+              console.log("3: Acertou");
+          }
+          else{
+              console.log("3: Errou");
+          }                
+      });
+
+      // Verifica se acertou
+      btn4.onPointerUpObservable.add(() => {
+        // btn1.image.source = "../../../assets/gui/0.png";
+          if(formatTime(elapsedTime) == 4){
+              console.log("4: Acertou");
+          }
+          else{
+              console.log("4: Errou");
+          }                
+      });
+
+      // Verifica se acertou
+      btn5.onPointerUpObservable.add(() => {
+        // btn1.image.source = "../../../assets/gui/0.png";
+          if(formatTime(elapsedTime) == 5){
+              console.log("5: Acertou");
+          }
+          else{
+              console.log("5: Errou");
+          }                
+      });
+
+      // Verifica se acertou
+      btn6.onPointerUpObservable.add(() => {
+        // btn1.image.source = "../../../assets/gui/0.png";
+          if(formatTime(elapsedTime) == 6){
+              console.log("6: Acertou");
+          }
+          else{
+              console.log("6: Errou");
+          }                
+      });
+
+      // Verifica se acertou
+      btn7.onPointerUpObservable.add(() => {
+        // btn1.image.source = "../../../assets/gui/0.png";
+          if(formatTime(elapsedTime) == 7){
+              console.log("7: Acertou");
+          }
+          else{
+              console.log("7: Errou");
+          }                
+      });
+
+      // Verifica se acertou
+      btn8.onPointerUpObservable.add(() => {
+        // btn1.image.source = "../../../assets/gui/0.png";
+          if(formatTime(elapsedTime) == 8){
+              console.log("8: Acertou");
+          }
+          else{
+              console.log("8: Errou");
+          }                
+      });
+
+      // Verifica se acertou
+      btn9.onPointerUpObservable.add(() => {
+        // btn1.image.source = "../../../assets/gui/0.png";
+          if(formatTime(elapsedTime) == 9){
+              console.log("9: Acertou");
+          }
+          else{
+              console.log("9: Errou");
+          }                
+      });
+
+      // Verifica se acertou
+      btn10.onPointerUpObservable.add(() => {
+        // btn1.image.source = "../../../assets/gui/0.png";
+          if(formatTime(elapsedTime) == 10){
+              console.log("10: Acertou");
+          }
+          else{
+              console.log("10: Errou");
           }                
       });
 
@@ -800,17 +1017,21 @@ function iniciaEstimulo() {
       }
 
       // Sorteia a posição onde o asteróide iniciará o percurso
-      distancia = Math.floor(Math.random(1000) * 1000)
+      // distancia = Math.floor(Math.random(1000) * 1000)
+      distancia = Math.floor(Math.random(500) * 500)
+      // distancia = 250; // 4 segundos?
+      // distancia = 200; // 3 segundos
+      // distancia = 150; // 2 segundos
 
       // Sorteia um novo tamanho para o asteroide
-      diameter = Math.floor(Math.random(100) * 100)
-      console.log("Diâmetro: ", diameter)
+      // diameter = Math.floor(Math.random(100) * 100)
+      // console.log("Diâmetro: ", diameter)
 
       // 2º Feedback do comando
-      txtFeedback.text = ("⏱ Quanto tempo?")
+      // txtFeedback.text = ("⏱ Quanto tempo?")
 
       // Captura resposta do jogador
-      txtResposta.text = ">> (((((👂🏼))))) <<"
+      // txtResposta.text = ">> (((((👂🏼))))) <<"
 
 
 
@@ -825,9 +1046,9 @@ function iniciaEstimulo() {
       btnEstimulo.isVisible = true;
 
       // # sobrecarrega por colocar várias vezes?????
-      userInterface.addControl(input)
-      userInterface.addControl(keyboard)
-      userInterface.addControl(btnClick)
+      // userInterface.addControl(input)
+      // userInterface.addControl(keyboard)
+      // userInterface.addControl(btnClick)
 
       // sleep1(5000); 
       // sleep2(5000); // ok
@@ -842,11 +1063,19 @@ function iniciaEstimulo() {
 // asteroide.dispose();
 
 
+// // Função para formatar o tempo em minutos e segundos
+// function formatTime(time) {
+//   var minutes = Math.floor(time / 60000);
+//   var seconds = Math.floor((time % 60000) / 1000);
+//   return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+// }
+
 // Função para formatar o tempo em minutos e segundos
 function formatTime(time) {
-  var minutes = Math.floor(time / 60000);
+  // var minutes = Math.floor(time / 60000);
   var seconds = Math.floor((time % 60000) / 1000);
-  return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+  // return (seconds < 10 ? "0" : "") + seconds;
+  return seconds;
 }
 
 // Gerar vários asteróides rotacionando
