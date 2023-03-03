@@ -876,7 +876,7 @@ function iniciaEstimulo() {
     distancia = (distancia - 1)
 
     if (distancia < 1) { // "Colidiu" com o Sol
-      sleep2(500); // ok
+      // sleep2(500); // ok
       // Exibe o numero do asteoride atual
       txtStatusJob.text = ("🌑 Asteroide: " + ++num_Asteroid + '/' + qtd_Asteroide)
       console.log('🌑 Asteroide: ' + num_Asteroid + '/' + qtd_Asteroide)
@@ -1015,6 +1015,8 @@ function iniciaEstimulo() {
           })
         }
       }
+
+      sleep2(1000); // ok
 
       // Sorteia a posição onde o asteróide iniciará o percurso
       // distancia = Math.floor(Math.random(1000) * 1000)
