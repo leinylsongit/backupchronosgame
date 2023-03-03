@@ -5,55 +5,62 @@ import 'https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js'
 
 import 'https://preview.babylonjs.com/gui/babylon.gui.min.js'
 
-import { FirstPersonControls } from './src/FirstPersonControls.js'
-import { Player } from './src/Player.js'
-
-
 let engine, scene, camera, trilha
-let entityManager, time, controls
+let time
 
 var som_Ambiente = false; // checkbox
 var som_Efeitos = true; // checkbox
 var explosao, colisao;
 
 init()
-
+animate(true);
 
 function init() {
   const canvas = document.getElementById('renderCanvas')
   engine = new BABYLON.Engine(canvas, true, {}, true)
 
-  if (BABYLON.Engine.audioEngine) {
-    BABYLON.Engine.audioEngine.useCustomUnlockedButton = true
-  }
+  // if (BABYLON.Engine.audioEngine) {
+  //   BABYLON.Engine.audioEngine.useCustomUnlockedButton = true
+  // }
 
   scene = new BABYLON.Scene(engine)
   scene.clearColor = BABYLON.Color3.FromHexString('#a0a0a0')
   scene.useRightHandedSystem = true; // Rotaciona para direita
   // scene.useRightHandedSystem = false; // Rotaciona para esquerda
 
-  camera = new BABYLON.ArcRotateCamera("camera", -90/180*Math.PI, 45/180*Math.PI, Math.PI, new BABYLON.Vector3(0, 40, -70), scene);
+  // camera = new BABYLON.ArcRotateCamera("camera", -90/180*Math.PI, 45/180*Math.PI, Math.PI, new BABYLON.Vector3(0, 40, -70), scene);
+const camera = new BABYLON.ArcRotateCamera(
+    'camera',
+    BABYLON.Tools.ToRadians(90),
+    BABYLON.Tools.ToRadians(80),
+    10,
+    BABYLON.Vector3.Zero(),
+    scene
+  )
 
+  camera.wheelDeltaPercentage = 0.005
+  camera.target = new BABYLON.Vector3(0, 0, 0)
+  camera.attachControl(canvas)
+  camera.useAutoRotationBehavior = true
 //   var camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 4, 5, BABYLON.Vector3.Zero(), scene);
 // camera.attachControl(canvas, true);
 
   // camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, 0, -20), scene, true)
-  camera.minZ = 100;
+  // camera.minZ = 100;
 // camera.maxZ = 20000;
 // camera.detachControl(canvas);
   camera.attachControl(canvas, true);
   camera.lowerRadiusLimit = 250.5;
-  camera.upperRadiusLimit = 150;
-  camera.pinchDeltaPercentage = 2.01;
-  camera.wheelDeltaPercentage = 20.01;
+  // camera.upperRadiusLimit = 150;
+  // camera.pinchDeltaPercentage = 2.01;
 
-  camera.wheelPrecision = 50;
-  camera.zoomOnFactor = 2;
+  // camera.wheelPrecision = 50;
+  // camera.zoomOnFactor = 2;
 
-  camera.panningSensibility = 100; // Panorâmica (botão direito)
+  // camera.panningSensibility = 100; // Panorâmica (botão direito)
 
-  camera.angularSensibilityX = 500;
-  camera.angularSensibilityY = 500;
+  // camera.angularSensibilityX = 500;
+  // camera.angularSensibilityY = 500;
 
 
 
@@ -100,7 +107,6 @@ var sol = BABYLON.ParticleHelper.CreateAsync("sun", scene).then((set) => {
 
 var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 10, segments: 2.5}, scene);
 sphere.isVisible = false; // # Ocultar esta esfera depois!!!
-
 
 
 // Create a whirlpool
@@ -229,126 +235,236 @@ var createOrb = function(){
 }
 
 //---------------------------------- Interface do Usuário ---------------------------------
-var interface_user = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-// interface_user.renderScale = 1; // não alterou nada
-// interface_user.useRealisticScaling = true;// // não alterou nada
-    
-//# TESTAR ESSAS 3 LINHAS!!!
-//This adds some parameters towards how the GUI will display on resize.
-    //Explanations will be part of lesson #3 
-    // interface_user.idealWidth = 800;
-    // interface_user.idealHeight = 900;
-    // interface_user.useSmallestIdeal = true;
+var userInterface = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+// userInterface.renderScale = 1; // não alterou nada
+// userInterface.useRealisticScaling = true;// // não alterou nada
+  userInterface.idealWidth = 800;
+  userInterface.idealHeight = 900;
+  userInterface.useSmallestIdeal = true;
+  // userInterface.zIndex = 10;
+
+// Cria uma grade para dividir a Interface do Usuário em células de um tamanho definido.
+// Usando 'true' fixa o tamanho da linha ou coluna, expresso em pixels (relativo ao tamanho da janela/advancedTexture FS).
+// Linhas e colunas sem o 'true' usarão o valor BJS (onde 1 é igual a 100%) e simplesmente preencherão o espaço restante.
+
+// GUI para Tela
+var gridTela = new BABYLON.GUI.Grid();
+gridTela.addColumnDefinition(800);
+// tela.addColumnDefinition(400);
+// tela.addColumnDefinition(200);
+// tela.addColumnDefinition(200);
+// gridTela.color = new BABYLON.Color3(1, 0, 0);
+
+gridTela.addRowDefinition(100);
+// tela.addRowDefinition(100);
+// tela.addRowDefinition(100);
+
+gridTela.zIndex = 100;
+userInterface.addControl(gridTela);
 
 
+// GUI para Entradas 
+var gridEntrada = new BABYLON.GUI.Grid();
+// gridEntrada.color = new BABYLON.Color3(0, 1, 0);
 
-//# TESTAR ESSAS GRADE !!!
-    /////////// GUI 2D GRID ////////////////
+gridEntrada.addColumnDefinition(200);
+// entrada.addColumnDefinition(200);
+// entrada.addColumnDefinition(200);
+// entrada.addColumnDefinition(200);
 
-// Creating a grid to split the advancedTexture layer into cells of a defined and remaining size.
-// The parameter 'true' fixes the size of the row or column, expressed in pixels (relative to the window/advancedTexture FS size).
-// Rows and columns without parameter 'true' will use the BJS value (where 1 is equal to 100%) and will simply fill-in the remaining space.
-var grid = new BABYLON.GUI.Grid();
-grid.addColumnDefinition(128,true);
-grid.addColumnDefinition(384,true);
-grid.addColumnDefinition(1);
-grid.addColumnDefinition(80,true);
+gridEntrada.addRowDefinition(100);
+// entrada.addRowDefinition(100);
+// entrada.addRowDefinition(100);
 
-grid.addRowDefinition(128,true);
-grid.addRowDefinition(1);
-grid.addRowDefinition(80,true);
+gridEntrada.zIndex = 101;
+userInterface.addControl(gridEntrada);
 
-grid.zIndex = 100;
-console.log("z-index: ", grid.zIndex);
-//Adding our grid to the advancedTexture layer. 
-//Before this step, the grid does not show and you cannot interact with it.
-interface_user.addControl(grid);
+// GUI para Respostas 
+var gridResposta = new BABYLON.GUI.Grid();
+// gridResposta.color = new BABYLON.Color3(0, 0, 1);
+
+gridResposta.addColumnDefinition(200);
+// resposta.addColumnDefinition(200);
+// resposta.addColumnDefinition(200);
+// resposta.addColumnDefinition(200);
+
+gridResposta.addRowDefinition(100);
+// resposta.addRowDefinition(100);
+// resposta.addRowDefinition(100);
+
+gridResposta.zIndex = 99;
+userInterface.addControl(gridResposta);
+
+// GUI para Teclado
+var gridTeclado = new BABYLON.GUI.Grid();
+gridTeclado.addColumnDefinition(50);
+gridTeclado.addColumnDefinition(50);
+gridTeclado.addColumnDefinition(50);
+gridTeclado.addColumnDefinition(50);
+gridTeclado.addColumnDefinition(50);
+gridTeclado.addColumnDefinition(50);
+
+gridTeclado.addRowDefinition(50);
+gridTeclado.addRowDefinition(50);
+gridTeclado.addRowDefinition(50);
+gridTeclado.addRowDefinition(50);
+gridTeclado.addRowDefinition(50);
+gridTeclado.addRowDefinition(50);
+
+gridTeclado.zIndex = 150;
+userInterface.addControl(gridTeclado);
+
+
+var btn1 = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "../../../assets/gui/1.png");
+    btn1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    btn1.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    btn1.width = '80px';   
+    btn1.height = '80px';
+    btn1.background = "transparent";
+    btn1.thickness = 0;
+    btn1.image.shadowBlur = 5;
+    btn1.image.paddingTop = "5px";
+    btn1.image.paddingBottom = "5px";
+    btn1.image.paddingLeft = "5px";
+    btn1.image.paddingRight = "5px";
+  
+  btn1.zIndex = 150;
+  gridTeclado.addControl(btn1,0,0);
+
+
+  // # usar a função clone e a image.source
+  var btn2 = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "../../../assets/gui/2.png");
+    btn2.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    btn2.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    btn2.width = '80px';   
+    btn2.height = '80px';
+    btn2.background = "transparent";
+    btn2.thickness = 0;
+    btn2.image.shadowBlur = 5;
+    btn2.image.paddingTop = "5px";
+    btn2.image.paddingBottom = "5px";
+    btn2.image.paddingLeft = "5px";
+    btn2.image.paddingRight = "5px";
+  
+  btn2.zIndex = 150;
+  gridTeclado.addControl(btn2,0,1);
+
+  var btn3 = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "../../../assets/gui/3.png");
+    btn3.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    btn3.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    btn3.width = '80px';   
+    btn3.height = '80px';
+    btn3.background = "transparent";
+    btn3.thickness = 0;
+    btn3.image.shadowBlur = 5;
+    btn3.image.paddingTop = "5px";
+    btn3.image.paddingBottom = "5px";
+    btn3.image.paddingLeft = "5px";
+    btn3.image.paddingRight = "5px";
+  
+  btn3.zIndex = 150;
+  gridTeclado.addControl(btn3,1,0);
+
+  
 
 
 // Botão fullscreen
 // A  button added to the far right bottom grid cell (row #3, column #3)
-var btnfs = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "https://dl.dropbox.com/s/elhq6yfwr9p7dmf/expand.png");
-    btnfs.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    btnfs.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-    btnfs.width = '64px';   
-    btnfs.height = '64px';
-    btnfs.background = "transparent";
-    btnfs.thickness = 0;
-    btnfs.image.shadowBlur = 5;
-    btnfs.image.paddingTop = "5px";
-    btnfs.image.paddingBottom = "5px";
-    btnfs.image.paddingLeft = "5px";
-    btnfs.image.paddingRight = "5px";
+var btnFullScreen = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "../../../assets/gui/expand.png");
+    btnFullScreen.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    btnFullScreen.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    btnFullScreen.width = '64px';   
+    btnFullScreen.height = '64px';
+    btnFullScreen.background = "transparent";
+    btnFullScreen.thickness = 0;
+    btnFullScreen.image.shadowBlur = 5;
+    btnFullScreen.image.paddingTop = "5px";
+    btnFullScreen.image.paddingBottom = "5px";
+    btnFullScreen.image.paddingLeft = "5px";
+    btnFullScreen.image.paddingRight = "5px";
 
     //Adding observables to the button
     //on pointer up
-    btnfs.onPointerUpObservable.add(() => {
+    btnFullScreen.onPointerUpObservable.add(() => {
         if (!engine.isFullscreen){
             engine.enterFullscreen();
-            btnfs.image.source = "textures/icons/Undo.png";
+            btnFullScreen.image.source = "../../../assets/gui/undo.png";
         }
         else{
             engine.exitFullscreen();
-            btnfs.image.source = "https://dl.dropbox.com/s/elhq6yfwr9p7dmf/expand.png";
+            btnFullScreen.image.source = "../../../assets/gui/expand.png";
         }                
     });
     //on pointer enter
-    btnfs.onPointerEnterObservable.add(() => {
+    btnFullScreen.onPointerEnterObservable.add(() => {
         if (!engine.isFullscreen){
-            btnfs.image.source = "https://dl.dropbox.com/s/elhq6yfwr9p7dmf/expand.png";
+            btnFullScreen.image.source = "../../../assets/gui/expand.png";
         }
         else{
-            btnfs.image.source = "textures/icons/Undo.png";
+            btnFullScreen.image.source = "../../../assets/gui/undo.png";
         }                
     });
 
-    btnfs.zIndex = 110;
-console.log("btnfs z-index: ", btnfs.zIndex);
 
 //Attaching the control to the grid on row #3 and column #3 cell
-grid.addControl(btnfs,3,3);
+btnFullScreen.zIndex = 550;
+gridEntrada.addControl(btnFullScreen,3,3);
 
 //A. Feedback com informações sobre os tempos sorteados
-var textblock_Feedback = new BABYLON.GUI.TextBlock();
-textblock_Feedback.text = "⏱ Duração";
-textblock_Feedback.color = "white";
-textblock_Feedback.fontSize = 50;
+var txtFeedback = new BABYLON.GUI.TextBlock();
+// txtFeedback.text = "⏱ Duração";
+txtFeedback.color = "white";
+txtFeedback.fontSize = 50;
 
-textblock_Feedback.top = "-275px";
-// textblock_Feedback.left = "0px";
-// textblock_Feedback.width = "150px";
-// textblock_Feedback.height = "50px";
+txtFeedback.top = "-275px";
+// txtFeedback.left = "0px";
+// txtFeedback.width = "150px";
+// txtFeedback.height = "50px";
 
+gridResposta.addControl(txtFeedback); 
+
+// Pontuação com informações sobre os tempos sorteados
+var txtFeedback = new BABYLON.GUI.TextBlock();
+txtFeedback.text = "⏱ Duração";
+txtFeedback.color = "white";
+txtFeedback.fontSize = 50;
+
+txtFeedback.top = "-275px";
+// txtFeedback.left = "0px";
+// txtFeedback.width = "150px";
+// txtFeedback.height = "50px";
+
+gridResposta.addControl(txtFeedback); 
 
 //B. Entrada de resposta por click em botão
-var button_Click = BABYLON.GUI.Button.CreateSimpleButton("botão", "🖱 Click");
-// button_Click.top = "150px";
-button_Click.left = "245px";
-button_Click.width = "150px";
-button_Click.height = "60px";
-button_Click.cornerRadius = 15;
-button_Click.thickness = 3;
-button_Click.children[0].color = "white";
-button_Click.children[0].fontSize = 20;
-button_Click.color = "white";
-button_Click.background = "black";
-button_Click.alpha = 0.7;
+var btnClick = BABYLON.GUI.Button.CreateSimpleButton("botão", "🖱 Click");
+// btnClick.top = "150px";
+btnClick.left = "245px";
+btnClick.width = "150px";
+btnClick.height = "60px";
+btnClick.cornerRadius = 15;
+btnClick.thickness = 3;
+btnClick.children[0].color = "white";
+btnClick.children[0].fontSize = 20;
+btnClick.color = "white";
+btnClick.background = "black";
+btnClick.alpha = 0.7;
 
-button_Click.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+btnClick.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
 
 var clicks = 0;
-button_Click.onPointerClickObservable.add(function () {
+btnClick.onPointerClickObservable.add(function () {
     clicks++;
     if (clicks % 2 == 0) {
-        button_Click.background = "red";
+        btnClick.background = "red";
     } else {
-        button_Click.background = "green";
+        btnClick.background = "green";
     }
-    button_Click.children[0].text = clicks + "\nsegundos";
+    btnClick.children[0].text = clicks + "\nsegundos";
 });
 
-button_Click.zIndex = 120;
-console.log("button_Click z-index: ", button_Click.zIndex);
+btnClick.zIndex = 10;
+gridEntrada.addControl(btnClick);   
 
 //C. Campo para o jogador informar a resposta
 var input = new BABYLON.GUI.InputText("entrada", "⌨ Digite aqui");
@@ -375,10 +491,9 @@ input.onPointerClickObservable.add(function () {
     input.text = ""; // if clicou, então apaga o texto
 });
 
-input.zIndex = 140;
-console.log("input z-index: ", input.zIndex);
+input.zIndex = 10;
+gridEntrada.addControl(input);    
 
-        
 //D. Teclado virtual para entrada de dados do jogador
 var keyboard = BABYLON.GUI.VirtualKeyboard.CreateDefaultLayout();
 keyboard.top = "-100px";
@@ -392,37 +507,39 @@ keyboard.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
 // keyboard.verticalAlignment = 0;
 // keyboard.alpha = 0.6;
 
+gridEntrada.addControl(keyboard);
 keyboard.connect(input);
 
 // H. Botão Falar
-var Button_Falar = BABYLON.GUI.Button.CreateSimpleButton("falar", "🗣 FALAR");
+var btnFalar = BABYLON.GUI.Button.CreateSimpleButton("falar", "🗣 FALAR");
 // Button_Falar.top = "-150px";
 // Button_Falar.bottom = "150px";
-Button_Falar.left = "555px";
-Button_Falar.width = "150px";
-Button_Falar.height = "60px";
-Button_Falar.cornerRadius = 15;
-Button_Falar.thickness = 3;
-Button_Falar.children[0].color = "white";
-Button_Falar.fontSize = 25;
-// Button_Falar.fontFamily = "Segoe UI"
-Button_Falar.color = "white";
-Button_Falar.background = "black";
-Button_Falar.alpha = 0.7;
-Button_Falar.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+btnFalar.left = "555px";
+btnFalar.width = "150px";
+btnFalar.height = "60px";
+btnFalar.cornerRadius = 15;
+btnFalar.thickness = 3;
+btnFalar.children[0].color = "white";
+btnFalar.fontSize = 25;
+// btnFalar.fontFamily = "Segoe UI"
+btnFalar.color = "white";
+btnFalar.background = "black";
+btnFalar.alpha = 0.7;
+btnFalar.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;     
+      
+btnFalar.zIndex = 10;
+gridEntrada.addControl(btnFalar);
 
-Button_Falar.onPointerUpObservable.add(function () {
+btnFalar.onPointerUpObservable.add(function () {
     reconheceFala();
     
-    Button_Falar.children[0].text = ">> INICIOU <<";
-    textblock_Feedback.text = "Aguardando resposta...";
+    btnFalar.children[0].text = ">> INICIOU <<";
+    txtFeedback.text = "Aguardando resposta...";
     console.log('Aguardando resposta...');
 
     clicks++;
 
-    textblock_Pontos.text = "Pontuação: " + clicks + "\n Tentativas restantes: 2/3"; // # add a variavel aqui
-
-    Button_Falar.isEnabled = false;
+    btnFalar.isEnabled = false;
 });
 
 //E. Barra superior
@@ -435,6 +552,7 @@ barraSuperior.verticalAlignment = 0;
 barraSuperior.width = "100%";
 barraSuperior.height = "60px";
 
+gridTela.addControl(barraSuperior);
 
 // F. Barra inferior
 var barraInferior = new BABYLON.GUI.StackPanel();
@@ -446,48 +564,56 @@ barraInferior.verticalAlignment = 1;
 barraInferior.width = "100%";
 barraInferior.height = "60px";
 
+gridTela.addControl(barraInferior);
+
 // G. Pontuação e tentativas
-var textblock_StatusJob = new BABYLON.GUI.TextBlock();
-textblock_StatusJob.text = "Acertos: 4 | Erros: 2\nAsteróide: 6/10"; // # add a variável da tentativa 1/3, 2/3...
-textblock_StatusJob.fontSize = 20;
-textblock_StatusJob.fontFamily = "Segoe UI"
-textblock_StatusJob.height = "60px";
-textblock_StatusJob.width = "30%";
-textblock_StatusJob.top = 0;
-textblock_StatusJob.color = "white";
-textblock_StatusJob.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-textblock_StatusJob.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+var txtStatusJob = new BABYLON.GUI.TextBlock();
+txtStatusJob.text = "Recompensa: 🥇"; 
+txtStatusJob.fontSize = 20;
+txtStatusJob.fontFamily = "Segoe UI"
+txtStatusJob.height = "60px";
+txtStatusJob.width = "30%";
+txtStatusJob.top = 0;
+txtStatusJob.color = "white";
+txtStatusJob.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+txtStatusJob.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+
+gridResposta.addControl(txtStatusJob);
 
 // I. Gabarito da tarefa
-var textblock_Gabarito = new BABYLON.GUI.TextBlock();
-textblock_Gabarito.text = "Tempo da tarefa: 0"; // # add variáveis
-textblock_Gabarito.fontSize = 20;
-textblock_Gabarito.height = "60px";
-textblock_Gabarito.width = "30%";
-textblock_Gabarito.top = 0;
-textblock_Gabarito.right = 0;
-textblock_Gabarito.color = "white";
-textblock_Gabarito.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-textblock_Gabarito.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+var txtGabarito = new BABYLON.GUI.TextBlock();
+txtGabarito.text = "Instruções"; // # add variáveis
+txtGabarito.fontSize = 20;
+txtGabarito.height = "60px";
+txtGabarito.width = "30%";
+txtGabarito.top = 0;
+txtGabarito.right = 0;
+txtGabarito.color = "white";
+txtGabarito.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+txtGabarito.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
 
+gridResposta.addControl(txtGabarito);// # Não exibir para o jogador
+  
 // J. Local da Resposta do Player
-var textblock_Resposta = new BABYLON.GUI.TextBlock();
-// textblock_Resposta.text = ">> (((((👂🏼))))) <<";
-textblock_Resposta.fontSize = 40;
-textblock_Resposta.fontFamily = "Segoe UI"
-textblock_Resposta.height = "60px";
-textblock_Resposta.top = "0px";
-textblock_Resposta.color = "white";
-textblock_Resposta.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-textblock_Resposta.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+var txtResposta = new BABYLON.GUI.TextBlock();
+txtResposta.text = "Em algum lugar do cosmo";
+txtResposta.fontSize = 40;
+txtResposta.fontFamily = "Segoe UI"
+txtResposta.height = "60px";
+txtResposta.top = "0px";
+txtResposta.color = "white";
+txtResposta.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+txtResposta.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+
+gridResposta.addControl(txtResposta);
 
 // Botão seta para esquerda
-var leftBtn = BABYLON.GUI.Button.CreateImageOnlyButton("esquerda", "./textures/leftButton.png");
-leftBtn.width = "55px";
-leftBtn.height = "55px";
-leftBtn.thickness = 0;
-leftBtn.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-leftBtn.onPointerClickObservable.add(() => { 
+var btnLeft = BABYLON.GUI.Button.CreateImageOnlyButton("esquerda", "../../../assets/gui/leftButton.png");
+btnLeft.width = "55px";
+btnLeft.height = "55px";
+btnLeft.thickness = 0;
+btnLeft.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+btnLeft.onPointerClickObservable.add(() => { 
     // if (leftBtn) {
     // // Executa vídeo de abertura
     //     document.write("<video src='assets/videos/abertura.mp4' autoplay='true' width='100%' height='100%'");
@@ -496,63 +622,56 @@ leftBtn.onPointerClickObservable.add(() => {
     // }
 });
 
+gridEntrada.addControl(btnLeft);    
+ 
+
 // Botão seta para direita
-var rightBtn = BABYLON.GUI.Button.CreateImageOnlyButton("direita", "./textures/rightButton.png");
-rightBtn.width = "55px";
-rightBtn.height = "55px";
-rightBtn.thickness = 0;
-rightBtn.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+var btnRight = BABYLON.GUI.Button.CreateImageOnlyButton("direita", "../../../assets/gui/rightButton.png");
+btnRight.width = "55px";
+btnRight.height = "55px";
+btnRight.thickness = 0;
+btnRight.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
 // rightBtn.onPointerClickObservable.add(() => { 
-//     if (acceptInput) {
-//         updateWeaponsPosition("right");
-//     }
-// });
-
-// Botão que habilita a interação do usuário com a interface gráfica
-// var gui_ativado = false;
-var activateBtn = BABYLON.GUI.Button.CreateImageOnlyButton("ativar", "./textures/activateButton.png");
-activateBtn.width = "130px";
-activateBtn.height = "55px";
-activateBtn.thickness = 0;
-activateBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-
-activateBtn.onPointerClickObservable.add(function() {
-    barraSuperior.isVisible = false;
- });
-
-// activateBtn.onPointerClickObservable.add(() => {
-    // gui_ativado = true;
-    // if  (gui_ativado){
-
-    // Colocar tudo dentro de painel e ocultar o painel!!!
-        // // REESCREVER TODOS PASSANDO COMO PARAMETROS!!!
-        // // interface_user.addControl(leftBtn);   
-        // // interface_user.addControl(rightBtn);  
-        // interface_user.addControl(barraSuperior);
-        // interface_user.addControl(barraInferior);
-        interface_user.addControl(input);    
-        interface_user.addControl(keyboard);
-        interface_user.addControl(button_Click);    
-        interface_user.addControl(Button_Falar);
-        // // interface_user.addControl(Button_Desistir);
-        interface_user.addControl(textblock_Feedback); 
-        interface_user.addControl(textblock_Resposta);
-        interface_user.addControl(textblock_Gabarito);// # Não exibir para o jogador
-        interface_user.addControl(textblock_StatusJob);
-      
-        // interface_user.addControl(leftBtn, rightBtn);
-        // interface_user.addControl(panel1, panel2);   
-        // interface_user.addControl(input, keyboard, button_Click, Button_Falar); 
-        // interface_user.addControl(textblock_Feedback, textblock_Resposta);   
-        // interface_user.addControl(textblock_Nivel, textblock_Pontos);
-        // interface_user.removeControl //# pesquisar se existe algo similar
-    // }
-
-    // gui_ativado = false;
-
+  //     if (acceptInput) {
+    //         updateWeaponsPosition("right");
+    //     }
     // });
     
-// interface_user.addControl(activateBtn); 
+gridTela.addControl(btnRight);  
+
+// Botão que habilita a interação do usuário com a interface gráfica
+var btnExibeGUI = BABYLON.GUI.Button.CreateImageOnlyButton("ativar", "../../../assets/gui/exibirGui.png");
+btnExibeGUI.width = "130px";
+btnExibeGUI.height = "55px";
+btnExibeGUI.thickness = 0;
+btnExibeGUI.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+btnExibeGUI.horizontalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+
+btnExibeGUI.zIndex = 150;  
+userInterface.addControl(btnExibeGUI); 
+
+var gui_ativado = true;
+btnExibeGUI.onPointerClickObservable.add(() => {
+    if(gui_ativado){
+      gridTela.isVisible = false;
+      gridEntrada.isVisible = false;
+      gridResposta.isVisible = false;
+      gridTeclado.isVisible = false;
+
+      gui_ativado = false;
+    }
+    else{
+      gridTela.isVisible = true;
+      gridEntrada.isVisible = true;
+      gridResposta.isVisible = true;
+      gridTeclado.isVisible = true;
+      
+      gui_ativado = true;
+    }
+      console.log("GUI Ativado: ", gui_ativado);
+  });
+
+  
 
 // Zoom no orb
 // zoomIn(camera, sphereSpark, 120);
@@ -582,8 +701,6 @@ activateBtn.onPointerClickObservable.add(function() {
 // Exibe o nº do asteóride atual
 var num_Asteroid = 1;
 var qtd_Asteroide = 10
-textblock_StatusJob.text = ("🌑 Asteroide: " + num_Asteroid + '/' + qtd_Asteroide);
-console.log('🌑 Asteroide: ' + num_Asteroid + '/' + qtd_Asteroide);
 
 var distancia = 1000; // Ponto de partida inicial do asteroide
 // Intervalo de tempo a ser estimado
@@ -594,100 +711,134 @@ var maxTime = 6;
 var duration;
 // duration = Math.floor((Math.random(distancia)*maxTime) + minTime);
 
-// Dispara cronômetro
-// console.time(); 
-// Armazenar o tempo de início
-var startTime = Date.now();
+// Botão que inicia a execução do estímulo
+var btnEstimulo = BABYLON.GUI.Button.CreateImageOnlyButton("ativar", "../../../assets/gui/iniciaEstimulo.png");
+btnEstimulo.width = "130px";
+btnEstimulo.height = "55px";
+btnEstimulo.thickness = 0;
+btnEstimulo.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
 
-// // 1º Feedback do comando
-// textblock_Feedback.text = ("👀 Observe a colisão");
+btnEstimulo.zIndex = 150;
+userInterface.addControl(btnEstimulo); 
 
-// Exibe o tempo da animação
-var elapsedTime = 0;
-elapsedTime = Date.now() - startTime;
-textblock_Gabarito.text = ("⏱ Tempo: " + formatTime(elapsedTime)); // # Não exibir para o jogador
-console.log('⏱ Tempo: ' + formatTime(elapsedTime));
+btnEstimulo.onPointerClickObservable.add(function() {
+    btnEstimulo.isVisible = false;
+    iniciaEstimulo();
+    console.log("Estímulo iniciado!");
+ });
 
-// Inicia percurso a partir da duração sorteada
-scene.registerBeforeRender(function() {
+// Executa o estímulo da tarefa 
+function iniciaEstimulo() {
+  txtStatusJob.text = ("🌑 Asteroide: " + num_Asteroid + '/' + qtd_Asteroide);
+  console.log('🌑 Asteroide: ' + num_Asteroid + '/' + qtd_Asteroide);
+  // Dispara cronômetro
+  // console.time(); 
+  // Armazenar o tempo de início
+  var startTime = Date.now()
 
-  // 1º Feedback do comando
-  textblock_Feedback.text = ("👀 Observe a colisão"); //# Aqui dentro ele escreve várias vezes, isso sobrecarrega??
+  // // 1º Feedback do comando
+  // textblock_Feedback.text = ("👀 Observe a colisão");
+  // Exibe o tempo da animação
+  var elapsedTime = 0
+  elapsedTime = Date.now() - startTime
+  txtGabarito.text = ("⏱ Tempo: " + formatTime(elapsedTime)) // # Não exibir para o jogador
+  console.log('⏱ Tempo: ' + formatTime(elapsedTime))
 
-  sphere.position.x = points[distancia].x;
-  sphere.position.z = points[distancia].z;
-  // console.log(i);
+  // Inicia percurso a partir da duração sorteada
+  scene.registerBeforeRender(function () {
 
+    // 1º Feedback do comando
+    // txtFeedback.text = ("👀 Observe a colisão") 
+
+    sphere.position.x = points[distancia].x
+    sphere.position.z = points[distancia].z
+    // console.log(i);
     // linha.scaling.x +=0.01;
     // linha.scaling.y +=0.01;
     // linha.scaling.z +=0.01;
+    distancia = (distancia - 1)
 
-  distancia = (distancia - 1)    
-  
-  if(distancia<1){ // "Colidiu" com o Sol
+    if (distancia < 1) { // "Colidiu" com o Sol
+      // Exibe o numero do asteoride atual
+      txtStatusJob.text = ("🌑 Asteroide: " + ++num_Asteroid + '/' + qtd_Asteroide)
+      console.log('🌑 Asteroide: ' + num_Asteroid + '/' + qtd_Asteroide)
 
-    // Exibe o numero do asteoride atual
-    textblock_StatusJob.text = ("🌑 Asteroide: " + ++num_Asteroid + '/' + qtd_Asteroide);
-    console.log('🌑 Asteroide: ' + num_Asteroid + '/' + qtd_Asteroide);
+      // Exibe o tempo da animação
+      elapsedTime = Date.now() - startTime
+      txtGabarito.text = ("⏱ Tempo: " + formatTime(elapsedTime))
+      console.log('⏱ Tempo: ' + formatTime(elapsedTime))
 
-    // Exibe o tempo da animação
-    elapsedTime = Date.now() - startTime;
-    textblock_Gabarito.text = ("⏱ Tempo: " + formatTime(elapsedTime));
-    console.log('⏱ Tempo: ' + formatTime(elapsedTime));
 
-    // # Exfeito de explosão, fogo, e destruição
-    if(som_Efeitos){
-      colisao = new BABYLON.Sound('colisao', './audio/colisao.wav', scene, null,{ // # Usar outro som de explosão
-        loop: false,
-        autoplay: true,
-      })
+      // gui_ativado = false;
+      gridTeclado.isVisible = true;
+      
+      // Verifica se acertou
+      btn1.onPointerUpObservable.add(() => {
+        // btn1.image.source = "../../../assets/gui/0.png";
+          if(elapsedTime == 1){
+              console.log("Acertou");
+          }
+          else{
+              console.log("Errou");
+          }                
+      });
 
-      if(num_Asteroid == 10){
-        explosao = new BABYLON.Sound('explosao', './audio/explosao.mp3', scene, null,{ // # Usar outro som de explosão
+      
+      // # Exfeito de explosão, fogo, e destruição
+      if (som_Efeitos) {
+        colisao = new BABYLON.Sound('colisao', './audio/colisao.wav', scene, null, {
           loop: false,
           autoplay: true,
         })
+
+        if (num_Asteroid == 10) {
+          explosao = new BABYLON.Sound('explosao', './audio/explosao.mp3', scene, null, {
+            loop: false,
+            autoplay: true,
+          })
+        }
       }
-    }
 
-    // Sorteia a posição onde o asteróide iniciará o percurso
-    distancia = Math.floor(Math.random(1000)*1000);  
-    
-    // Sorteia um novo tamanho para o asteroide
-    diameter = Math.floor(Math.random(100)*100);  
-    console.log("Diâmetro: ", diameter);
-    
-    // 2º Feedback do comando
-    textblock_Feedback.text = ("⏱ Quanto tempo?");
+      // Sorteia a posição onde o asteróide iniciará o percurso
+      distancia = Math.floor(Math.random(1000) * 1000)
 
-    // Captura resposta do jogador
-    textblock_Resposta.text = ">> (((((👂🏼))))) <<";
+      // Sorteia um novo tamanho para o asteroide
+      diameter = Math.floor(Math.random(100) * 100)
+      console.log("Diâmetro: ", diameter)
+
+      // 2º Feedback do comando
+      txtFeedback.text = ("⏱ Quanto tempo?")
+
+      // Captura resposta do jogador
+      txtResposta.text = ">> (((((👂🏼))))) <<"
 
 
-    
-    Button_Falar.children[0].text = ">> INICIOU <<";
-    textblock_Feedback.text = "Aguardando resposta...";
-    console.log('Aguardando resposta...');
-    
-    // reconheceFala();
-    
-    Button_Falar.isEnabled = false;
 
-    // # sobrecarrega por colocar várias vezes?????
-    interface_user.addControl(input);    
-    interface_user.addControl(keyboard);
-    interface_user.addControl(button_Click); 
+      btnFalar.children[0].text = ">> INICIOU <<"
+      txtFeedback.text = "Aguardando resposta..."
+      console.log('Aguardando resposta...')
 
-    // sleep1(5000); 
-    // sleep2(5000); // ok
-    
-    // speechSynthesis.speak(new SpeechSynthesisUtterance('Outro asteroide está se aproximando...!'));
-    //   console.log('Outro asteroide está se aproximando...!');
+      // reconheceFala();
+      btnFalar.isEnabled = false
 
-    // Reseta cronômetro
-    startTime = Date.now();
-  };  
-});
+      // Reexibe o botão do estímulo
+      btnEstimulo.isVisible = true;
+
+      // # sobrecarrega por colocar várias vezes?????
+      userInterface.addControl(input)
+      userInterface.addControl(keyboard)
+      userInterface.addControl(btnClick)
+
+      // sleep1(5000); 
+      // sleep2(5000); // ok
+      // speechSynthesis.speak(new SpeechSynthesisUtterance('Outro asteroide está se aproximando...!'));
+      //   console.log('Outro asteroide está se aproximando...!');
+      // Reseta cronômetro
+      startTime = Date.now()
+    };
+  })
+}
+
 // asteroide.dispose();
 
 
@@ -720,50 +871,30 @@ var sphere = variosAsteroides();
 
     const intro = document.getElementById('intro')
     var executando = true;
-
+    
     intro.addEventListener(
       'click',
       () => {
         // if (BABYLON.Engine.audioEngine) {
         //   BABYLON.Engine.audioEngine.unlock()
         // }
+        
+        // # Executar blip
+        // # Executar trilha
 
-        controls.connect();
+        // controls.connect();
+
+        intro.classList.add('hidden'); 
+        executando = true;       
         // animate(executando); // tentar resetar a animação
+        console.log("Jogo rodando");
         
         // alert("Quanto tempo?");
-
-        // console.log(text)
-        // console.log(input.zIndex);
-
       },
       false
     )
 
-    entityManager = new YUKA.EntityManager()
     time = new YUKA.Time()
-
-    const player = new Player()
-    player.head.setRenderComponent(camera, syncCamera)
-
-    controls = new FirstPersonControls(player)
-    controls.setRotation(-2.2, 0.2)
-    
-    controls.addEventListener('lock', () => {
-      intro.classList.add('hidden')
-      executando = true;
-      animate(executando);
-      console.log("Jogo rodando");
-    })
-
-    controls.addEventListener('unlock', () => {
-      intro.classList.remove('hidden')
-      executando = false;
-      // animate(executando);
-      console.log("Jogo pausado");
-    })
-
-    entityManager.add(player);
 
 function variosAsteroides() {
   // Material dos asteróides
@@ -922,7 +1053,7 @@ recognition.onresult = function(event) {
     if (event.results[i].isFinal) {
       // Transcreve o que foi falado
       var content = event.results[i][0].transcript.trim();
-      textblock_Resposta.text = content.toUpperCase(); 
+      txtResposta.text = content.toUpperCase(); 
 
       // Reproduz o que foi transcrito
       var u = new SpeechSynthesisUtterance();
@@ -946,37 +1077,37 @@ recognition.onresult = function(event) {
   recognition.onspeechend = function () {
       recognition.stop();
       console.log("Reconhecimento finalizado.");
-      Button_Falar.isEnabled = true;
-      Button_Falar.children[0].text = ">> COMEÇAR <<";
-      textblock_Resposta.text = ">> SUA RESPOSTA <<";
+      btnFalar.isEnabled = true;
+      btnFalar.children[0].text = ">> COMEÇAR <<";
+      txtResposta.text = ">> SUA RESPOSTA <<";
   };
 
   // Caso o que reconheça bata com os elementos sorteados
   recognition.onmatch = function () {
       // # incrementar a pontuação
 
-      textblock_Resposta.text = "Parabéns!";     
+      txtResposta.text = "Parabéns!";     
       // # add síntese de voz
       // # add alerta sonoro 
       console.log("Muito bem! Você conseguiu!!");
-      Button_Falar.children[0].text = elemento.toUpperCase();
+      btnFalar.children[0].text = elemento.toUpperCase();
   };
 
 
   // Caso não reconheça o que foi pronunciado
   recognition.onnomatch = function () {
-      textblock_Resposta.text = "Palavra desconhecida!";     
+      txtResposta.text = "Palavra desconhecida!";     
       // # add síntese de voz
       // # add alerta sonoro 
       console.log("Não entendi o que falou.");
-      Button_Falar.children[0].text = "Tentar novamente!";
+      btnFalar.children[0].text = "Tentar novamente!";
   };
 
   recognition.onerror = function (event) {
       console.log("Ocorreu um erro no reconhecimento: " + event.error);
-      Button_Falar.isEnabled = true;
-      Button_Falar.children[0].text = "Tentar novamente!";
-      textblock_Resposta.text = ">> SUA RESPOSTA <<";
+      btnFalar.isEnabled = true;
+      btnFalar.children[0].text = "Tentar novamente!";
+      txtResposta.text = ">> SUA RESPOSTA <<";
   };
   return recognition;
 }
@@ -1012,15 +1143,8 @@ recognition.onresult = function(event) {
 
         // alpha += 0.3 * scene.getAnimationRatio();
     // })
-    entityManager.add(player)
-    
-    if (executando){
-      // animate();
-      animate(executando);
-    }
     
   // scene.render();
-
 
 
 // Teclado virtual com mão. O usuário pode clicar em um botão na tela usando o dedo 
@@ -1143,16 +1267,12 @@ function onWindowResize() {
 function animate(executando) {
   if(executando){
     requestAnimationFrame(animate)
-    const delta = time.update().getDelta()
-    controls.update(delta) // # Não precisa
-    // entityManager.update(delta)
-
+    // const delta = time.update().getDelta() // Só se tivesse o player para se mover
     scene.render()
   }
-
-  if(!executando){
-    cancelAnimationFrame(animate); // # ta pausando demais
-  }
+  // if(!executando){
+  //   cancelAnimationFrame(animate); // # ta pausando demais
+  // }
 }
 
 function syncCamera(entity, renderComponent) {

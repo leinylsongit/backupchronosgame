@@ -39,13 +39,8 @@ body {
 }
 
 #intro .sub {
-	font-size: 20;
+	font-size: 30;
 }
-
-/* #intro .sub.destaque { 
-	font-size: 20;
-	color: blue;
-} */
 
 #loading-screen{
 	position: fixed;
