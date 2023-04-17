@@ -319,6 +319,35 @@ gridTeclado.zIndex = 150;
 userInterface.addControl(gridTeclado);
 
 
+// MODAL------------
+
+ // Criar uma caixa para o modal
+//  var modalBox = BABYLON.MeshBuilder.CreateBox("modalBox", {size: 1}, scene);
+
+//  // Definir a posição do modal
+//  modalBox.position = new BABYLON.Vector3(0, 1, 0);
+
+//  // Criar um material para o modal
+//  var modalMaterial = new BABYLON.StandardMaterial("modalMaterial", scene);
+//  modalMaterial.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+//  modalMaterial.specularColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+
+//  // Adicionar uma textura ao material
+//  var modalTexture = new BABYLON.Texture("modal_texture.jpg", scene);
+//  modalMaterial.diffuseTexture = modalTexture;
+//  modalBox.material = modalMaterial;
+
+//  // Adicionar evento de clique para abrir e fechar o modal
+//  scene.onPointerDown = function (evt, pickResult) {
+//      if (pickResult.hit && pickResult.pickedMesh === modalBox) {
+//          modalBox.isVisible = !modalBox.isVisible;
+//      }
+//  };
+
+//  modalBox.zIndex = 150;
+//  gridTeclado.addControl(modalBox,0,0);
+
+
 var btn1 = BABYLON.GUI.Button.CreateImageOnlyButton("btnfs", "../../../assets/gui/1.png");
     btn1.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
     btn1.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
@@ -756,18 +785,18 @@ btnRight.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
 // gridTela.addControl(btnRight);  
 
 // Botão que habilita a interação do usuário com a interface gráfica
-var btnExibeGUI = BABYLON.GUI.Button.CreateImageOnlyButton("ativar", "../../../assets/gui/exibirGui.png");
-btnExibeGUI.width = "130px";
-btnExibeGUI.height = "55px";
-btnExibeGUI.thickness = 0;
-btnExibeGUI.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-btnExibeGUI.horizontalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+// var btnExibeGUI = BABYLON.GUI.Button.CreateImageOnlyButton("ativar", "../../../assets/gui/exibirGui.png");
+// btnExibeGUI.width = "130px";
+// btnExibeGUI.height = "55px";
+// btnExibeGUI.thickness = 0;
+// btnExibeGUI.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+// btnExibeGUI.horizontalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
 
-btnExibeGUI.zIndex = 150;  
-userInterface.addControl(btnExibeGUI); 
+// btnExibeGUI.zIndex = 150;  
+// userInterface.addControl(btnExibeGUI); 
 
 var gui_ativado = true;
-btnExibeGUI.onPointerClickObservable.add(() => {
+// btnExibeGUI.onPointerClickObservable.add(() => {
     if(gui_ativado){
       gridTela.isVisible = false;
       gridEntrada.isVisible = false;
@@ -785,7 +814,7 @@ btnExibeGUI.onPointerClickObservable.add(() => {
       gui_ativado = true;
     }
       console.log("GUI Ativado: ", gui_ativado);
-  });
+  // });
 
   
 
@@ -816,7 +845,7 @@ btnExibeGUI.onPointerClickObservable.add(() => {
 
 // Exibe o nº do asteóride atual
 var num_Asteroid = 1;
-var qtd_Asteroide = 10
+var qtd_Asteroide = 3 // Número de trilhas
 
 var distancia = 500; // Ponto de partida inicial do asteroide
 // Intervalo de tempo a ser estimado
@@ -840,14 +869,28 @@ userInterface.addControl(btnEstimulo);
 btnEstimulo.onPointerClickObservable.add(function() {
     btnEstimulo.isVisible = false;
     gui_ativado = false;
-    iniciaEstimulo();
-    console.log("Estímulo iniciado!");
+    // for(var i=1; i<=qtd_Asteroide; i++){
+      executaTrilha();
+      // console.log("Trilha ", i, " iniciada!");
+      console.log("Trilha iniciada!");
+    // }
+    // Serializar a cena para uma string JSON
+// var serializedScene = BABYLON.SceneSerializer.Serialize(scene);
+
+// Descartar a cena original
+// scene.dispose();
  });
 
+  // Vetor para armazenar as respostas dadas pelo jogador
+  var respostas = new Array(qtd_Asteroide);
+
+  // Vetor para armazenar os tempos dos estímulos
+  var gabarito = new Array(qtd_Asteroide);
+
 // Executa o estímulo da tarefa 
-function iniciaEstimulo() {
+function executaTrilha() {
   txtStatusJob.text = ("🌑 Asteroide: " + num_Asteroid + '/' + qtd_Asteroide);
-  console.log('🌑 Asteroide: ' + num_Asteroid + '/' + qtd_Asteroide);
+  console.log('🌑 Trilha: ' + num_Asteroid + '/' + qtd_Asteroide);
   // Dispara cronômetro
   // console.time(); 
   // Armazenar o tempo de início
@@ -861,9 +904,11 @@ function iniciaEstimulo() {
   txtGabarito.text = ("⏱ Tempo: " + formatTime(elapsedTime)) // # Não exibir para o jogador
   console.log('⏱ Tempo: ' + formatTime(elapsedTime))
 
+  // Armazena a duração do estímulo
+  gabarito.push(elapsedTime); 
+
   // Inicia percurso a partir da duração sorteada
   scene.registerBeforeRender(function () {
-
     // 1º Feedback do comando
     // txtFeedback.text = ("👀 Observe a colisão") 
 
@@ -879,17 +924,33 @@ function iniciaEstimulo() {
       // sleep2(500); // ok
       // Exibe o numero do asteoride atual
       txtStatusJob.text = ("🌑 Asteroide: " + ++num_Asteroid + '/' + qtd_Asteroide)
-      console.log('🌑 Asteroide: ' + num_Asteroid + '/' + qtd_Asteroide)
+      console.log('🌑 Trilha: ' + num_Asteroid + '/' + qtd_Asteroide)
 
       // Exibe o tempo da animação
       elapsedTime = Date.now() - startTime
       txtGabarito.text = ("⏱ Tempo: " + formatTime(elapsedTime))
       console.log('⏱ Tempo: ' + formatTime(elapsedTime))
 
-
-      // gui_ativado = false;
-      gridTeclado.isVisible = true;
+      gui_ativado = true;
       
+      if(!gui_ativado){
+        gridTela.isVisible = false;
+        gridEntrada.isVisible = false;
+        gridResposta.isVisible = false;
+        gridTeclado.isVisible = false;
+  
+        // gui_ativado = true;
+      }
+      else{
+        gridTela.isVisible = true;
+        gridEntrada.isVisible = true;
+        gridResposta.isVisible = true;
+        gridTeclado.isVisible = true;
+        
+        // gui_ativado = false;
+      }
+      console.log("GUI Ativado: ", gui_ativado);
+
       // Verifica se acertou
       btn1.onPointerUpObservable.add(() => {
         // btn1.image.source = "../../../assets/gui/0.png";
@@ -898,7 +959,11 @@ function iniciaEstimulo() {
           }
           else{
               console.log("1: Errou");
-          }                
+          }  
+          
+          // Armazena tempo informado pelo jogador
+          respostas[num_Asteroid] = 1;
+          // respostas.push(1);
       });
 
       // Verifica se acertou
@@ -909,7 +974,10 @@ function iniciaEstimulo() {
           }
           else{
               console.log("2: Errou");
-          }                
+          }
+          
+          respostas[num_Asteroid] = 2;
+          // respostas.push(2);
       });
 
       // Verifica se acertou
@@ -920,7 +988,9 @@ function iniciaEstimulo() {
           }
           else{
               console.log("3: Errou");
-          }                
+          }   
+          
+          respostas[num_Asteroid] = 3;
       });
 
       // Verifica se acertou
@@ -931,7 +1001,9 @@ function iniciaEstimulo() {
           }
           else{
               console.log("4: Errou");
-          }                
+          }   
+          
+          respostas[num_Asteroid] = 4;
       });
 
       // Verifica se acertou
@@ -942,7 +1014,9 @@ function iniciaEstimulo() {
           }
           else{
               console.log("5: Errou");
-          }                
+          }
+          
+          respostas[num_Asteroid] = 5;
       });
 
       // Verifica se acertou
@@ -953,7 +1027,9 @@ function iniciaEstimulo() {
           }
           else{
               console.log("6: Errou");
-          }                
+          }            
+          
+          respostas[num_Asteroid] = 6;
       });
 
       // Verifica se acertou
@@ -964,7 +1040,9 @@ function iniciaEstimulo() {
           }
           else{
               console.log("7: Errou");
-          }                
+          }      
+          
+          respostas[num_Asteroid] = 7;
       });
 
       // Verifica se acertou
@@ -975,7 +1053,9 @@ function iniciaEstimulo() {
           }
           else{
               console.log("8: Errou");
-          }                
+          } 
+          
+          respostas[num_Asteroid] = 8;
       });
 
       // Verifica se acertou
@@ -986,7 +1066,9 @@ function iniciaEstimulo() {
           }
           else{
               console.log("9: Errou");
-          }                
+          }    
+          
+          respostas[num_Asteroid] = 9;
       });
 
       // Verifica se acertou
@@ -997,7 +1079,9 @@ function iniciaEstimulo() {
           }
           else{
               console.log("10: Errou");
-          }                
+          }       
+          
+          respostas[num_Asteroid] = 10;
       });
 
       
@@ -1016,7 +1100,15 @@ function iniciaEstimulo() {
         }
       }
 
-      sleep2(1000); // ok
+      
+     
+
+    sleep2(1000); // ok
+    
+    // engine.runRenderLoop(function () {
+    //     scene.render();
+    // });
+
 
       // Sorteia a posição onde o asteróide iniciará o percurso
       // distancia = Math.floor(Math.random(1000) * 1000)
@@ -1056,10 +1148,15 @@ function iniciaEstimulo() {
       // sleep2(5000); // ok
       // speechSynthesis.speak(new SpeechSynthesisUtterance('Outro asteroide está se aproximando...!'));
       //   console.log('Outro asteroide está se aproximando...!');
+      
+      // gui_ativado = false;
+
       // Reseta cronômetro
       startTime = Date.now()
+      console.clear();
     };
   })
+  gui_ativado = false;
 }
 
 // asteroide.dispose();
@@ -1084,9 +1181,9 @@ function formatTime(time) {
 var sphere = variosAsteroides();
 
 // Loading screen
-      const loadingScreen = document.getElementById('loading-screen')
-      loadingScreen.classList.add('fade-out')
-      loadingScreen.addEventListener('transitionend', onTransitionEnd)
+      // const loadingScreen = document.getElementById('loading-screen')
+      // loadingScreen.classList.add('fade-out')
+      // loadingScreen.addEventListener('transitionend', onTransitionEnd)
 
  // Sounds
   // Checkbox opção de som ou mudo
@@ -1103,27 +1200,27 @@ var sphere = variosAsteroides();
     const intro = document.getElementById('intro')
     var executando = true;
     
-    intro.addEventListener(
-      'click',
-      () => {
-        // if (BABYLON.Engine.audioEngine) {
-        //   BABYLON.Engine.audioEngine.unlock()
-        // }
+    // intro.addEventListener(
+    //   'click',
+    //   () => {
+    //     // if (BABYLON.Engine.audioEngine) {
+    //     //   BABYLON.Engine.audioEngine.unlock()
+    //     // }
         
-        // # Executar blip
-        // # Executar trilha
+    //     // # Executar blip
+    //     // # Executar trilha
 
-        // controls.connect();
+    //     // controls.connect();
 
-        intro.classList.add('hidden'); 
-        executando = true;       
-        // animate(executando); // tentar resetar a animação
-        console.log("Jogo rodando");
+    //     intro.classList.add('hidden'); 
+    //     executando = true;       
+    //     // animate(executando); // tentar resetar a animação
+    //     console.log("Jogo rodando");
         
-        // alert("Quanto tempo?");
-      },
-      false
-    )
+    //     // alert("Quanto tempo?");
+    //   },
+    //   false
+    // )
 
     time = new YUKA.Time()
 
@@ -1342,6 +1439,8 @@ recognition.onresult = function(event) {
   };
   return recognition;
 }
+
+
 
 //------------------------------- Animação dos elementos- --------------------------------
     // scene.registerBeforeRender(function (){
