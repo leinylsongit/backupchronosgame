@@ -1,0 +1,35 @@
+.ribbon {
+    --c: #C7F464;
+    
+    border-image: 
+       conic-gradient(from 45deg at calc(100% - 1lh),#0000 25%,var(--c) 0) 
+       fill 0//0 0 0 100vw;
+    padding-right: 1.3lh;
+    line-height: 1.5em; /* control the height */ 
+    width: fit-content; /* you probably don't need this if your element is already shrink-to-fit*/
+  }
+  
+  @supports not (padding: 1lh) { /* in case the lh unit is not available fallback to em */
+    .ribbon {
+      border-image: 
+         conic-gradient(from 45deg at calc(100% - 1.5em) 50%,#0000 25%,var(--c) 0) 
+         fill 0//0 0 0 100vw;
+      padding-right: 2em; 
+    }
+  }
+  
+  section {
+    /* center + max-width:800px + min-margin: 10px */
+    margin: 50px max(10px, 50% - 800px/2);
+  }
+  body {
+    font-family: system-ui, sans-serif;
+    background: #eee;
+  }
+  h1 {
+    font-size: 3rem;
+  }
+  p {
+    font-size: 1.5rem;
+    text-align:justify;
+  }
