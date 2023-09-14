@@ -223,7 +223,7 @@ body {
 }
 .home {
 	height: 100vh;
-	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/imagens/e.jpg");
+	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/imagens/a.jpg");
 	background-size: cover;
 	background-position: center center;
 	background-attachment: fixed;
@@ -235,14 +235,13 @@ body {
 
 .about {
 	height: 100vh;
-	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/imagens/f.jpeg");
 	background-size: cover;
 	background-position: center center;
 	background-attachment: fixed;	
 }
 
 .work {
-		background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/imagens/e.jpg");
+		background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/imagens/a.jpg");
 	background-size: cover;
 	background-position: center center;
 	background-attachment: fixed;

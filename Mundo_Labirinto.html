@@ -4,7 +4,7 @@
 	
 	<meta charset="utf-8">
 	<title>Mundo do Labirinto</title>
-	<link rel = "stylesheet" type="text/css" href = "./css/chronos_menu_black.css" />
+	<link rel = "stylesheet" type="text/css" href = "./css/chronos_menu_black.css"/>
     <link rel="shortcut icon" type="image/x-icon" href="./nitlab.jpg"/>
 
 	 <!-- scripts JavaScript que são utilizados para carregar bibliotecas e frameworks de criação de cenas 3D no navegador. -->
@@ -101,7 +101,7 @@
    <body onLoad = "init()">
 	<nav id="menu-wrap">
 	    <ul id="menu">
-            <li><a href="#">Instruções</a>
+            <!-- <li><a href="#">Instruções</a>
                 <ul>
                     <li><a>"[OK] Controle com WASD.</a></li>
                     <li><a>"[OK] P: pausar/continuar o jogo"</a></li>
@@ -111,27 +111,29 @@
                     <li><a>"[ ] 1: Habilidade especial 1 (?)"</a></li>
                     <li><a>"[ ] 2: Habilidade especial 2 (?)"</a></li>
                 </ul>
-            </li>
-        <li><a href="#">Velocidade</a>
+            </li> -->
+        <!-- <li><a href="#">Velocidade</a>
         <ul>
             <li><a href="#" onclick = "slow()">Lenta</a></li>
             <li><a href="#" onclick = "medium()">Média</a></li>
             <li><a href="#" onclick = "fast()">Rápida</a></li>
         </ul>
-        </li>
-        <li><a href="#">Jogo</a>
+        </li> -->
+        <!-- <li><a href="#">Jogo</a>
         <ul>
-            <li><a href="#" onclick = "again()">[Ok]Mesmo estágio</a></li>
+            <li><a href="#" onclick = "again()">[Ok]Mesmo estágio</a></li> -->
             
             <!-- Está sobrecarregando a memória -->
-            <li><a href="#" onclick = "init()">[O] Próximo estágio</a></li> 
+            <!-- <li><a href="#" onclick = "init()">[O] Próximo estágio</a></li> 
 
             <li><a href="#" onclick = "window.location.reload()">[OK] Resetar tudo</a></li>
 		</ul>
-		</li>
+		</li> -->
 	    </ul>
 	</nav>
+
       <canvas id = "canvasPrimario"></canvas>
+      
       <script type = "text/javascript">
 	// "use strict"; // altera o comportamento de alguns scripts de forma a evitar erros comuns e aumentar a segurança do código.
 
@@ -143,8 +145,6 @@ var canvas = document.getElementById("canvasPrimario");
 var cena_Mundo; // Cena do labirinto
 var cena_Tarefa; // Cena da tarefa
 var camera;
-
-
 
 // Elementos 3d-------------------------------------------------------------------
 // Player
@@ -490,7 +490,8 @@ function init() {
 // Camera
     //  camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 4, 10, new BABYLON.Vector3(0, 0, 30), cena_Mundo);	  
     camera = new BABYLON.ArcRotateCamera("Camera", 0/180*Math.PI, 30/180*Math.PI, 10, new BABYLON.Vector3(0, 8, 0), cena_Mundo);
-    camera.setPosition(new BABYLON.Vector3((BLOCK_SIZE * Maze_size_X / 2 * -1) - 40, BLOCK_SIZE * 6, (BLOCK_SIZE * Maze_size_Z / 2 * -1) + 12));
+    camera.setPosition(new BABYLON.Vector3((BLOCK_SIZE * Maze_size_X / 2 * -1) - 40, BLOCK_SIZE * 16, (BLOCK_SIZE * Maze_size_Z / 2 * -1) + 12));
+    // camera.setPosition(new BABYLON.Vector3(100, 4, -100));
 
 	cena_Mundo.activeCamera = camera;
     // cena_Mundo.activeCamera.attachControl(canvas, true);// para usar o scrool deve estar habilitada
@@ -576,10 +577,10 @@ function init() {
         // Imagem de mão como cursor
         // var hand = BABYLON.MeshBuilder.CreatePlane("hand", {width: 2, height: 2}, cena_Mundo);
         // var handMaterial = new BABYLON.StandardMaterial("handMaterial", cena_Mundo);
-        // handMaterial.diffuseTexture = new BABYLON.Texture("assets/gui/hand2.png", cena_Mundo);
+        // handMaterial.diffuseTexture = new BABYLON.Texture("assets/gui/hand3.png", cena_Mundo);
         // hand.material = handMaterial;
         
-        // Configure the interaction with the hand image:
+        // // Configure the interaction with the hand image:
         // var handPointer = new BABYLON.DefaultCursor("handPointer", cena_Mundo);
         // handPointer.hoverCursor = "pointer";
         // handPointer.activate();
@@ -1288,18 +1289,47 @@ function init() {
 
                     case "p": //Pausar/Despausar o jogo
                         if (!pause) {
+                            pause = true;
+
                             // Rotaciona a camera orbitando o herói
                             cena_Mundo.activeCamera.useAutoRotationBehavior = true;
+                            
                             // Desabilitar controle?
-                            //Desligar a câmera?
-                            pause = true;
+
+                            // Exibir mensagem com botão [CONTINUAR]
+                            
                         }
                         else {
+                            // Ao clicar em [CONTINUAR] é feito reconhecimento facial
+                            //  e habilita o controle do jogo 
+
                             // Para a rotação da camera
                             cena_Mundo.activeCamera.useAutoRotationBehavior = false;
+
                             // Resetar posição da camera
+                            camera.lowerRadiusLimit = 35;
+                            camera.upperRadiusLimit = 200;
+                            camera.radius = 20;
+
+                            
+                            // camera.setPosition(new BABYLON.Vector3((BLOCK_SIZE * Maze_size_X / 2 * -1) - 40, BLOCK_SIZE * 6, (BLOCK_SIZE * Maze_size_Z / 2 * -1) + 12));
+                            camera.setPosition(new BABYLON.Vector3(0, 1.35, -5));
+                            
+                            // updateCamera();
+                            // Atualiza a posição da câmera para ficar sempre atrás do player
+                            // camera.position.x = character.position.x;
+                            // camera.position.z = character.position.z; // ajuste a distância da câmera do player aqui
+                            // camera.position.y = character.position.y + 5; // ajuste a altura da câmera aqui
+
+                            // Atualiza a rotação da câmera para sempre olhar para o player
+                            // camera.rotation.x = 0;
+                            // camera.rotation.y = character.rotation.y;
+                            // camera.rotation.z = 0;
+
                             // Habilitar controle?
-                            //Ligar a câmera?
+                            
+                            // Tirar um print da tela com rosto do jogador e savar
+
                             pause = false;
                         }
                         break
@@ -2543,42 +2573,41 @@ for (var vrt = 0; vrt < Maze_size_Y + 4; vrt++) {
 
 // Create VirtualJoystick and set z index to be below playgrounds top bar
 	
-// function updateCamera() {
-//   // Atualiza a posição da câmera para ficar sempre atrás do player
-//   camera.position.x = character.position.x;
-//   camera.position.z = character.position.z + 10; // ajuste a distância da câmera do player aqui
-//   camera.position.y = character.position.y + 5; // ajuste a altura da câmera aqui
+function updateCamera() {
+  // Atualiza a posição da câmera para ficar sempre atrás do player
+  camera.position.x = character.position.x;
+  camera.position.z = character.position.z + 10; // ajuste a distância da câmera do player aqui
+  camera.position.y = character.position.y + 5; // ajuste a altura da câmera aqui
 
-//   // Atualiza a rotação da câmera para sempre olhar para o player
-//   camera.rotation.x = 0;
-//   camera.rotation.y = character.rotation.y;
-//   camera.rotation.z = 0;
-// }
+  // Atualiza a rotação da câmera para sempre olhar para o player
+  camera.rotation.x = 0;
+  camera.rotation.y = character.rotation.y;
+  camera.rotation.z = 0;
+}
 
-// // Chame a função updateCamera em cada frame para atualizar a posição da câmera
-// engine.runRenderLoop(function() {
-//   updateCamera();
-//   cena_Mundo.render();
-// });
+// Chame a função updateCamera em cada frame para atualizar a posição da câmera
+engine.runRenderLoop(function() {
+  updateCamera();
+  cena_Mundo.render();
+});
 
 
-    // var leftJoystick = new BABYLON.VirtualJoystick(true);
-	// var rightJoystick = new BABYLON.VirtualJoystick(false);
-	// BABYLON.VirtualJoystick.Canvas.style.zIndex = "4";
-// Render loop for VirtualJoystick
+    var move_Joystick = new BABYLON.VirtualJoystick(true);
+	BABYLON.VirtualJoystick.Canvas.style.zIndex = "4";
+    // Render loop for VirtualJoystick
 	cena_Mundo.onBeforeRenderObservable.add(()=>{
 		moveX=0;
 		moveZ=0;
         
         // Teclado
-        document.addEventListener("keydown", function(event) {
+        document.addEventListener("keydown", function(event){
             // Verifica se a tecla pressionada é "A" (esquerda)
             if (event.code === "KeyA") {
                 walk_dir = esquerda_dir;
                 moveX = 0;
                 moveZ = 1;
                 walk_step = walk_org;
-                // console.log("A");
+                // console.log("Tecla A");
             }
             // Verifica se a tecla pressionada é "D" (direita)
             if (event.code === "KeyD") {
@@ -2586,7 +2615,7 @@ for (var vrt = 0; vrt < Maze_size_Y + 4; vrt++) {
                 moveX = 0;
                 moveZ = -1;
                 walk_step = walk_org;
-                // console.log("D");
+                // console.log("Tecla D");
             }
             // Verifica se a tecla pressionada é "W" (frente)
             if (event.code === "KeyS") {
@@ -2709,197 +2738,149 @@ for (var vrt = 0; vrt < Maze_size_Y + 4; vrt++) {
         });
         
         // Joystick Esquerdo
-    //     if(leftJoystick.pressed){
-	// 		if(leftJoystick.deltaPosition.x <= -0.5) { // Esquerda (A)
-	// 			walk_dir = esquerda_dir
-	// 			moveX = 0;
-	// 			moveZ = 1;
-	// 			walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.x, 2);
-	// 		} else if(leftJoystick.deltaPosition.x >= 0.5) { // Direita (D)
-	// 			walk_dir = direita_dir
-	// 			moveX = 0;
-	// 			moveZ = -1;
-	// 			walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.x, 2);
-	// 		} else {
-	// 			moveZ = 0;
-	// 		}
-	// 		if(leftJoystick.deltaPosition.y <= -0.5) { // Frente (W)
-	// 			walk_dir = sul_dir;
-	// 			moveX = -1;
-	// 			moveZ = 0;
-	// 			walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.y, 2);
-	// 		} else if(leftJoystick.deltaPosition.y >= 0.5) { // Atrás (S)
-	// 			walk_dir = norte_dir;
-	// 			moveX = 1;
-	// 			moveZ = 0;
-	// 			walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.y, 2);
-	// 		} else {
-	// 			moveX = 0;
-	// 		}
+        if(move_Joystick.pressed){
+			if(move_Joystick.deltaPosition.x <= -0.5) { // Esquerda (A)
+				walk_dir = esquerda_dir
+				moveX = 0;
+				moveZ = 1;
+				walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.x, 2);
+			} else if(move_Joystick.deltaPosition.x >= 0.5) { // Direita (D)
+				walk_dir = direita_dir
+				moveX = 0;
+				moveZ = -1;
+				walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.x, 2);
+			} else {
+				moveZ = 0;
+			}
+			if(move_Joystick.deltaPosition.y <= -0.5) { // Frente (W)
+				walk_dir = sul_dir;
+				moveX = -1;
+				moveZ = 0;
+				walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.y, 2);
+			} else if(move_Joystick.deltaPosition.y >= 0.5) { // Atrás (S)
+				walk_dir = norte_dir;
+				moveX = 1;
+				moveZ = 0;
+				walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.y, 2);
+			} else {
+				moveX = 0;
+			}
 
-    //         // Câmera apontando para a esquerda
-	// 	    if((camera.alpha >= -135 / 180 * Math.PI) && (camera.alpha < -45 / 180 * Math.PI)) { 
-    //             // console.log("Camera para esquerda..");
-    //             if(leftJoystick.deltaPosition.x <= -0.5) { // joystick para a esquerda
-    //                 walk_dir = sul_dir;
-    //                 moveX = -1;
-    //                 moveZ = 0;
-    //                 walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.x, 2);
-    //             } else if(leftJoystick.deltaPosition.x >= 0.5) { // joystick para a direita
-    //                 walk_dir = norte_dir;
-    //                 moveX = 1;
-    //                 moveZ = 0;
-    //                 walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.x, 2);
-    //             } else {
-    //                 moveX = 0;
-    //             }
-    //             if(leftJoystick.deltaPosition.y <= -0.5) {// joystick para baixo
-    //                 walk_dir = direita_dir
-    //                 moveX = 0;
-    //                 moveZ = -1;
-    //                 walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.y, 2);
-    //             } else if(leftJoystick.deltaPosition.y >= 0.5) { // joystick para cima
-    //                 walk_dir = direita_dir
-    //                 moveX = 0;
-    //                 moveZ = 1;
-    //                 walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.y, 2);
-    //             } else {
-    //                 moveZ = 0;
-    //             }
-	// 	    }
+            // Câmera apontando para a esquerda
+		    if((camera.alpha >= -135 / 180 * Math.PI) && (camera.alpha < -45 / 180 * Math.PI)) { 
+                // console.log("Camera para esquerda..");
+                if(move_Joystick.deltaPosition.x <= -0.5) { // joystick para a esquerda
+                    walk_dir = sul_dir;
+                    moveX = -1;
+                    moveZ = 0;
+                    walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.x, 2);
+                } else if(move_Joystick.deltaPosition.x >= 0.5) { // joystick para a direita
+                    walk_dir = norte_dir;
+                    moveX = 1;
+                    moveZ = 0;
+                    walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.x, 2);
+                } else {
+                    moveX = 0;
+                }
+                if(move_Joystick.deltaPosition.y <= -0.5) {// joystick para baixo
+                    walk_dir = direita_dir
+                    moveX = 0;
+                    moveZ = -1;
+                    walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.y, 2);
+                } else if(move_Joystick.deltaPosition.y >= 0.5) { // joystick para cima
+                    walk_dir = direita_dir
+                    moveX = 0;
+                    moveZ = 1;
+                    walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.y, 2);
+                } else {
+                    moveZ = 0;
+                }
+		    }
 
-    //         // Câmera apontando para a direita
-	// 	    if((camera.alpha >= -45 / 180 * Math.PI) && (camera.alpha < 45 / 180 * Math.PI)) {
-    //             // console.log("Camera para direita..");
-    //             if(leftJoystick.deltaPosition.x <= -0.5) { //  joystick para a esquerda
-    //                 walk_dir = direita_dir
-    //                 moveX = 0;
-    //                 moveZ = -1;
-    //                 walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.x, 2);
-    //             } else if(leftJoystick.deltaPosition.x >= 0.5) { //  joystick para a direita
-    //                 walk_dir = direita_dir
-    //                 moveX = 0;
-    //                 moveZ = 1;
-    //                 walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.x, 2);
-    //             } else {
-    //                 moveZ = 0;
-    //             }
-    //             if(leftJoystick.deltaPosition.y <= -0.5) { // joystick para cima
-    //                 walk_dir = norte_dir
-    //                 moveX = 1;
-    //                 moveZ = 0;
-    //                 walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.y, 2);
-    //             } else if(leftJoystick.deltaPosition.y >= 0.5) { // joystick para baixo
-    //                 walk_dir = sul_dir;
-    //                 moveX = -1;
-    //                 moveZ = 0;
-    //                 walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.y, 2);
-    //             } else {
-    //                 moveX = 0;
-    //             }
-	// 	    }
+            // Câmera apontando para a direita
+		    if((camera.alpha >= -45 / 180 * Math.PI) && (camera.alpha < 45 / 180 * Math.PI)) {
+                // console.log("Camera para direita..");
+                if(move_Joystick.deltaPosition.x <= -0.5) { //  joystick para a esquerda
+                    walk_dir = direita_dir
+                    moveX = 0;
+                    moveZ = -1;
+                    walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.x, 2);
+                } else if(move_Joystick.deltaPosition.x >= 0.5) { //  joystick para a direita
+                    walk_dir = direita_dir
+                    moveX = 0;
+                    moveZ = 1;
+                    walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.x, 2);
+                } else {
+                    moveZ = 0;
+                }
+                if(move_Joystick.deltaPosition.y <= -0.5) { // joystick para cima
+                    walk_dir = norte_dir
+                    moveX = 1;
+                    moveZ = 0;
+                    walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.y, 2);
+                } else if(move_Joystick.deltaPosition.y >= 0.5) { // joystick para baixo
+                    walk_dir = sul_dir;
+                    moveX = -1;
+                    moveZ = 0;
+                    walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.y, 2);
+                } else {
+                    moveX = 0;
+                }
+		    }
 
-    //         // Câmera apontando para cima/baixo
-	// 	    if((camera.alpha >= 45 / 180 * Math.PI) && (camera.alpha < 135 / 180 * Math.PI)) {
-    //             // console.log("Camera para cima/baixo..");
-    //             if(leftJoystick.deltaPosition.x <= -0.5) {// Esquerda
-    //                 walk_dir = norte_dir
-    //                 moveX = 1;
-    //                 moveZ = 0;
-    //                 walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.x, 2);
-    //             } else if(leftJoystick.deltaPosition.x >= 0.5) {// Direita
-    //                 walk_dir = sul_dir;
-    //                 moveX = -1;
-    //                 moveZ = 0;
-    //                 walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.x, 2);
-    //             } else {
-    //                 moveX = 0;
-    //             }
-    //             if(leftJoystick.deltaPosition.y <= -0.5) {// Cima
-    //                 walk_dir = direita_dir
-    //                 moveX = 0;
-    //                 moveZ = 1;
-    //                 walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.y, 2);
-    //             } else if(leftJoystick.deltaPosition.y >= 0.5) {// Baixo
-    //                 walk_dir = direita_dir
-    //                 moveX = 0;
-    //                 moveZ = -1;
-    //                 walk_step = walk_org * Math.pow(leftJoystick.deltaPosition.y, 2);
-    //             } else {
-    //                 moveZ = 0;
-    //             }
-	// 	    }
-    //     }
-
-	// 	// Joystick Direito
-    //     if(rightJoystick.pressed){
-	// 		if(rightJoystick.deltaPosition.x <= -0.5) {
-	// 	            camera.alpha = camera.alpha + rightJoystick.deltaPosition.x/180*Math.PI;
-	// 		    if(camera.alpha < -1 * Math.PI) {
-	// 			    camera.alpha = Math.PI;
-	// 		    }
-	// 		}
-	// 		else if(rightJoystick.deltaPosition.x >= 0.5) {
-	// 	            camera.alpha = camera.alpha + rightJoystick.deltaPosition.x/180*Math.PI;
-	// 		    if(camera.alpha > Math.PI) {
-	// 			    camera.alpha = -1 * Math.PI;
-	// 		    }
-	// 		}
-	// 		else {
-	// 	        camera.alpha = camera.alpha;
-	// 		}
-	// 		if(rightJoystick.deltaPosition.y <= -0.5) {
-	// 	        camera.radius = camera.radius + 0.5;
-	// 		}
-	// 		else if(rightJoystick.deltaPosition.y >= 0.5) {
-	// 	        camera.radius = camera.radius - 0.5;
-	// 		}
-	// 		else {
-	// 	        camera.radius = camera.radius;
-	// 		}
-	// 		if((rightJoystick.deltaPosition.x <= -0.6) && (rightJoystick.deltaPosition.y <= -0.6)) {
-    //             camera.alpha = camera.alpha;
-    //             camera.beta = camera.beta + 0.2/180*Math.PI;
-    //             camera.radius = camera.radius;
-	// 		}
-	// 		else if((rightJoystick.deltaPosition.x <= -0.6) && (rightJoystick.deltaPosition.y >= 0.6)) {
-    //             camera.alpha = camera.alpha;
-    //             camera.beta = camera.beta - 0.2/180*Math.PI;
-    //             camera.radius = camera.radius;
-	// 		}
-	// 		else if((rightJoystick.deltaPosition.x >= 0.6) && (rightJoystick.deltaPosition.y <= -0.6)) {
-    //             camera.alpha = camera.alpha;
-    //             camera.beta = camera.beta + 0.2/180*Math.PI;
-    //             camera.radius = camera.radius;
-	// 		}
-	// 		else if((rightJoystick.deltaPosition.x >= 0.6) && (rightJoystick.deltaPosition.y >= 0.6)) {
-    //             camera.alpha = camera.alpha;
-    //             camera.beta = camera.beta - 0.2/180*Math.PI;
-    //             camera.radius = camera.radius;
-	// 		}
-	// 	}
+            // Câmera apontando para cima/baixo
+		    if((camera.alpha >= 45 / 180 * Math.PI) && (camera.alpha < 135 / 180 * Math.PI)) {
+                // console.log("Camera para cima/baixo..");
+                if(move_Joystick.deltaPosition.x <= -0.5) {// Esquerda
+                    walk_dir = norte_dir
+                    moveX = 1;
+                    moveZ = 0;
+                    walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.x, 2);
+                } else if(move_Joystick.deltaPosition.x >= 0.5) {// Direita
+                    walk_dir = sul_dir;
+                    moveX = -1;
+                    moveZ = 0;
+                    walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.x, 2);
+                } else {
+                    moveX = 0;
+                }
+                if(move_Joystick.deltaPosition.y <= -0.5) {// Cima
+                    walk_dir = direita_dir
+                    moveX = 0;
+                    moveZ = 1;
+                    walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.y, 2);
+                } else if(move_Joystick.deltaPosition.y >= 0.5) {// Baixo
+                    walk_dir = direita_dir
+                    moveX = 0;
+                    moveZ = -1;
+                    walk_step = walk_org * Math.pow(move_Joystick.deltaPosition.y, 2);
+                } else {
+                    moveZ = 0;
+                }
+		    }
+        }
 	});
 
 // Create button to toggle VirtualJoystick overlay canvas
-// 	var btn = document.createElement("button");
-// 	    btn.innerText = "Enable/Disable Joystick";
-// 	    btn.style.zIndex = 10;
-// 	    btn.style.position = "absolute";
-// 	    btn.style.bottom = "50px";
-// 	    btn.style.right = "0px";
-// 	document.body.appendChild(btn);
-// // Button toggle logic for VirtualJoystick
-// 	btn.onclick = ()=>{
-// 		if(BABYLON.VirtualJoystick.Canvas.style.zIndex == "-1"){
-//                     BABYLON.VirtualJoystick.Canvas.style.zIndex = "4";
-//                 }else{
-//                     BABYLON.VirtualJoystick.Canvas.style.zIndex = "-1";
-//                 }
-// 	}
+	var btn = document.createElement("button");
+	    btn.innerText = "Enable/Disable Joystick";
+	    btn.style.zIndex = 10;
+	    btn.style.position = "absolute";
+	    btn.style.bottom = "50px";
+	    btn.style.right = "0px";
+	document.body.appendChild(btn);
+// Button toggle logic for VirtualJoystick
+	btn.onclick = ()=>{
+		if(BABYLON.VirtualJoystick.Canvas.style.zIndex == "-1"){
+                    BABYLON.VirtualJoystick.Canvas.style.zIndex = "4";
+                }else{
+                    BABYLON.VirtualJoystick.Canvas.style.zIndex = "-1";
+                }
+	}
 // Dispose button on rerun for VirtualJoystick
-// cena_Mundo.onDisposeObservable.add(()=>{
-//             document.body.removeChild(btn);
-// });
+cena_Mundo.onDisposeObservable.add(()=>{
+            document.body.removeChild(btn);
+});
 
 // if (Goal_flag == 0){
 //     executaVideo("assets/videos/Trofeu_1.mp4");
@@ -2917,23 +2898,29 @@ var beforeRenderFunction = function () {
     // Comemoração ao chegar no objetivo
     if((Math.floor(x / BLOCK_SIZE) == Math.floor(Goal_x / BLOCK_SIZE)) && (Math.floor(y / BLOCK_SIZE) == Math.floor(Goal_y / BLOCK_SIZE)) && (Math.floor(z / BLOCK_SIZE) == Math.floor(Goal_z / BLOCK_SIZE))) {
         var advancedTexture_03 = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
-            var text1 = new BABYLON.GUI.TextBlock();
+        var text1 = new BABYLON.GUI.TextBlock();
         text1.text = "Parabéns!!";
-            text1.color = "green";
-            text1.fontSize = 150;
-            advancedTexture_03.addControl(text1);
+        text1.color = "green";
+        text1.fontSize = 150;
+        advancedTexture_03.addControl(text1);
         if(Goal_flag == 0) {
-        var music = new BABYLON.Sound('Goal', './assets/sounds/effects/sino.mp3', cena_Mundo, function() {
+            var music = new BABYLON.Sound('Goal', './assets/sounds/effects/sino.mp3', cena_Mundo, function() {
             music.play();
         });
         }
         Goal_flag = 1;
     }
-    // if (Goal_flag){
-    //     executaVideo("assets/videos/Trofeu_1.mp4");
-    //     console.log("Chegou no objetivo: ");
-    //     console.log(Goal_flag);
-    // }
+    if (Goal_flag){
+        // executaVideo("assets/videos/Trofeu_1.mp4");
+        console.log("Chegou no objetivo: ");
+    }
+
+    // Vai para 
+    if (Goal_flag){
+        // executaVideo("assets/videos/viajando_Tempo.mp4");
+        console.log("Carregando nova fase...");
+        init();
+    }
 };
 
 cena_Ativa = cena_Mundo;
@@ -3663,5 +3650,7 @@ function fast() {
 //     engine.resize();
 // });
       </script>
+
+   
    </body>
 </html>
