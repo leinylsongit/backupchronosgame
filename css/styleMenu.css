@@ -112,20 +112,19 @@
 	box-shadow: 0 0 5px #1eff45, 0 0 15px #1eff45, 0 0 30px #1eff45,
 		0 0 60px #1eff45;
 }
-.container .btn:nth-child(2)::before, /* 2*/
+
+.container .btn:nth-child(2)::before, /* 3*/
 .container .btn:nth-child(2)::after {
-	background: #2db2ff;
-	box-shadow: 0 0 5px #2db2ff, 0 0 15px #2db2ff, 0 0 30px #2db2ff,
-		0 0 60px #2db2ff;
-}
-.container .btn:nth-child(3)::before, /* 3*/
-.container .btn:nth-child(3)::after {
 	background: #ff1e1e;
 	box-shadow: 0 0 5px #ff1e1e, 0 0 15px #ff1e1e, 0 0 30px #ff1e1e,
 		0 0 60px #ff1e1e;
 }
-
-
+.container .btn:nth-child(3)::before, /* 2*/
+.container .btn:nth-child(3)::after {
+	background: #2db2ff;
+	box-shadow: 0 0 5px #2db2ff, 0 0 15px #2db2ff, 0 0 30px #2db2ff,
+		0 0 60px #2db2ff;
+}
 
 
 @import url('https://fonts.googleapis.com/css?family=Raleway');
@@ -223,12 +222,12 @@ body {
 }
 .home {
 	height: 100vh;
-	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/imagens/a.jpg");
+	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/imagens/bgLoading1.png");
 	background-size: cover;
 	background-position: center center;
 	background-attachment: fixed;
 	@media screen and (min-width: 768px) {
-		animation: aboutFlexSlide $defaultSeconds 1;
+		animation: aboutFlexSlide defaultSeconds 1;
 		animation-delay: 0s;
 	}
 }
@@ -241,7 +240,7 @@ body {
 }
 
 .work {
-		background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/imagens/a.jpg");
+		background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/imagens/bgLoading1.png");
 	background-size: cover;
 	background-position: center center;
 	background-attachment: fixed;
