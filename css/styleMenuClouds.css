@@ -14,6 +14,64 @@
  */
 /*      light colors - used for select dropdown         */
 /*           Font Smoothing      */
+
+
+
+
+body {
+  padding: 0;
+  margin: 0;
+  /* overflow: hidden; */
+  background-color: #00bbff;
+  /* background-color: #fffb00; */
+}
+.background {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  z-index: 1;
+  font-family: Courier;
+}
+.cloud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  z-index: 2;
+  opacity: 0.8;
+}
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  padding: 12px 0;
+  text-align: center;
+  z-index: 100;
+  color: #fff;
+  font-family: Courier;
+}
+.header h1 {
+  font-size: 40px;
+  font-weight: lighter;
+}
+.header a {
+  font-size: 32px;
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #fff;
+  color: #fff;
+}
+
+
+
+
+/* outro */
+
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, p, .navbar, .brand, a, .td-name, td, button, input, select, textarea {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
@@ -37,6 +95,7 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, p, .navbar, .brand, a, .td
     font-size: 1.825em;
     line-height: 1.4;
     margin: 20px 0 0px;
+    color: #ffffff;
   }
   
   h4, .h4 {
@@ -6047,7 +6106,7 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, p, .navbar, .brand, a, .td
   
   }
   .navigation-example{
-      background-image: url("assets/imagens/a.jpg");
+      background-image: url("assets/imagens/n.jpg");
       background-position: center center;
       background-size: cover;
       background-attachment: fixed;

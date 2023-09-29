@@ -1,3 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', serif;
+}
+body {
+    height: 100vh;
+    width: 100vw;
+}
+#top{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#top::before{
+    content:'';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height:200px;
+    width: 100%;
+    background:linear-gradient(to top,#fff,transparent);
+    z-index: 1000;
+}
+#man{
+    top: inherit;
+    bottom: 0;
+}
+section img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+#text{
+    position: relative;
+    color:white;
+    font-size: 10rem;
+}
+#sec{
+    padding:100px;
+  padding-bottom:20px;
+}
+#sec h2{
+    font-size: 4rem;
+    margin-bottom: 30px;
+    color:#20496a;
+}
+#sec p{
+    font-size: 1.2rem;
+  line-height:2rem;
+  font-weight:300;
+    color:#20496a;
+}
+footer{
+  margin-top:30px;
+  display:flex;
+  padding:20px;
+  justify-content:space-evenly;
+  align-items:center;
+  background-color:#B0DFEA;
+}
+footer a{
+  color:#20496a;
+}
+footer a i{
+    transition:0.2s;
+}
+footer a:nth-of-type(3),footer a:nth-of-type(4), footer a:nth-of-type(5){
+font-size:1.3rem;}
+footer a i:hover{
+  transform:translateY(-10px);
+}
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Roboto:wght@400;500;700&display=swap");
 
 * {
@@ -106,24 +189,25 @@
 	border-radius: 30px;
 }
 
-.container .btn:nth-child(1)::before, /*chnage 1*/
+.container .btn:nth-child(1)::before, /* 2*/
 .container .btn:nth-child(1)::after {
+	background: #2db2ff;
+	box-shadow: 0 0 5px #2db2ff, 0 0 15px #2db2ff, 0 0 30px #2db2ff,
+		0 0 60px #2db2ff;
+}
+
+.container .btn:nth-child(2)::before, /*chnage 1*/
+.container .btn:nth-child(2)::after {
 	background: #1eff45;
 	box-shadow: 0 0 5px #1eff45, 0 0 15px #1eff45, 0 0 30px #1eff45,
 		0 0 60px #1eff45;
 }
 
-.container .btn:nth-child(2)::before, /* 3*/
-.container .btn:nth-child(2)::after {
-	background: #ff1e1e;
-	box-shadow: 0 0 5px #ff1e1e, 0 0 15px #ff1e1e, 0 0 30px #ff1e1e,
-		0 0 60px #ff1e1e;
-}
-.container .btn:nth-child(3)::before, /* 2*/
+.container .btn:nth-child(3)::before, /* 3*/
 .container .btn:nth-child(3)::after {
-	background: #2db2ff;
-	box-shadow: 0 0 5px #2db2ff, 0 0 15px #2db2ff, 0 0 30px #2db2ff,
-		0 0 60px #2db2ff;
+	background: #fffb1e;
+	box-shadow: 0 0 5px #fffb1e, 0 0 15px #fffb1e, 0 0 30px #fffb1e,
+		0 0 60px #fffb1e;
 }
 
 
@@ -222,7 +306,7 @@ body {
 }
 .home {
 	height: 100vh;
-	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/imagens/bgLoading1.png");
+	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/personagens/players/Sig/img/sig0.png");
 	background-size: cover;
 	background-position: center center;
 	background-attachment: fixed;
@@ -240,7 +324,7 @@ body {
 }
 
 .work {
-		background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/imagens/bgLoading1.png");
+	background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/assets/personagens/players/Sig/img/sig0.png");
 	background-size: cover;
 	background-position: center center;
 	background-attachment: fixed;
